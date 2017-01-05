@@ -6,7 +6,7 @@ window.onload = function () {
     output = windowManager.createConsole({left:0,top:50,width:1000,height:800,title:"metreex analysis"});
 
     output.println("test");
-
+    console.log(output.handlekeydown("a"));
 
     var nm = new NodeMetric('number of nodes');
 
