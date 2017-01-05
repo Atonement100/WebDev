@@ -2494,10 +2494,27 @@ VNConsoleWindow.prototype.focus=function()
 
 /**
  * Handles input commands within the console itself.
+ * @param command The string passed through the console by the user
+ * @returns boolean False if no processing is defined, otherwise has implementation-specific return.
  */
 VNConsoleWindow.prototype.onCommandEntered=function(command){
-    this.println(command);
-    console.log(command);
+    if (this.processCommand && typeof(this.processCommand) === "function"){
+        return this.processCommand(command)
+    }
+    else {
+        console.log("Command processing is not defined for this console");
+        return false;
+    }
+};
+
+/**
+ * Actually processes the command sent by the console. Should be overridden with local functionality.
+ * @param command The string passed through the console by the user
+ * @returns {boolean} Used to indicate result of command processing.
+ */
+VNConsoleWindow.prototype.processCommand=function(command){
+    console.log("Command received: " + command);
+    output.println(command);
     return false;
 };
 
@@ -2515,8 +2532,12 @@ VNConsoleWindow.prototype.handlekeydown=function(e)
 		this.last_command_index=0;
 		this.commandPromise.setObject(this.last_command_typed[this.last_command_typed.length-1]);
 		this.commandPromise.callThen();
-		if(!this.onCommandEntered(this.last_command_typed[this.last_command_typed.length-1]))
-			this.error('Unknown command: '+this.last_command_typed[this.last_command_typed.length-1]);
+		//Should pass silently if no input in console
+		if(this.last_command_typed[this.last_command_typed.length-1]) {
+		    if(!this.onCommandEntered(this.last_command_typed[this.last_command_typed.length-1])) {
+                this.error('Unknown command: ' + this.last_command_typed[this.last_command_typed.length - 1]);
+            }
+        }
 		this.text_input.value='> ';
 		this.div_c.scrollTop = this.div_c.scrollHeight;
 		return false;

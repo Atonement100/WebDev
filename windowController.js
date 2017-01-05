@@ -1,3 +1,27 @@
+VNConsoleWindow.prototype.processCommand=function(command){
+    console.log("Command received in window controller: " + command);
+    output.println(command);
+
+    var args = command.split(" ");
+    switch (args[0].toLowerCase()){
+        case "help":
+            output.println("Welcome to the metreex analysis tool");
+            return true;
+        case "load":
+            if (args.length > 1) {
+                output.println("loading " + args[1]);
+            }
+            else{
+                output.println("Needs more parameters");
+            }
+            return true;
+        default:
+            return false;
+    }
+
+    //return false;
+};
+
 window.onload = function () {
     vn = new VisiNeatAPI();
     vn.setScreen("windowDiv");
