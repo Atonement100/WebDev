@@ -1,3 +1,5 @@
+var loadedTreebanks = new Array();
+
 VNConsoleWindow.prototype.processCommand=function(command){
     console.log("Command received in window controller: " + command);
     output.println(command);
@@ -5,15 +7,25 @@ VNConsoleWindow.prototype.processCommand=function(command){
     var args = command.split(" ");
     switch (args[0].toLowerCase()){
         case "help":
-            output.println("Welcome to the metreex analysis tool");
+            output.println("Welcome to the metreex analysis tool, type 'load \<<metreex id\>>' to load a Treebank file.");
+            output.println("Type list to see all loaded treebanks.");
             return true;
         case "load":
             if (args.length > 1) {
                 output.println("loading " + args[1]);
+                var newTree = new TreebankFile();
+                newTree.load(args[1]);
+                output.println(loadedTreebanks.push(newTree));
             }
             else{
                 output.println("Needs more parameters");
             }
+            return true;
+        case "list":
+            output.println("The following treebanks have been loaded:");
+            loadedTreebanks.forEach(function (tree) {
+                output.println(tree.id + ": " + tree.getTitle());
+            });
             return true;
         default:
             return false;
