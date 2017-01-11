@@ -2,6 +2,7 @@ var loadedTreebanks = [];
 var selectedTreebanks = [];
 var enabledMetrics = retrieveMetrics();
 var disabledMetrics = [];
+var USING_SIDEBAR = false;
 
 function openTab(event, tabName){
     var i;
@@ -34,6 +35,11 @@ function AddLoadedTree(newTree){
     }
 
     loadedTreebanks.push(newTree);
+
+    if (USING_SIDEBAR){
+        AddTreeToSidebar(newTree);
+    }
+
     return true;
 }
 
@@ -48,11 +54,38 @@ function RemoveLoadedTreeById(id){
         if (loadedTreebanks[index].id === id){
             loadedTreebanks.splice(index, 1);
             output.println("Treebank " + id + " has been unloaded");
+
+            if (USING_SIDEBAR){
+                RemoveTreeFromSidebar(id)
+            }
+
             return true; //Should not have to worry about duplicates.
         }
     }
     output.println("Treebank " + id + " was not previously loaded");
     return false;
+}
+
+function loadTreebankFile(id){
+    output.println("Attempting to load tree with id " + id);
+    var newTree = new TreebankFile();
+    newTree.onload = function () {
+        if (newTree.getNumOfSentences() > 0) {
+            AddLoadedTree(newTree);
+        }
+    };
+    newTree.load(id);
+}
+
+function loadTreebankCollection(){
+    output.println("Attempting to load treebank collection");
+    var t=new TreebankCollection();
+    t.onload=function(){
+        t.treebank.forEach(function(tree){
+            AddLoadedTree(tree);
+        });
+    };
+    t.load();
 }
 
 /**
@@ -115,29 +148,14 @@ VNConsoleWindow.prototype.processCommand=function(command){
         case "load":
             if (args.length > 1 && args[1]) {
                 if (args[1] === "-c"){
-                    //load collection
-                    output.println("Attempting to load treebank collection");
-                    var t=new TreebankCollection();
-                    t.onload=function(){
-                        t.treebank.forEach(function(tree){
-                            AddLoadedTree(tree);
-                        });
-                    };
-                    t.load();
+                    loadTreebankCollection();
                 }
                 else {
-                    output.println("Attempting to load tree with id " + args[1]);
-                    var newTree = new TreebankFile();
-                    newTree.onload = function () {
-                        if (newTree.getNumOfSentences() > 0) {
-                            AddLoadedTree(newTree);
-                        }
-                    };
-                    newTree.load(args[1]);
+                    loadTreebankFile(args[1]);
                 }
             }
             else{
-                output.println("Not enough parameters. Usage: load &lt;metreex database id>");
+                output.println("Not enough parameters. Usage: load &lt;metreex database id> or load -c (for collection)");
             }
             return true;
         case "unload":
@@ -197,6 +215,11 @@ VNConsoleWindow.prototype.processCommand=function(command){
             }
             return true;
         case "apply":
+            if (loadedTreebanks.length == 0){
+                output.println("No treebanks have been loaded, please use the load &lt;treebank id> command before this one.")
+                return true;
+            }
+
             if (selectedTreebanks.length == 0){
                 output.println("No treebanks were selected, applying to all loaded treebanks.");
                 selectedTreebanks = loadedTreebanks;
@@ -232,8 +255,9 @@ VNConsoleWindow.prototype.processCommand=function(command){
     //return false;
 };
 
-function buildMetricList(array){
+function buildDefaultMetricList(array){
     var list = document.createElement('form');
+    list.id = "metricList";
     list.action = "metric_form.asp";
     list.method = "get";
 
@@ -255,6 +279,39 @@ function buildMetricList(array){
     return list;
 }
 
+function AddTreeToSidebar(newTree){
+    var treeList = document.getElementById("treebankList");
+
+    var checkbox = document.createElement('input');
+    checkbox.type = "checkbox";
+    checkbox.name = "treebank";
+    checkbox.value = newTree.id;
+    checkbox.checked = true;
+
+    var label = document.createElement('label');
+    label.id = newTree.id;
+    label.appendChild(checkbox);
+    label.appendChild(document.createTextNode(newTree.getTitle()));
+
+    treeList.appendChild(label);
+    treeList.appendChild(document.createElement('br'));
+}
+
+function RemoveTreeFromSidebar(id){
+    var treeToRemove = document.getElementById(id);
+    treeToRemove.parentNode.removeChild(treeToRemove.nextSibling); //Takes care of the extra <br>
+    treeToRemove.parentNode.removeChild(treeToRemove);
+}
+
+function buildDefaultTreebankList(){
+    var list = document.createElement('form');
+    list.id = "treebankList";
+    list.action = "treebank_form.asp";
+    list.method = "get";
+
+    return list;
+}
+
 window.onload = function () {
     vn = new VisiNeatAPI();
     vn.setScreen("visualDiv");
@@ -263,22 +320,9 @@ window.onload = function () {
     var windowManager = vn.getWindowManager();
     output = windowManager.createConsole({left:0,top:50,width:1000,height:800,title:"metreex analysis"});
 
-    // Initialization of metric list
-    document.getElementById("Metrics").appendChild(buildMetricList(enabledMetrics));
+    // Initialization of treebank and metric lists
+    USING_SIDEBAR = true;
+    document.getElementById("Treebanks").appendChild(buildDefaultTreebankList());
+    document.getElementById("Metrics").appendChild(buildDefaultMetricList(enabledMetrics));
     openTab(event, 'Metrics');
-
-   // var guiManager = new GUIManager("buttonDiv");
-   // var toolbar = new RetractableToolbar(guiManager, 50, 1);
-   // var button1 = new RetractableToolbarButton(toolbar);
-   // button1.initButton1();
-
-/*
-    var tree = new TreebankFile();
-    tree.onload = function(){
-        console.log(tree.getTitle());
-        output.println(tree.getTitle());
-    };
-
-    tree.load('wuxmwtm934d917x2');
-*/
 };
