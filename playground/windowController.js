@@ -234,17 +234,21 @@ VNConsoleWindow.prototype.processCommand=function(command){
 
 function buildMetricList(array){
     var list = document.createElement('form');
-    list.style.action = "metric_form.asp";
-    list.style.method = "get";
+    list.action = "metric_form.asp";
+    list.method = "get";
 
     for (var i = 0; i < array.length; i++){
-        var item = document.createElement('checkbox');
-        item.style.type = "checkbox";
-        item.style.name = "metric";
-        item.style.value = i;
-        item.style.checked = true;
-        item.appendChild(document.createTextNode(array[i].name));
-        list.appendChild(item);
+        var checkbox = document.createElement('input');
+        checkbox.type = "checkbox";
+        checkbox.name = "metric";
+        checkbox.value = i;
+        checkbox.checked = true;
+
+        var label = document.createElement('label');
+        label.appendChild(checkbox);
+        label.appendChild(document.createTextNode(array[i].name));
+
+        list.appendChild(label);
         list.appendChild(document.createElement('br'));
     }
 
@@ -253,7 +257,7 @@ function buildMetricList(array){
 
 window.onload = function () {
     vn = new VisiNeatAPI();
-    vn.setScreen("windowDiv");
+    vn.setScreen("visualDiv");
 
     // Console creation
     var windowManager = vn.getWindowManager();
@@ -261,6 +265,7 @@ window.onload = function () {
 
     // Initialization of metric list
     document.getElementById("Metrics").appendChild(buildMetricList(enabledMetrics));
+    openTab(event, 'Metrics');
 
    // var guiManager = new GUIManager("buttonDiv");
    // var toolbar = new RetractableToolbar(guiManager, 50, 1);
