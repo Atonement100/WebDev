@@ -66,6 +66,15 @@ function RemoveLoadedTreeById(id){
     return false;
 }
 
+function UnloadAllTreebanks(){
+    loadedTreebanks = [];
+    output.println("All treebanks have been unloaded.");
+
+    if(USING_SIDEBAR){
+        RemoveAllTreesFromSidebar();
+    }
+}
+
 function loadTreebankFile(id){
     output.println("Attempting to load tree with id " + id);
     var newTree = new TreebankFile();
@@ -161,8 +170,7 @@ VNConsoleWindow.prototype.processCommand=function(command){
         case "unload":
             if (args.length > 1 && args[1]){
                 if (args[1] === "-a"){
-                    loadedTreebanks = [];
-                    output.println("All treebanks have been unloaded.");
+                    UnloadAllTreebanks();
                 }
                 else{
                     RemoveLoadedTreeById(args[1]);
@@ -310,6 +318,13 @@ function buildDefaultTreebankList(){
     list.method = "get";
 
     return list;
+}
+
+function RemoveAllTreesFromSidebar(){
+    var list = document.getElementById("treebankList");
+    while (list.firstChild){
+        list.removeChild(list.firstChild);
+    }
 }
 
 window.onload = function () {
