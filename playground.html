@@ -16,8 +16,23 @@
     <script type="text/javascript" src="http://www.metreex.org/js/metreex-1.0.js"></script>
     <script type="text/javascript" src="metricSource.js"></script>
     <script type="text/javascript" src="windowController.js"></script>
+
 </head>
 <body>
+
+
+<div id="buttonDiv">
+    <ul class="metricTabs">
+        <li><a href="javascript:void(0)" class="metricTab" onclick="openTab(event, 'Treebanks')">Treebanks</a></li>
+        <li><a href="javascript:void(0)" class="metricTab" onclick="openTab(event, 'Metrics')">Metrics</a></li>
+    </ul>
+
+    <div id="Treebanks" class="metricTabContent">
+        aaaa
+    </div>
+
+    <div id="Metrics" class="metricTabContent"></div>
+</div>
 
 <div id="windowDiv"></div>
 

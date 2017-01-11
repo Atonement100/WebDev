@@ -1,6 +1,23 @@
 var loadedTreebanks = [];
+var selectedTreebanks = [];
 var enabledMetrics = retrieveMetrics();
 var disabledMetrics = [];
+
+function openTab(event, tabName){
+    var i;
+    var metricTabContent = document.getElementsByClassName("metricTabContent");
+    for (i = 0; i < metricTabContent.length; i++){
+        metricTabContent[i].style.display = "none";
+    }
+
+    var metricTabs = document.getElementsByClassName("metricTab");
+    for (i = 0; i < metricTabs.length; i++){
+        metricTabs[i].className = metricTabs[i].className.replace(" active", "");
+    }
+
+    document.getElementById(tabName).style.display = "block";
+    event.currentTarget.className += " active";
+}
 
 /**
  *
@@ -180,7 +197,12 @@ VNConsoleWindow.prototype.processCommand=function(command){
             }
             return true;
         case "apply":
-            loadedTreebanks.forEach(function(tree){
+            if (selectedTreebanks.length == 0){
+                output.println("No treebanks were selected, applying to all loaded treebanks.");
+                selectedTreebanks = loadedTreebanks;
+            }
+
+            selectedTreebanks.forEach(function(tree){
                 output.println(tree.getTitle() + " - " + tree.id);
                 tree.apply(enabledMetrics,{progress:output.getProgress()});
             });
@@ -210,13 +232,40 @@ VNConsoleWindow.prototype.processCommand=function(command){
     //return false;
 };
 
+function buildMetricList(array){
+    var list = document.createElement('form');
+    list.style.action = "metric_form.asp";
+    list.style.method = "get";
+
+    for (var i = 0; i < array.length; i++){
+        var item = document.createElement('checkbox');
+        item.style.type = "checkbox";
+        item.style.name = "metric";
+        item.style.value = i;
+        item.style.checked = true;
+        item.appendChild(document.createTextNode(array[i].name));
+        list.appendChild(item);
+        list.appendChild(document.createElement('br'));
+    }
+
+    return list;
+}
+
 window.onload = function () {
     vn = new VisiNeatAPI();
     vn.setScreen("windowDiv");
 
+    // Console creation
     var windowManager = vn.getWindowManager();
     output = windowManager.createConsole({left:0,top:50,width:1000,height:800,title:"metreex analysis"});
-    console.log(output.handlekeydown("a"));
+
+    // Initialization of metric list
+    document.getElementById("Metrics").appendChild(buildMetricList(enabledMetrics));
+
+   // var guiManager = new GUIManager("buttonDiv");
+   // var toolbar = new RetractableToolbar(guiManager, 50, 1);
+   // var button1 = new RetractableToolbarButton(toolbar);
+   // button1.initButton1();
 
 /*
     var tree = new TreebankFile();
