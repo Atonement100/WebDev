@@ -1,6 +1,6 @@
 var loadedTreebanks = [];
 var selectedTreebanks = [];
-var enabledMetrics = retrieveMetrics();
+var loadedMetrics = retrieveMetrics();
 var disabledMetrics = [];
 var USING_SIDEBAR = false;
 
@@ -116,7 +116,7 @@ function loadTreebankCollection(){
 function EnableMetric(name){
     for (var index = 0; index < disabledMetrics.length; index++){
         if (disabledMetrics[index].title === name){
-            enabledMetrics.push(disabledMetrics[index]);
+            loadedMetrics.push(disabledMetrics[index]);
             disabledMetrics.splice(index, 1);
             output.println("The " + name + " metric has been enabled.");
 
@@ -133,7 +133,7 @@ function EnableMetric(name){
  * @constructor
  */
 function DisableMetric(name){
-    for (var index = 0; index < enabledMetrics.length; index++){
+    for (var index = 0; index < loadedMetrics.length; index++){
         if (disabledMetrics[index].title === name){
             disabledMetrics.splice(index, 1);
             output.println("The " + name + " metric has been disabled.");
@@ -205,20 +205,20 @@ VNConsoleWindow.prototype.processCommand=function(command){
                         }
                         break;
                     case "metrics":
-                        if (disabledMetrics.length + enabledMetrics.length == 0) {
+                        if (disabledMetrics.length + loadedMetrics.length == 0) {
                             output.println("No metrics have been loaded. Check for the metric source file.");
                             break;
                         }
 
-                        if (enabledMetrics.length > 0) {
-                            output.println("The following " + enabledMetrics.length + " metric(s) are enabled:");
-                            enabledMetrics.forEach(function (metric) {
+                        if (loadedMetrics.length > 0) {
+                            output.println("The following " + loadedMetrics.length + " metric(s) are enabled:");
+                            loadedMetrics.forEach(function (metric) {
                                 output.println(metric.name);
                             })
                         }
 
                         if (disabledMetrics.length > 0){
-                            output.println("The following " + enabledMetrics.length + " metric(s) are disabled:");
+                            output.println("The following " + loadedMetrics.length + " metric(s) are disabled:");
                             disabledMetrics.forEach(function (metric) {
                                 output.println(metric.name);
                             })
@@ -243,8 +243,15 @@ VNConsoleWindow.prototype.processCommand=function(command){
             }
 
             if (selectedTreebanks.length == 0){
-                output.println("No treebanks were selected, applying to all loaded treebanks.");
-                selectedTreebanks = loadedTreebanks;
+                output.println("No treebanks were selected, please select at least one treebank");
+                return true;
+            }
+
+            var enabledMetrics = getCheckedMetrics();
+
+            if (enabledMetrics.length == 0){
+                output.println("No metrics were selected, please select at least one metrics");
+                return true;
             }
 
             selectedTreebanks.forEach(function(tree){
@@ -277,25 +284,13 @@ VNConsoleWindow.prototype.processCommand=function(command){
     //return false;
 };
 
+//These are very similar functions... find a way to consolidate. id could be used for trees vs metrics
 function getCheckedTreebanks(){
     var trees = [];
     var form = document.getElementById("treebankList");
 
-    /*
-    var labels = form.getElementsByTagName("label");
-    for (var labelIndex = 0; labelIndex < labels.length; labelIndex++){
-        var checkboxes = labels[labelIndex].getElementsByTagName("input");
-        for (var cboxIndex = 0; cboxIndex < checkboxes.length; cboxIndex++){
-            if(checkboxes[cboxIndex].checked){
-                trees.push(GetTreeById(checkboxes[cboxIndex].id));
-            }
-        }
-    }
-
-    [].forEach(form.getElementsByTagName("label"), function (child) {
-
-    });
-*/
+    //Workaround for .forEach not being a member function of what .getElementsByTagName returns
+    //Converts to array so that .forEach can be used.
     Array.prototype.slice.call(form.getElementsByTagName("label")).forEach(function (child) {
         Array.prototype.slice.call(child.getElementsByTagName("input")).forEach(function (checkbox) {
             if (checkbox.checked){
@@ -304,16 +299,22 @@ function getCheckedTreebanks(){
         });
     });
 
-    /*
-    form.getElementsByTagName("label").forEach(function (child) {
-        child.getElementsByTagName("input").forEach(function (checkbox) {
-           if (checkbox.checked){
-               trees.push(GetTreeById(checkbox.id));
-           }
+    return trees;
+}
+
+function getCheckedMetrics(){
+    var list = [];
+    var form = document.getElementById("metricList");
+
+    Array.prototype.slice.call(form.getElementsByTagName("label")).forEach(function (child){
+        Array.prototype.slice.call(child.getElementsByTagName("input")).forEach(function (checkbox) {
+            if (checkbox.checked){
+                list.push(loadedMetrics[parseInt(checkbox.value)]);
+            }
         });
     });
-*/
-    return trees;
+
+    return list;
 }
 
 function buildDefaultMetricList(array){
@@ -391,6 +392,6 @@ window.onload = function () {
     // Initialization of treebank and metric lists
     USING_SIDEBAR = true;
     document.getElementById("Treebanks").appendChild(buildDefaultTreebankList());
-    document.getElementById("Metrics").appendChild(buildDefaultMetricList(enabledMetrics));
+    document.getElementById("Metrics").appendChild(buildDefaultMetricList(loadedMetrics));
     openTab(event, 'Metrics');
 };
