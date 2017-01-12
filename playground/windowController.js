@@ -66,6 +66,16 @@ function RemoveLoadedTreeById(id){
     return false;
 }
 
+function GetTreeById(id){
+    for (var index = 0; index < loadedTreebanks.length; index++){
+        if (loadedTreebanks[index].id === id){
+            return loadedTreebanks[index];
+        }
+    }
+    output.println("Treebank " + id + " was not previously loaded");
+    return;
+}
+
 function UnloadAllTreebanks(){
     loadedTreebanks = [];
     output.println("All treebanks have been unloaded.");
@@ -228,6 +238,10 @@ VNConsoleWindow.prototype.processCommand=function(command){
                 return true;
             }
 
+            if (USING_SIDEBAR) {
+                selectedTreebanks = getCheckedTreebanks();
+            }
+
             if (selectedTreebanks.length == 0){
                 output.println("No treebanks were selected, applying to all loaded treebanks.");
                 selectedTreebanks = loadedTreebanks;
@@ -262,6 +276,45 @@ VNConsoleWindow.prototype.processCommand=function(command){
 
     //return false;
 };
+
+function getCheckedTreebanks(){
+    var trees = [];
+    var form = document.getElementById("treebankList");
+
+    /*
+    var labels = form.getElementsByTagName("label");
+    for (var labelIndex = 0; labelIndex < labels.length; labelIndex++){
+        var checkboxes = labels[labelIndex].getElementsByTagName("input");
+        for (var cboxIndex = 0; cboxIndex < checkboxes.length; cboxIndex++){
+            if(checkboxes[cboxIndex].checked){
+                trees.push(GetTreeById(checkboxes[cboxIndex].id));
+            }
+        }
+    }
+
+    [].forEach(form.getElementsByTagName("label"), function (child) {
+
+    });
+*/
+    Array.prototype.slice.call(form.getElementsByTagName("label")).forEach(function (child) {
+        Array.prototype.slice.call(child.getElementsByTagName("input")).forEach(function (checkbox) {
+            if (checkbox.checked){
+                trees.push(GetTreeById(checkbox.value));
+            }
+        });
+    });
+
+    /*
+    form.getElementsByTagName("label").forEach(function (child) {
+        child.getElementsByTagName("input").forEach(function (checkbox) {
+           if (checkbox.checked){
+               trees.push(GetTreeById(checkbox.id));
+           }
+        });
+    });
+*/
+    return trees;
+}
 
 function buildDefaultMetricList(array){
     var list = document.createElement('form');
