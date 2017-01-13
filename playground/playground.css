@@ -1,26 +1,16 @@
-/*#buttonDiv{
-    float:right;
-    position:relative;
-    left: -50%;
-    text-align:left;
-}
-#buttonDiv ul{
-    position: relative;
-    left:50%;
-}*/
-
-
 ul.metricTabs {
     list-style-type: none;
+    display: block;
+    text-align: center;
     margin: 0;
     padding: 0;
     overflow: hidden;
-    border: 1px solid #fffbf4;
+    border: 1px solid #fff;
     background-color: azure;
 }
 
 ul.metricTabs li{
-    float: left;
+    display:inline;
 }
 
 ul.metricTabs li a {
@@ -45,21 +35,15 @@ ul.metricTabs li a:focus, .active{
     padding: 6px 12px;
     border: 1px solid #ccc;
     border-top: none;
+    overflow: auto;
 }
 
-ul.metricTabContent{
-
-}
-
-#visualDiv {
-    position:absolute;
-    padding:0;
-    margin:0;
-    top:0;
-    left:330px;
-    width:100%;
-    height:100%;
-    z-index:0;
+#metricTabHeader {
+    /* border: 1px solid #ccc; */
+    display: block;
+    margin: auto;
+    border-right: 1px solid #ccc;
+    text-align:center;
 }
 
 #metricDiv {
@@ -69,7 +53,19 @@ ul.metricTabContent{
     top:0;
     left:0;
     width:330px;
+    min-height:100%;
     height:100%;
     z-index:0;
     word-wrap: break-word;
 }
+
+#visualDiv {
+     position:absolute;
+     padding:0;
+     margin:0;
+     top:0;
+     left:330px;
+     width:100%;
+     height:100%;
+     z-index:0;
+ }
