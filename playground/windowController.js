@@ -20,6 +20,21 @@ function openTab(event, tabName){
     event.currentTarget.className += " active";
 }
 
+
+function setAllCheckboxesInTab(tabName, newSetting){
+    var cboxes = document.getElementsByName(tabName + "Checkbox");
+    Array.prototype.slice.call(cboxes).forEach(function (cbox) {
+        cbox.checked = newSetting;
+    })
+}
+
+function invertAllCheckboxesInTab(tabName){
+    var cboxes = document.getElementsByName(tabName + "Checkbox");
+    Array.prototype.slice.call(cboxes).forEach(function (cbox) {
+        cbox.checked = !cbox.checked;
+    })
+}
+
 /**
  *
  * @param newTree Reference to tree to be added to the array of loaded treebanks
@@ -326,7 +341,7 @@ function buildDefaultMetricList(array){
     for (var i = 0; i < array.length; i++){
         var checkbox = document.createElement('input');
         checkbox.type = "checkbox";
-        checkbox.name = "metric";
+        checkbox.name = "metricCheckbox";
         checkbox.value = i;
         checkbox.checked = true;
 
@@ -346,7 +361,7 @@ function AddTreeToSidebar(newTree){
 
     var checkbox = document.createElement('input');
     checkbox.type = "checkbox";
-    checkbox.name = "treebank";
+    checkbox.name = "treebankCheckbox";
     checkbox.value = newTree.id;
     checkbox.checked = true;
 
@@ -379,6 +394,11 @@ function RemoveAllTreesFromSidebar(){
     while (list.firstChild){
         list.removeChild(list.firstChild);
     }
+}
+
+function getActiveMetricTab() {
+    var elems = document.getElementsByClassName("metricTab active");
+    return elems[0]? elems[0].name : ""; //Should always be exactly one 'active' metric tab.
 }
 
 window.onload = function () {
