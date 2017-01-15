@@ -100,6 +100,12 @@ function UnloadAllTreebanks(){
     }
 }
 
+function loadTreebankFromSidebar(){
+    var input = document.getElementById('treebankIdInput');
+    loadTreebankFile(input.value);
+    input.value = "";
+}
+
 function loadTreebankFile(id){
     output.println("Attempting to load tree with id " + id);
     var newTree = new TreebankFile();
