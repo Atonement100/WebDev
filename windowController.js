@@ -111,6 +111,7 @@ function unloadTreebankFromSidebar(id){
 }
 
 function loadTreebankFile(id){
+    id = id.trim();
     output.println("Attempting to load tree with id " + id);
     var newTree = new TreebankFile();
     newTree.onload = function () {
