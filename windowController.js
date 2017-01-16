@@ -106,6 +106,10 @@ function loadTreebankFromSidebar(){
     input.value = "";
 }
 
+function unloadTreebankFromSidebar(id){
+    RemoveLoadedTreeById(id);
+}
+
 function loadTreebankFile(id){
     output.println("Attempting to load tree with id " + id);
     var newTree = new TreebankFile();
@@ -354,9 +358,10 @@ function buildDefaultMetricList(array){
         var label = document.createElement('label');
         label.appendChild(checkbox);
         label.appendChild(document.createTextNode(array[i].name));
+        label.appendChild(document.createElement('br'));
 
         list.appendChild(label);
-        list.appendChild(document.createElement('br'));
+
     }
 
     return list;
@@ -371,18 +376,25 @@ function AddTreeToSidebar(newTree){
     checkbox.value = newTree.id;
     checkbox.checked = true;
 
+    var unloadButton = document.createElement('button');
+    unloadButton.type = 'button';
+    unloadButton.className = "unloadButton";
+    unloadButton.onclick = function(){unloadTreebankFromSidebar(newTree.id);};
+    unloadButton.appendChild(document.createTextNode(" - "));
+
     var label = document.createElement('label');
     label.id = newTree.id;
     label.appendChild(checkbox);
     label.appendChild(document.createTextNode(newTree.getTitle()));
+    label.appendChild(unloadButton);
+    label.appendChild(document.createElement('br'));
+
 
     treeList.appendChild(label);
-    treeList.appendChild(document.createElement('br'));
 }
 
 function RemoveTreeFromSidebar(id){
     var treeToRemove = document.getElementById(id);
-    treeToRemove.parentNode.removeChild(treeToRemove.nextSibling); //Takes care of the extra <br>
     treeToRemove.parentNode.removeChild(treeToRemove);
 }
 
@@ -419,5 +431,12 @@ window.onload = function () {
     USING_SIDEBAR = true;
     document.getElementById("Treebanks").appendChild(buildDefaultTreebankList());
     document.getElementById("Metrics").appendChild(buildDefaultMetricList(loadedMetrics));
-    openTab(event, 'Metrics');
+    openTab(event, 'Treebanks');
+
+    loadTreebankFile('66w1loh5gaclr0ck');
+    loadTreebankFile('ni5cxsbbkypbh0dl');
+    loadTreebankFile('e1i9b02c68c9i2nl');
+    loadTreebankFile('1grifbqibuk0zhxp');
+    loadTreebankFile('ueiw9dcw21hgltlh');
+
 };
