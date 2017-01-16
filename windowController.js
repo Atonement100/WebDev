@@ -422,11 +422,7 @@ function getActiveMetricTab() {
 
 window.onload = function () {
     vn = new VisiNeatAPI();
-    vn.setScreen("Console");
-
-    // Console creation
-    var windowManager = vn.getWindowManager();
-    output = windowManager.createConsole({left:0,top:50,width:1000,height:800,title:"metreex analysis"});
+    vn.setScreen("ConsoleTarget");
 
     // Initialization of treebank and metric lists
     USING_SIDEBAR = true;
@@ -435,10 +431,18 @@ window.onload = function () {
     document.getElementById("startingMetricTab").click(); //Simulates opening a tab to start with
     document.getElementById("startingVisualTab").click();
 
+
+    // Console creation
+    var windowManager = vn.getWindowManager();
+    output = windowManager.createConsole({left:10,top:10,width:1000,height:800,title:"metreex analysis"});
+
+
+
+    /*
     loadTreebankFile('66w1loh5gaclr0ck');
     loadTreebankFile('ni5cxsbbkypbh0dl');
     loadTreebankFile('e1i9b02c68c9i2nl');
     loadTreebankFile('1grifbqibuk0zhxp');
     loadTreebankFile('ueiw9dcw21hgltlh');
-
+    */
 };
