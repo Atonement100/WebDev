@@ -6,14 +6,14 @@ var USING_SIDEBAR = false;
 
 function openTab(event, tabName){
     var i;
-    var metricTabContent = document.getElementsByClassName("metricTabContent");
+    var metricTabContent = document.getElementsByClassName(event.currentTarget.className + "Content");
     for (i = 0; i < metricTabContent.length; i++){
         metricTabContent[i].style.display = "none";
     }
 
-    var metricTabs = document.getElementsByClassName("metricTab");
-    for (i = 0; i < metricTabs.length; i++){
-        metricTabs[i].className = metricTabs[i].className.replace(" active", "");
+    var headerTabs = document.getElementsByClassName(event.currentTarget.className);
+    for (i = 0; i < headerTabs.length; i++){
+        headerTabs[i].className = headerTabs[i].className.replace(" active", "");
     }
 
     document.getElementById(tabName).style.display = "block";
@@ -422,7 +422,7 @@ function getActiveMetricTab() {
 
 window.onload = function () {
     vn = new VisiNeatAPI();
-    vn.setScreen("visualDiv");
+    vn.setScreen("Console");
 
     // Console creation
     var windowManager = vn.getWindowManager();
@@ -432,7 +432,8 @@ window.onload = function () {
     USING_SIDEBAR = true;
     document.getElementById("Treebanks").appendChild(buildDefaultTreebankList());
     document.getElementById("Metrics").appendChild(buildDefaultMetricList(loadedMetrics));
-    openTab(event, 'Treebanks');
+    document.getElementById("startingMetricTab").click(); //Simulates opening a tab to start with
+    document.getElementById("startingVisualTab").click();
 
     loadTreebankFile('66w1loh5gaclr0ck');
     loadTreebankFile('ni5cxsbbkypbh0dl');

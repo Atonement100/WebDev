@@ -1,4 +1,4 @@
-ul.metricTabs {
+ul.headerTabs {
     list-style-type: none;
     display: block;
     text-align: center;
@@ -9,11 +9,11 @@ ul.metricTabs {
     background-color: azure;
 }
 
-ul.metricTabs li{
+ul.headerTabs li{
     display:inline;
 }
 
-ul.metricTabs li a {
+ul.headerTabs li a {
     display: inline-block;
     color: black;
     text-align: center;
@@ -22,12 +22,16 @@ ul.metricTabs li a {
     font-size: 17px;
 }
 
-ul.metricTabs li a:hover {
+ul.headerTabs li a:hover {
     background-color: #ddd;
 }
 
-ul.metricTabs li a:focus, .active{
+ul.headerTabs li a:focus, .active{
     background-color: oldlace;
+}
+
+ul.visualTabs {
+    text-align: left;
 }
 
 .metricTabContent{
