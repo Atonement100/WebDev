@@ -21,8 +21,8 @@
 <body>
 <div id="metricDiv">
     <div id="metricTabHeader">
-    <ul class="metricTabs">
-        <li><a href="javascript:void(0)" class="metricTab" name="treebank" onclick="openTab(event, 'Treebanks')">Treebanks</a></li>
+    <ul class="headerTabs metricTabs">
+        <li><a href="javascript:void(0)" class="metricTab" name="treebank" onclick="openTab(event, 'Treebanks')" id="startingMetricTab">Treebanks</a></li>
         <li><a href="javascript:void(0)" class="metricTab" name="metric" onclick="openTab(event, 'Metrics')">Metrics</a></li>
     </ul>
 
@@ -30,13 +30,6 @@
     <button type="button" onclick="setAllCheckboxesInTab(getActiveMetricTab(), false)">Unselect All</button>
     <button type="button" onclick="invertAllCheckboxesInTab(getActiveMetricTab())">Invert Selection</button>
     </div>
-    <!--
-    <ul class="metricTabs">
-        <li><a href="javascript:void(0)" class="" onclick="setAllCheckboxesInTab(getActiveMetricTab(), true)">Select All</a></li>
-        <li><a href="javascript:void(0)" class="" onclick="setAllCheckboxesInTab(getActiveMetricTab(), false)">Unselect All</a></li>
-        <li><a href="javascript:void(0)" class="" onclick="invertAllCheckboxesInTab(getActiveMetricTab())">Invert Selection</a></li>
-    </ul>
-    -->
 
     <div id="Treebanks" class="metricTabContent">
         <input type="text" id="treebankIdInput" placeholder="Treebank Id"><button type="button" onclick="loadTreebankFromSidebar()">Load</button><br>
@@ -44,7 +37,19 @@
     <div id="Metrics" class="metricTabContent"></div>
 </div>
 
-<div id="visualDiv"></div>
+<div id="visualDiv">
+    <ul class="headerTabs visualTabs">
+        <li><a href="javascript:void(0)" class="visualTab" name="console" onclick="openTab(event, 'Console')" id="startingVisualTab">Console</a></li>
+        <li><a href="javascript:void(0)" class="visualTab" name="graphs" onclick="openTab(event, 'Graphs')">Graphs</a></li>
+    </ul>
+
+    <div id="Console" class="visualTabContent">
+
+    </div>
+    <div id="Graphs" class="visualTabContent">
+        kappa
+    </div>
+</div>
 
 </body>
 </html>
