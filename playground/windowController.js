@@ -1,8 +1,10 @@
 var loadedTreebanks = [];
 var selectedTreebanks = [];
 var loadedMetrics = retrieveMetrics();
+var enabledMetrics = [];
 var disabledMetrics = [];
 var USING_SIDEBAR = false;
+var lastMetricResults = [];
 
 function openTab(event, tabName){
     var i;
@@ -259,47 +261,8 @@ VNConsoleWindow.prototype.processCommand=function(command){
             }
             return true;
         case "apply":
-            if (loadedTreebanks.length == 0){
-                output.println("No treebanks have been loaded, please use the load &lt;treebank id> command before this one.")
-                return true;
-            }
-
-            if (USING_SIDEBAR) {
-                selectedTreebanks = getCheckedTreebanks();
-            }
-
-            if (selectedTreebanks.length == 0){
-                output.println("No treebanks were selected, please select at least one treebank");
-                return true;
-            }
-
-            var enabledMetrics = getCheckedMetrics();
-
-            if (enabledMetrics.length == 0){
-                output.println("No metrics were selected, please select at least one metrics");
-                return true;
-            }
-
-            selectedTreebanks.forEach(function(tree){
-                output.println(tree.getTitle() + " - " + tree.id);
-                tree.apply(enabledMetrics,{progress:output.getProgress()});
-            });
+            applyMetrics();
             return true;
-            /*
-        case "enable":
-            if (args.length > 1 && args[1]){
-                if (args[1] === "-a"){
-                    loadedTreebanks = [];
-                    output.println("All treebanks have been unloaded.");
-                }
-                else{
-                    RemoveLoadedTreeById(args[1]);
-                }
-            }
-            return true;
-        case "disable":
-            return true;
-            */
         case "clear":
             output.clear();
             return true;
@@ -309,6 +272,33 @@ VNConsoleWindow.prototype.processCommand=function(command){
 
     //return false;
 };
+
+function applyMetrics(){
+    if (loadedTreebanks.length == 0){
+        output.println("No treebanks have been loaded, please load treebank(s) before applying metrics.");
+    }
+
+    if (USING_SIDEBAR) {
+        selectedTreebanks = getCheckedTreebanks();
+    }
+
+    if (selectedTreebanks.length == 0){
+        output.println("No treebanks were selected, please select at least one treebank");
+    }
+
+    enabledMetrics = getCheckedMetrics();
+
+    if (enabledMetrics.length == 0){
+        output.println("No metrics were selected, please select at least one metrics");
+    }
+
+    lastMetricResults = [];
+
+    selectedTreebanks.forEach(function(tree){
+        output.println(tree.getTitle() + " - " + tree.id);
+        lastMetricResults.push(tree.apply(enabledMetrics,{progress:output.getProgress()}));
+    });
+}
 
 //These are very similar functions... find a way to consolidate. id could be used for trees vs metrics
 function getCheckedTreebanks(){
@@ -438,11 +428,49 @@ window.onload = function () {
 
 
 
-    /*
+
     loadTreebankFile('66w1loh5gaclr0ck');
     loadTreebankFile('ni5cxsbbkypbh0dl');
     loadTreebankFile('e1i9b02c68c9i2nl');
     loadTreebankFile('1grifbqibuk0zhxp');
     loadTreebankFile('ueiw9dcw21hgltlh');
-    */
+
+};
+
+function debugMetricResults(){
+    for (var index = 0; index < selectedTreebanks.length; index++){
+        console.log("treebank: " + selectedTreebanks[index].getTitle());
+        for (var sentenceIndex = 0; sentenceIndex < lastMetricResults[index].length; sentenceIndex++){
+            console.log("sentence: " + sentenceIndex);
+            for (var metrIndex = 0; metrIndex < lastMetricResults[index][sentenceIndex].length; metrIndex++){
+                console.log("metric no. " + metrIndex + ": " + enabledMetrics[metrIndex] + " : " + lastMetricResults[index][sentenceIndex][metrIndex]);
+            }
+        }
+    }
+    return true;
+}
+
+function buildTable(){
+    var columns = [];
+    for (var index = 0; index < selectedTreebanks.length; index++){
+        (function(columns, treeIndex) {
+            columns.push({
+                head: selectedTreebanks[index].getTitle(),
+                cl: 'basicTableTreebankId',
+                html: function (row) {
+                    return lastMetricResults[treeIndex][row];
+                }
+            })
+        }(columns, index));
+    }
+
+    var table = d3.select('basicTable')
+        .append('table');
+
+    table.append('thead').append('tr')
+        .selectAll('th')
+        .data(columns).enter()
+        .append('th')
+        .attr('class', function(col){return col.cl;})
+        .text(function (col){return col.cl;});
 };

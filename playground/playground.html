@@ -16,7 +16,7 @@
     <script type="text/javascript" src="http://www.metreex.org/js/metreex-1.0.js"></script>
     <script type="text/javascript" src="metricSource.js"></script>
     <script type="text/javascript" src="windowController.js"></script>
-
+    <script src="https://d3js.org/d3.v4.min.js"></script>
 </head>
 <body>
 <div id="metricDiv">
@@ -34,7 +34,9 @@
     <div id="Treebanks" class="metricTabContent">
         <input type="text" id="treebankIdInput" placeholder="Treebank Id"><button type="button" onclick="loadTreebankFromSidebar()">Load</button><br>
     </div>
-    <div id="Metrics" class="metricTabContent"></div>
+    <div id="Metrics" class="metricTabContent">
+        <button type="button" onclick="applyMetrics()">Apply</button>
+    </div>
 </div>
 
 <div id="visualDiv">
@@ -47,7 +49,7 @@
         <div id="ConsoleTarget" class="visualTabConsole"></div>
     </div>
     <div id="Graphs" class="visualTabContent">
-        kappa
+        <div id="basicTable"></div>
     </div>
 </div>
 
