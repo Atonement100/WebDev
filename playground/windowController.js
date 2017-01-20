@@ -5,6 +5,7 @@ var enabledMetrics = [];
 var disabledMetrics = [];
 var USING_SIDEBAR = false;
 var lastMetricResults = [];
+var tableData;
 
 function openTab(event, tabName){
     var i;
@@ -451,7 +452,32 @@ function debugMetricResults(){
 }
 
 function buildTable(){
-    var columns = [];
+    var table = d3.select('#basicTable').append('table');
+    table.style.border = '1px solid black';
+    table.style.borderCollapse = "collapse";
+
+     tableData = assembleMetricData();
+
+    var thead = table.append('thead');
+    thead.append('tr')
+        .attr('id', 'basicTableThead');
+
+    buildTableHeader(tableData, 'basicTableThead');
+
+    thead.append('tr')
+        .attr('id', 'basicTableSubThead');
+    buildTableSubHeader(tableData, 'basicTableSubThead');
+
+    var tbody = table.append('tbody');
+    for (var metricIndex = 0; metricIndex < tableData[0].metrics.length; metricIndex++){
+        var rowId = 'basicTableDataRow' + metricIndex;
+        tbody.append('tr')
+            .attr('id',rowId);
+        buildTableDataRow(tableData,rowId, metricIndex);
+    }
+
+
+    /*var columns = [];
     for (var index = 0; index < selectedTreebanks.length; index++){
         (function(columns, treeIndex) {
             columns.push({
@@ -464,13 +490,90 @@ function buildTable(){
         }(columns, index));
     }
 
-    var table = d3.select('basicTable')
-        .append('table');
+    var table = d3.select('#basicTable').append('table');
+    var thead = table.append('thead');
+    var tbody = table.append('tbody');
+    var headerRow = thead.append('tr');
 
-    table.append('thead').append('tr')
-        .selectAll('th')
+    //headerRow.append('th').text("METRICS");
+    headerRow.selectAll('th')
         .data(columns).enter()
         .append('th')
         .attr('class', function(col){return col.cl;})
-        .text(function (col){return col.cl;});
-};
+        .text(function (col){return col.head;});
+
+    headerRow.selectAll('th')
+        .data(tableData).enter()
+        .append('th')
+        .attr('class', "basicTableTreebankId")
+        .text(function (col){return col.title});
+
+    tbody.selectAll('tr')
+        .data(tableData).enter()
+        .append('tr')
+        .selectAll('td')
+        .data(function(row, i){
+            return
+        })
+
+    */
+}
+
+function buildTableDataRow(tableData, rowId, rowNum){
+    var tr = document.getElementById(rowId);
+    var rowHeader = tr.appendChild(document.createElement('td'));
+    rowHeader.appendChild(document.createTextNode(tableData[0].metrics[rowNum].name));
+
+    for (var dataIndex = 0; dataIndex < tableData.length; dataIndex++){
+        var rowData = tr.appendChild(document.createElement('td'));
+        rowData.appendChild(document.createTextNode(tableData[dataIndex].metricValues[rowNum].toFixed(2)));
+    }
+}
+
+function buildTableSubHeader(tableData, subheadId){
+    var thead = document.getElementById(subheadId);
+    thead.appendChild(document.createElement("th"));
+
+    for (var index = 0; index < tableData.length; index++){
+        var header = thead.appendChild(document.createElement("th"));
+        header.appendChild(document.createTextNode(tableData[index].sentence));
+    }
+
+}
+
+function buildTableHeader(tableData, headId){
+    var thead = document.getElementById(headId);
+    var tlhead = thead.appendChild(document.createElement("th"));
+    tlhead.appendChild(document.createTextNode("Metrics"));
+
+    for (var index = 0; index < tableData.length; ){
+        var header = thead.appendChild(document.createElement("th"));
+        header.colSpan = tableData[index].numSentences;
+        header.appendChild(document.createTextNode(tableData[index].title.replace(/_/g," ")));
+
+        index += tableData[index].numSentences;
+    }
+}
+
+function assembleMetricData(){
+    var data = [];
+
+    for (var index = 0; index < selectedTreebanks.length; index++){
+        for (var sentenceIndex = 0; sentenceIndex < lastMetricResults[index].length; sentenceIndex++){
+            data.push({
+                title: selectedTreebanks[index].getTitle(),
+                sentence: (+sentenceIndex + 1),
+                numSentences: lastMetricResults[index].length,
+                metrics: enabledMetrics,
+                metricValues: lastMetricResults[index][sentenceIndex]
+            });
+        }
+    }
+
+    return data;
+}
+
+function q(){
+    applyMetrics();
+    buildTable();
+}
