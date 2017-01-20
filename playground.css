@@ -73,9 +73,9 @@ ul.visualTabs {
     background-color: white;
     color: black;
     border: 1px solid gray;
-    font-size: 16px;
+    font-size: 14px;
+    padding: 0% 2%;
     font-weight: 700;
-    padding: 0px 12px;
     float:right;
     clear:both;
 }
@@ -102,4 +102,11 @@ body{
     padding:0;
     border:0;
     min-height:100vh;
+}
+
+thead{
+    font-family:sans-serif;
+    border: 1px solid black;
+    border-collapse: collapse;
+    background: lightsteelblue;
 }
