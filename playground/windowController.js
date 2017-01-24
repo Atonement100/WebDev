@@ -104,7 +104,7 @@ function UnloadAllTreebanks(){
 }
 
 function loadTreebankFromSidebar(){
-    var input = document.getElementById('treebankIdInput');
+    var input = document.getElementById("treebankIdInput");
     loadTreebankFile(input.value);
     input.value = "";
 }
@@ -168,7 +168,7 @@ function DisableMetric(name){
             output.println("The " + name + " metric has been disabled.");
         }
     }
-    output.println("No metric with the name \"" + name + "\" exists.")
+    output.println("No metric with the name '" + name + "' exists.")
     return false;
 }
 
@@ -177,11 +177,11 @@ function DisableMetric(name){
  */
 VNConsoleWindow.prototype.init=function()
 {
-    var d=''+new Date();
-    var i=d.indexOf('GMT');
+    var d=""+new Date();
+    var i=d.indexOf("GMT");
     if(i>-1) d=d.substring(0,i-1);
     this.println(d);
-    this.println('---- Console started. Type \'help\' for a list of commands. ----');
+    this.println("---- Console started. Type 'help' for a list of commands. ----");
 };
 
 VNConsoleWindow.prototype.processCommand=function(command){
@@ -216,7 +216,7 @@ VNConsoleWindow.prototype.processCommand=function(command){
                 }
             }
             else{
-                output.println("The unload command should be used as either 'unload -a' or 'unload &lt;treebank id>'");
+                output.println("The unload command should be used as either 'unload -a' or load &lt;treebank id>'");
             }
             return true;
         case "list":
@@ -230,7 +230,7 @@ VNConsoleWindow.prototype.processCommand=function(command){
                             });
                         }
                         else {
-                            output.println("No treebanks have been loaded yet. Use the \'load\' command to load a new treebank.");
+                            output.println("No treebanks have been loaded yet. Use the \"load\" command to load a new treebank.");
                         }
                         break;
                     case "metrics":
@@ -335,22 +335,22 @@ function getCheckedMetrics(){
 }
 
 function buildDefaultMetricList(array){
-    var list = document.createElement('form');
+    var list = document.createElement("form");
     list.id = "metricList";
     list.action = "metric_form.asp";
     list.method = "get";
 
     for (var i = 0; i < array.length; i++){
-        var checkbox = document.createElement('input');
+        var checkbox = document.createElement("input");
         checkbox.type = "checkbox";
         checkbox.name = "metricCheckbox";
         checkbox.value = i;
         checkbox.checked = true;
 
-        var label = document.createElement('label');
+        var label = document.createElement("label");
         label.appendChild(checkbox);
         label.appendChild(document.createTextNode(array[i].name));
-        label.appendChild(document.createElement('br'));
+        label.appendChild(document.createElement("br"));
 
         list.appendChild(label);
 
@@ -362,24 +362,24 @@ function buildDefaultMetricList(array){
 function AddTreeToSidebar(newTree){
     var treeList = document.getElementById("treebankList");
 
-    var checkbox = document.createElement('input');
+    var checkbox = document.createElement("input");
     checkbox.type = "checkbox";
     checkbox.name = "treebankCheckbox";
     checkbox.value = newTree.id;
     checkbox.checked = true;
 
-    var unloadButton = document.createElement('button');
-    unloadButton.type = 'button';
+    var unloadButton = document.createElement("button");
+    unloadButton.type = "button";
     unloadButton.className = "unloadButton";
     unloadButton.onclick = function(){unloadTreebankFromSidebar(newTree.id);};
     unloadButton.appendChild(document.createTextNode(" - "));
 
-    var label = document.createElement('label');
+    var label = document.createElement("label");
     label.id = newTree.id;
     label.appendChild(checkbox);
     label.appendChild(document.createTextNode(newTree.getTitle()));
     label.appendChild(unloadButton);
-    label.appendChild(document.createElement('br'));
+    label.appendChild(document.createElement("br"));
 
 
     treeList.appendChild(label);
@@ -391,7 +391,7 @@ function RemoveTreeFromSidebar(id){
 }
 
 function buildDefaultTreebankList(){
-    var list = document.createElement('form');
+    var list = document.createElement("form");
     list.id = "treebankList";
     list.action = "treebank_form.asp";
     list.method = "get";
@@ -408,7 +408,7 @@ function RemoveAllTreesFromSidebar(){
 
 function getActiveMetricTab() {
     var elems = document.getElementsByClassName("metricTab active");
-    return elems[0]? elems[0].name : ""; //Should always be exactly one 'active' metric tab.
+    return elems[0]? elems[0].name : ""; //Should always be exactly one "active" metric tab.
 }
 
 window.onload = function () {
@@ -430,11 +430,11 @@ window.onload = function () {
 
 
 
-    loadTreebankFile('66w1loh5gaclr0ck');
-    loadTreebankFile('ni5cxsbbkypbh0dl');
-    loadTreebankFile('e1i9b02c68c9i2nl');
-    loadTreebankFile('1grifbqibuk0zhxp');
-    loadTreebankFile('ueiw9dcw21hgltlh');
+    loadTreebankFile("66w1loh5gaclr0ck");
+    loadTreebankFile("ni5cxsbbkypbh0dl");
+    loadTreebankFile("e1i9b02c68c9i2nl");
+    loadTreebankFile("1grifbqibuk0zhxp");
+    loadTreebankFile("ueiw9dcw21hgltlh");
 
 };
 
@@ -452,80 +452,100 @@ function debugMetricResults(){
 }
 
 function buildTable(){
-    var table = d3.select('#basicTable').append('table');
-    table.style.border = '1px solid black';
-    table.style.borderCollapse = "collapse";
+    var table = d3.select("#basicTable").append("table")
+        .attr("id", "basicTableBase");
+    //.style.border = "1px solid black";
+    //.style.borderCollapse = "collapse";
+    tableData = assembleMetricData();
 
-     tableData = assembleMetricData();
+    var thead = table.append("thead");
+    thead.append("tr")
+        .attr("id", "basicTableThead");
 
-    var thead = table.append('thead');
-    thead.append('tr')
-        .attr('id', 'basicTableThead');
+    buildTableHeader(tableData, "basicTableThead");
 
-    buildTableHeader(tableData, 'basicTableThead');
+    thead.append("tr")
+        .attr("id", "basicTableSubThead");
+    buildTableSubHeader(tableData, "basicTableSubThead");
 
-    thead.append('tr')
-        .attr('id', 'basicTableSubThead');
-    buildTableSubHeader(tableData, 'basicTableSubThead');
-
-    var tbody = table.append('tbody');
+    var tbody = table.append("tbody")
+        .attr("id", "basicTableBody");
     for (var metricIndex = 0; metricIndex < tableData[0].metrics.length; metricIndex++){
-        var rowId = 'basicTableDataRow' + metricIndex;
-        tbody.append('tr')
-            .attr('id',rowId);
+        var rowId = "basicTableDataRow" + metricIndex;
+        tbody.append("tr")
+            .attr("id",rowId);
         buildTableDataRow(tableData,rowId, metricIndex);
     }
 
 
+    tbody = document.getElementById("basicTableBody");
+    thead = document.getElementById("basicTableThead");
+
+    tbody.onscroll = function(e) {
+        console.log(tbody.scrollLeft);
+        thead.style.left = "-" + tbody.scrollLeft + "px";
+        Array.prototype.slice.call(thead.childNodes)
+            .forEach(function(elem){
+                elem.style.left = tbody.scrollLeft + "px";
+            });
+        Array.prototype.slice.call(tbody.getElementsByTagName("tr"))
+            .forEach(function(elem){
+                elem.childNodes[0].style.left = tbody.scrollLeft + "px";
+            });
+
+    };
+
+    console.log(tbody.onscroll);
+
     /*var columns = [];
-    for (var index = 0; index < selectedTreebanks.length; index++){
-        (function(columns, treeIndex) {
-            columns.push({
-                head: selectedTreebanks[index].getTitle(),
-                cl: 'basicTableTreebankId',
-                html: function (row) {
-                    return lastMetricResults[treeIndex][row];
-                }
-            })
-        }(columns, index));
-    }
+     for (var index = 0; index < selectedTreebanks.length; index++){
+     (function(columns, treeIndex) {
+     columns.push({
+     head: selectedTreebanks[index].getTitle(),
+     cl: "basicTableTreebankId",
+     html: function (row) {
+     return lastMetricResults[treeIndex][row];
+     }
+     })
+     }(columns, index));
+     }
 
-    var table = d3.select('#basicTable').append('table');
-    var thead = table.append('thead');
-    var tbody = table.append('tbody');
-    var headerRow = thead.append('tr');
+     var table = d3.select("#basicTable").append("table");
+     var thead = table.append("thead");
+     var tbody = table.append("tbody");
+     var headerRow = thead.append("tr");
 
-    //headerRow.append('th').text("METRICS");
-    headerRow.selectAll('th')
-        .data(columns).enter()
-        .append('th')
-        .attr('class', function(col){return col.cl;})
-        .text(function (col){return col.head;});
+     //headerRow.append("th").text("METRICS");
+     headerRow.selectAll("th")
+     .data(columns).enter()
+     .append("th")
+     .attr("class", function(col){return col.cl;})
+     .text(function (col){return col.head;});
 
-    headerRow.selectAll('th')
-        .data(tableData).enter()
-        .append('th')
-        .attr('class', "basicTableTreebankId")
-        .text(function (col){return col.title});
+     headerRow.selectAll("th")
+     .data(tableData).enter()
+     .append("th")
+     .attr("class", "basicTableTreebankId")
+     .text(function (col){return col.title});
 
-    tbody.selectAll('tr')
-        .data(tableData).enter()
-        .append('tr')
-        .selectAll('td')
-        .data(function(row, i){
-            return
-        })
+     tbody.selectAll("tr")
+     .data(tableData).enter()
+     .append("tr")
+     .selectAll("td")
+     .data(function(row, i){
+     return
+     })
 
-    */
+     */
 }
 
 function buildTableDataRow(tableData, rowId, rowNum){
     var tr = document.getElementById(rowId);
-    var rowHeader = tr.appendChild(document.createElement('td'));
+    var rowHeader = tr.appendChild(document.createElement("td"));
     rowHeader.appendChild(document.createTextNode(tableData[0].metrics[rowNum].name));
 
     for (var dataIndex = 0; dataIndex < tableData.length; dataIndex++){
-        var rowData = tr.appendChild(document.createElement('td'));
+        var rowData = tr.appendChild(document.createElement("td"));
         rowData.appendChild(document.createTextNode(tableData[dataIndex].metricValues[rowNum].toFixed(2)));
     }
 }
