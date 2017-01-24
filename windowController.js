@@ -467,8 +467,12 @@ function buildTable(){
         .attr("id", "basicTableSubHeader");
     buildTableSubHeader(tableData, "basicTableSubHeader");
 
+    var tableDOM = document.getElementById("basicTableBase");
+    var theadDOM = document.getElementById("basicTableThead");
+
     var tbody = table.append("tbody")
-        .attr("id", "basicTableBody");
+        .attr("id", "basicTableBody")
+        .style("height", tableDOM.getBoundingClientRect().height - theadDOM.getBoundingClientRect().height + "px");
     for (var metricIndex = 0; metricIndex < tableData[0].metrics.length; metricIndex++){
         var rowId = "basicTableDataRow" + metricIndex;
         tbody.append("tr")
@@ -477,22 +481,21 @@ function buildTable(){
     }
 
 
-    tbody = document.getElementById("basicTableBody");
-    thead = document.getElementById("basicTableThead");
+    var tbodyDOM = document.getElementById("basicTableBody");
 
-    tbody.onscroll = function(e) {
-        thead.style.left = "-" + tbody.scrollLeft + "px";
-        Array.prototype.slice.call(thead.getElementsByTagName("tr"))
+
+    tbodyDOM.onscroll = function(e) {
+        theadDOM.style.left = "-" + tbodyDOM.scrollLeft + "px";
+        Array.prototype.slice.call(theadDOM.getElementsByTagName("tr"))
             .forEach(function(elem){
-                elem.childNodes[0].style.left = tbody.scrollLeft + "px";
+                elem.childNodes[0].style.left = tbodyDOM.scrollLeft + "px";
             });
-        Array.prototype.slice.call(tbody.getElementsByTagName("tr"))
+        Array.prototype.slice.call(tbodyDOM.getElementsByTagName("tr"))
             .forEach(function(elem){
-                elem.childNodes[0].style.left = tbody.scrollLeft + "px";
+                elem.childNodes[0].style.left = tbodyDOM.scrollLeft + "px";
             });
     };
 
-    console.log(tbody.onscroll);
 
     /*var columns = [];
      for (var index = 0; index < selectedTreebanks.length; index++){
