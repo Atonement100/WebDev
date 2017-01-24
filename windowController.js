@@ -458,15 +458,16 @@ function buildTable(){
     //.style.borderCollapse = "collapse";
     tableData = assembleMetricData();
 
-    var thead = table.append("thead");
-    thead.append("tr")
+    var thead = table.append("thead")
         .attr("id", "basicTableThead");
+    thead.append("tr")
+        .attr("id", "basicTableHeader");
 
-    buildTableHeader(tableData, "basicTableThead");
+    buildTableHeader(tableData, "basicTableHeader");
 
     thead.append("tr")
-        .attr("id", "basicTableSubThead");
-    buildTableSubHeader(tableData, "basicTableSubThead");
+        .attr("id", "basicTableSubHeader");
+    buildTableSubHeader(tableData, "basicTableSubHeader");
 
     var tbody = table.append("tbody")
         .attr("id", "basicTableBody");
@@ -484,9 +485,9 @@ function buildTable(){
     tbody.onscroll = function(e) {
         console.log(tbody.scrollLeft);
         thead.style.left = "-" + tbody.scrollLeft + "px";
-        Array.prototype.slice.call(thead.childNodes)
+        Array.prototype.slice.call(thead.getElementsByTagName("tr"))
             .forEach(function(elem){
-                elem.style.left = tbody.scrollLeft + "px";
+                elem.childNodes[0].style.left = tbody.scrollLeft + "px";
             });
         Array.prototype.slice.call(tbody.getElementsByTagName("tr"))
             .forEach(function(elem){
