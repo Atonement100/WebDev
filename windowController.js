@@ -412,6 +412,9 @@ function getActiveMetricTab() {
 }
 
 window.onload = function () {
+    d3.select("#visualDiv")
+        .style("width", screen.width - document.getElementById("metricDiv").getBoundingClientRect().width + "px");
+
     vn = new VisiNeatAPI();
     vn.setScreen("ConsoleTarget");
 
