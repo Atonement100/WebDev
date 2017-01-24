@@ -454,8 +454,6 @@ function debugMetricResults(){
 function buildTable(){
     var table = d3.select("#basicTable").append("table")
         .attr("id", "basicTableBase");
-    //.style.border = "1px solid black";
-    //.style.borderCollapse = "collapse";
     tableData = assembleMetricData();
 
     var thead = table.append("thead")
@@ -483,7 +481,6 @@ function buildTable(){
     thead = document.getElementById("basicTableThead");
 
     tbody.onscroll = function(e) {
-        console.log(tbody.scrollLeft);
         thead.style.left = "-" + tbody.scrollLeft + "px";
         Array.prototype.slice.call(thead.getElementsByTagName("tr"))
             .forEach(function(elem){
@@ -493,7 +490,6 @@ function buildTable(){
             .forEach(function(elem){
                 elem.childNodes[0].style.left = tbody.scrollLeft + "px";
             });
-
     };
 
     console.log(tbody.onscroll);
