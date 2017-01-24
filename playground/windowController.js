@@ -455,6 +455,9 @@ function debugMetricResults(){
 }
 
 function buildTable(){
+    //Clear out existing table if there is one already
+    d3.select("#basicTable").html("");
+
     var table = d3.select("#basicTable").append("table")
         .attr("id", "basicTableBase");
     tableData = assembleMetricData();
