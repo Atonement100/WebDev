@@ -454,6 +454,78 @@ function debugMetricResults(){
     return true;
 }
 
+function buildBasicTableInverted(){
+    d3.select("#basicTable").html("");
+
+    var table = d3.select("#basicTable").append("table")
+        .attr("id", "basicTableBase");
+    tableData = assembleMetricData();
+
+    var thead = table.append("thead")
+        .attr("id", "basicTableThead");
+    thead.append("tr")
+        .attr("id", "basicTableHeader");
+
+    buildInvertedTableHeader(tableData, "basicTableHeader");
+
+    var tableDOM = document.getElementById("basicTableBase");
+    var theadDOM = document.getElementById("basicTableThead");
+
+    var tbody = table.append("tbody")
+        .attr("id", "basicTableBody")
+        .style("height", tableDOM.getBoundingClientRect().height - theadDOM.getBoundingClientRect().height + "px");
+
+    tableData.forEach(function (elem, index) {
+        var trow = tbody.append("tr")
+            .attr("id", "basicTableDataRow" + index);
+
+        if (elem.sentence == 1) {
+            trow.append("td")
+                .attr("rowspan", elem.numSentences)
+                .attr("class", "rowHeader")
+                .html(elem.title.replace(/_/g, " "));
+        }
+
+        trow.append("td")
+            .html(elem.sentence)
+            .attr("class","rowSubHeader");
+
+        trow.selectAll("td")
+            .data(elem.metricValues)
+            .enter()
+            .append("td")
+            .text(function (data) {
+                return data.toFixed(2);
+            });
+
+    });
+
+    var tbodyDOM = document.getElementById("basicTableBody");
+    tbodyDOM.onscroll = function(e) {
+        theadDOM.style.left = "-" + tbodyDOM.scrollLeft + "px";
+        Array.prototype.slice.call(theadDOM.getElementsByTagName("tr"))
+            .forEach(function(elem){
+                elem.childNodes[0].style.left = tbodyDOM.scrollLeft + "px";
+            });
+        Array.prototype.slice.call(tbodyDOM.getElementsByTagName("tr"))
+            .forEach(function(elem){
+                elem.childNodes[0].style.left = tbodyDOM.scrollLeft + "px";
+            });
+    };
+}
+
+function buildInvertedTableHeader(tableData, headId) {
+    var thead = document.getElementById(headId);
+    var tlhead = thead.appendChild(document.createElement("th"));
+
+    tlhead.appendChild(document.createTextNode("Metrics"));
+
+    tableData[0].metrics.forEach(function(elem){
+        tlhead = thead.appendChild(document.createElement("th"));
+        tlhead.appendChild(document.createTextNode(elem.name));
+    });
+}
+
 function buildBasicTable(){
     //Clear out existing table if there is one already
     d3.select("#basicTable").html("");
@@ -479,6 +551,7 @@ function buildBasicTable(){
     var tbody = table.append("tbody")
         .attr("id", "basicTableBody")
         .style("height", tableDOM.getBoundingClientRect().height - theadDOM.getBoundingClientRect().height + "px");
+
     for (var metricIndex = 0; metricIndex < tableData[0].metrics.length; metricIndex++){
         var rowId = "basicTableDataRow" + metricIndex;
         tbody.append("tr")
@@ -560,4 +633,9 @@ function assembleMetricData(){
 function q(){
     applyMetrics();
     buildBasicTable();
+}
+
+function zz(){
+    applyMetrics();
+    buildBasicTableInverted();
 }
