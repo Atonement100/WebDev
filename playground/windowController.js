@@ -507,9 +507,13 @@ function buildBasicTableInverted(){
             .forEach(function(elem){
                 elem.childNodes[0].style.left = tbodyDOM.scrollLeft + "px";
             });
-        Array.prototype.slice.call(tbodyDOM.getElementsByTagName("tr"))
+        Array.prototype.slice.call(tbodyDOM.getElementsByClassName("rowHeader"))
             .forEach(function(elem){
-                elem.childNodes[0].style.left = tbodyDOM.scrollLeft + "px";
+                elem.style.left = tbodyDOM.scrollLeft + "px";
+            });
+        Array.prototype.slice.call(tbodyDOM.getElementsByClassName("rowSubHeader"))
+            .forEach(function(elem){
+                elem.style.left = tbodyDOM.scrollLeft + "px";
             });
     };
 }
