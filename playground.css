@@ -160,6 +160,7 @@ body{
 
 #basicTable tbody tr .rowHeader {  /*Styling for leading data cell*/
     background-color: #A1C6EA;
+    position: relative;
     height:40px;
     width:120px;
 }
@@ -168,6 +169,7 @@ body{
     background-color: #A1C6EA;
     position: relative;
     display: block;
+
     height: 40px;
     width: 40px;
     min-width: 40px;
