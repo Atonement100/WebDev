@@ -476,19 +476,12 @@ function buildBasicTableInverted(){
         .style("height", tableDOM.getBoundingClientRect().height - theadDOM.getBoundingClientRect().height + "px");
 
     tableData.forEach(function (elem, index) {
+        /*  Note that rows are built in the reverse order - data, sentence number, then title.
+            This is done so that d3 can use select all "td" elements, and not interfere with the row headers
+            Building backwards in terms of sentence number then title allows us to ubiquitously use :first-child in a 'prepend' sense
+        */
         var trow = tbody.append("tr")
             .attr("id", "basicTableDataRow" + index);
-
-        if (elem.sentence == 1) {
-            trow.append("td")
-                .attr("rowspan", elem.numSentences)
-                .attr("class", "rowHeader")
-                .html(elem.title.replace(/_/g, " "));
-        }
-
-        trow.append("td")
-            .html(elem.sentence)
-            .attr("class","rowSubHeader");
 
         trow.selectAll("td")
             .data(elem.metricValues)
@@ -497,6 +490,27 @@ function buildBasicTableInverted(){
             .text(function (data) {
                 return data.toFixed(2);
             });
+
+        trow.insert("td",":first-child")
+            .html(elem.sentence)
+            .attr("class","rowSubHeader");
+
+        if (elem.sentence % 10 == 1) {
+            var rowhead = trow.insert("td",":first-child")
+                .attr("rowspan", Math.min(elem.numSentences - elem.sentence + 1, 10))
+                .attr("class", "rowHeader")
+                .html(elem.title.replace(/_/g, " "));
+
+            if (elem.numSentences > 10){
+                if (elem.numSentences - elem.sentence > 10) {
+                    rowhead.style("border-bottom","0");
+                }
+
+                if (elem.sentence > 10){
+                    rowhead.style("border-top","0");
+                }
+            }
+        }
 
     });
 
