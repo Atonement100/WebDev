@@ -454,7 +454,7 @@ function debugMetricResults(){
     return true;
 }
 
-function buildTable(){
+function buildBasicTable(){
     //Clear out existing table if there is one already
     d3.select("#basicTable").html("");
 
@@ -501,48 +501,6 @@ function buildTable(){
                 elem.childNodes[0].style.left = tbodyDOM.scrollLeft + "px";
             });
     };
-
-
-    /*var columns = [];
-     for (var index = 0; index < selectedTreebanks.length; index++){
-     (function(columns, treeIndex) {
-     columns.push({
-     head: selectedTreebanks[index].getTitle(),
-     cl: "basicTableTreebankId",
-     html: function (row) {
-     return lastMetricResults[treeIndex][row];
-     }
-     })
-     }(columns, index));
-     }
-
-     var table = d3.select("#basicTable").append("table");
-     var thead = table.append("thead");
-     var tbody = table.append("tbody");
-     var headerRow = thead.append("tr");
-
-     //headerRow.append("th").text("METRICS");
-     headerRow.selectAll("th")
-     .data(columns).enter()
-     .append("th")
-     .attr("class", function(col){return col.cl;})
-     .text(function (col){return col.head;});
-
-     headerRow.selectAll("th")
-     .data(tableData).enter()
-     .append("th")
-     .attr("class", "basicTableTreebankId")
-     .text(function (col){return col.title});
-
-     tbody.selectAll("tr")
-     .data(tableData).enter()
-     .append("tr")
-     .selectAll("td")
-     .data(function(row, i){
-     return
-     })
-
-     */
 }
 
 function buildTableDataRow(tableData, rowId, rowNum){
@@ -601,5 +559,5 @@ function assembleMetricData(){
 
 function q(){
     applyMetrics();
-    buildTable();
+    buildBasicTable();
 }
