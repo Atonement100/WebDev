@@ -5,7 +5,6 @@ var enabledMetrics = [];
 var disabledMetrics = [];
 var USING_SIDEBAR = false;
 var lastMetricResults = [];
-var tableData;
 
 function openTab(event, tabName){
     var i;
@@ -430,9 +429,6 @@ window.onload = function () {
     var windowManager = vn.getWindowManager();
     output = windowManager.createConsole({left:10,top:10,width:1000,height:800,title:"metreex analysis"});
 
-
-
-
     loadTreebankFile("66w1loh5gaclr0ck");
     loadTreebankFile("ni5cxsbbkypbh0dl");
     loadTreebankFile("e1i9b02c68c9i2nl");
@@ -459,7 +455,7 @@ function buildBasicTableInverted(){
 
     var table = d3.select("#basicTable").append("table")
         .attr("id", "basicTableBase");
-    tableData = assembleMetricData();
+    var tableData = assembleMetricData();
 
     var thead = table.append("thead")
         .attr("id", "basicTableThead");
@@ -475,44 +471,7 @@ function buildBasicTableInverted(){
         .attr("id", "basicTableBody")
         .style("height", tableDOM.getBoundingClientRect().height - theadDOM.getBoundingClientRect().height + "px");
 
-    tableData.forEach(function (elem, index) {
-        /*  Note that rows are built in the reverse order - data, sentence number, then title.
-            This is done so that d3 can use select all "td" elements, and not interfere with the row headers
-            Building backwards in terms of sentence number then title allows us to ubiquitously use :first-child in a 'prepend' sense
-        */
-        var trow = tbody.append("tr")
-            .attr("id", "basicTableDataRow" + index);
-
-        trow.selectAll("td")
-            .data(elem.metricValues)
-            .enter()
-            .append("td")
-            .text(function (data) {
-                return data.toFixed(2);
-            });
-
-        trow.insert("td",":first-child")
-            .html(elem.sentence)
-            .attr("class","rowSubHeader");
-
-        if (elem.sentence % 10 == 1) {
-            var rowhead = trow.insert("td",":first-child")
-                .attr("rowspan", Math.min(elem.numSentences - elem.sentence + 1, 10))
-                .attr("class", "rowHeader")
-                .html(elem.title.replace(/_/g, " "));
-
-            if (elem.numSentences > 10){
-                if (elem.numSentences - elem.sentence > 10) {
-                    rowhead.style("border-bottom","0");
-                }
-
-                if (elem.sentence > 10){
-                    rowhead.style("border-top","0");
-                }
-            }
-        }
-
-    });
+    buildInvertedTableBody(tableData, tbody);
 
     var tbodyDOM = document.getElementById("basicTableBody");
     tbodyDOM.onscroll = function(e) {
@@ -544,13 +503,53 @@ function buildInvertedTableHeader(tableData, headId) {
     });
 }
 
+function buildInvertedTableBody(tableData, tbody){
+    tableData.forEach(function (elem, index) {
+        /*  Note that rows are built in the reverse order - data, sentence number, then title.
+         This is done so that d3 can use select all "td" elements, and not interfere with the row headers
+         Building backwards in terms of sentence number then title allows us to ubiquitously use :first-child in a 'prepend' sense
+         */
+        var trow = tbody.append("tr")
+            .attr("id", "basicTableDataRow" + index);
+
+        trow.selectAll("td")
+            .data(elem.metricValues)
+            .enter()
+            .append("td")
+            .text(function (data) {
+                return data.toFixed(2);
+            });
+
+        trow.insert("td",":first-child")
+            .html(elem.sentence)
+            .attr("class","rowSubHeader");
+
+        if (elem.sentence % 10 == 1) {
+            var rowhead = trow.insert("td",":first-child")
+                .attr("rowspan", Math.min(elem.numSentences - elem.sentence + 1, 10))
+                .attr("class", "rowHeader")
+                .html(elem.title.replace(/_/g, " "));
+
+            if (elem.numSentences > 10){
+                if (elem.numSentences - elem.sentence > 10) {
+                    rowhead.style("border-bottom","0");
+                }
+
+                if (elem.sentence > 10){
+                    rowhead.style("border-top","0");
+                }
+            }
+        }
+    });
+}
+
 function buildBasicTable(){
     //Clear out existing table if there is one already
     d3.select("#basicTable").html("");
 
     var table = d3.select("#basicTable").append("table")
         .attr("id", "basicTableBase");
-    tableData = assembleMetricData();
+    var tableData = assembleMetricData();
 
     var thead = table.append("thead")
         .attr("id", "basicTableThead");
@@ -656,4 +655,85 @@ function q(){
 function zz(){
     applyMetrics();
     buildBasicTableInverted();
+}
+
+function genBarChartA(){
+    applyMetrics();
+    buildBarChart(assembleMetricData());
+}
+
+function buildBarChart(tableData) {
+    var nodeData = [];
+    var metricToExtract = 0;
+    tableData.forEach(function (elem) {
+        nodeData.push(elem.metricValues[metricToExtract]);
+    });
+
+    var margin = {top: 15, right: 15, bottom: 30, left: 150};
+    var width = 1000, height = 800, barsize = 20;
+
+    var xaxis = d3.scaleLinear()
+        .domain([0,d3.max(nodeData)])
+        .range([0,width]);
+    var yaxis = d3.scaleBand()
+        .range([height - (margin.bottom + margin.top), 0])
+        .domain(nodeData.map(function(elem, index){
+            return tableData[index].title + " " + tableData[index].sentence;
+        }));
+
+    var chart = d3.select("#barChart").append("svg")
+        .attr("width", width + margin.left + margin.right)
+        .attr("height", height + margin.bottom + margin.top);
+    var parent = chart.append("g")
+        .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+
+    var axiswidth = +chart.attr("width") - (margin.left + margin.right);
+    var axisheight = +chart.attr("height") - (margin.top + margin.bottom);
+
+    parent.append("g")
+        .attr("class", "axis x-axis")
+        .attr("transform", "translate(0," + height + ")")
+        .call(d3.axisBottom(xaxis));
+    parent.append("g")
+        .attr("class", "axis y-axis")
+        .call(d3.axisLeft(yaxis));
+
+    parent.selectAll(".bar")
+        .data(nodeData)
+        .enter().append("rect")
+        .attr("class", "bar")
+        .attr("x", function(elem){return elem;})
+        //.attr("y", function(elem,index){return tableData[index].title})
+        .attr("height", yaxis.bandwidth())
+        .attr("width", function(elem){return width - xaxis(elem)})
+        .attr("transform", function(elem,index){return "translate(0,"+index*15.1+")"});
+
+
+
+
+    console.log(nodeData);
+
+/*
+    var bar = parent.selectAll(".bar")
+        .data(nodeData)
+        .enter().append("rect")
+        .attr("transform", function(elem, index){console.log(index); return "translate(0," + index*barsize + ")";});
+
+    bar.append("rect")
+        .attr("width", xaxis)
+        .attr("height", barsize-2);
+
+    bar.append("text")
+        .attr("x", function(elem){return xaxis(elem)-3;})
+        .attr("y", barsize / 2)
+        .attr("dy", ".35em")
+        .text(function(elem, index) { return tableData[index].title;});
+
+    chart.append("g")
+        .call(d3.axisLeft(yaxis))
+        .append("g")
+        .attr("transform", "translate(0," + axisheight + ")")
+        .call(d3.axisBottom(xaxis));
+*/
 }
