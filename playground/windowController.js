@@ -666,11 +666,11 @@ function buildBarChart(tableData) {
     var nodeData = [];
     var metricToExtract = 0;
     tableData.forEach(function (elem) {
-        nodeData.push(elem.metricValues[metricToExtract]);
+        nodeData.unshift(elem.metricValues[metricToExtract]);
     });
 
     var margin = {top: 15, right: 15, bottom: 30, left: 150};
-    var width = 1000, height = 800, barsize = 20;
+    var width = 1100, height = 800;
 
     var xaxis = d3.scaleLinear()
         .domain([0,d3.max(nodeData)])
@@ -695,41 +695,21 @@ function buildBarChart(tableData) {
         .attr("class", "axis y-axis")
         .call(d3.axisLeft(yaxis));
 
-    var bars = parent.selectAll(".bar")
+    var barparent = parent.append("g");
+    var bars = barparent.selectAll("g")
         .data(nodeData)
-        .enter().append("rect")
-          .attr("class", "bar")
-          .attr("x", 1)
-          .attr("y", function(elem,index){return yaxis.bandwidth()*index})
-          .attr("height", yaxis.bandwidth())
-          .attr("width", function(elem){return width - xaxis(elem)});
+        .enter().append("g")
+        .attr("transform", function(elem,index){return "translate(0," + index*yaxis.bandwidth() + ")";});
+
+    bars.append("rect")
+        .attr("class", "bar")
+        .attr("x", 1)
+        .attr("height", yaxis.bandwidth())
+        .attr("width", function(elem){return xaxis(elem)});
+
     bars.append("text")
-      .attr("x", function(elem){return xaxis(elem)-3;})
-      .attr("y", barsize / 2)
-      .text(function(elem,index){return elem;});
-      //.attr("transform", function(elem,index){return "translate(0," + index * yaxis.bandwidth() + ")"});
-
-
-/*
-    var bar = parent.selectAll(".bar")
-        .data(nodeData)
-        .enter().append("rect")
-        .attr("transform", function(elem, index){console.log(index); return "translate(0," + index*barsize + ")";});
-
-    bar.append("rect")
-        .attr("width", xaxis)
-        .attr("height", barsize-2);
-
-    bar.append("text")
-        .attr("x", function(elem){return xaxis(elem)-3;})
-        .attr("y", barsize / 2)
+        .attr("x", function(elem){return xaxis(elem) - 4;})
+        .attr("y", yaxis.bandwidth() / 2)
         .attr("dy", ".35em")
-        .text(function(elem, index) { return tableData[index].title;});
-
-    chart.append("g")
-        .call(d3.axisLeft(yaxis))
-        .append("g")
-        .attr("transform", "translate(0," + axisheight + ")")
-        .call(d3.axisBottom(xaxis));
-*/
+        .text(function(elem){return elem;});
 }
