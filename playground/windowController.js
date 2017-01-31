@@ -687,32 +687,28 @@ function buildBarChart(tableData) {
     var parent = chart.append("g")
         .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
-
-    var axiswidth = +chart.attr("width") - (margin.left + margin.right);
-    var axisheight = +chart.attr("height") - (margin.top + margin.bottom);
-
     parent.append("g")
         .attr("class", "axis x-axis")
-        .attr("transform", "translate(0," + height + ")")
+        .attr("transform", "translate(0," + (height - (margin.bottom + margin.top)) + ")")
         .call(d3.axisBottom(xaxis));
     parent.append("g")
         .attr("class", "axis y-axis")
         .call(d3.axisLeft(yaxis));
 
-    parent.selectAll(".bar")
+    var bars = parent.selectAll(".bar")
         .data(nodeData)
         .enter().append("rect")
-        .attr("class", "bar")
-        .attr("x", function(elem){return elem;})
-        //.attr("y", function(elem,index){return tableData[index].title})
-        .attr("height", yaxis.bandwidth())
-        .attr("width", function(elem){return width - xaxis(elem)})
-        .attr("transform", function(elem,index){return "translate(0,"+index*15.1+")"});
+          .attr("class", "bar")
+          .attr("x", 1)
+          .attr("y", function(elem,index){return yaxis.bandwidth()*index})
+          .attr("height", yaxis.bandwidth())
+          .attr("width", function(elem){return width - xaxis(elem)});
+    bars.append("text")
+      .attr("x", function(elem){return xaxis(elem)-3;})
+      .attr("y", barsize / 2)
+      .text(function(elem,index){return elem;});
+      //.attr("transform", function(elem,index){return "translate(0," + index * yaxis.bandwidth() + ")"});
 
-
-
-
-    console.log(nodeData);
 
 /*
     var bar = parent.selectAll(".bar")
