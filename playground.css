@@ -182,6 +182,11 @@ body{
 #barChart rect:hover {
     fill: orange;
 }
+#barChart rect text {
+    fill: black;
+    font: 10px sans-serif;
+    text-anchor:end;
+}
 
 #barChart text {
     fill: black;
