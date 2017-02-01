@@ -475,6 +475,7 @@ function debugMetricResults(){
 }
 
 function buildBasicTableInverted(){
+    //Clears out existing table if one exists
     d3.select("#basicTable").html("");
 
     var table = d3.select("#basicTable").append("table")
@@ -686,10 +687,12 @@ function genBarChartA(){
     buildBarChart(assembleMetricData(), 0);
 }
 
-function buildBarChart(tableData, metricId) {
+function buildBarChart(tableData, metricIndex) {
+    d3.select("#barChart").html(" ");
+
     var nodeData = [];
     tableData.forEach(function (elem) {
-        nodeData.unshift(elem.metricValues[metricId]);
+        nodeData.unshift(elem.metricValues[metricIndex]);
     });
 
     var margin = {top: 15, right: 15, bottom: 30, left: 150};
@@ -703,6 +706,19 @@ function buildBarChart(tableData, metricId) {
         .domain(nodeData.map(function(elem, index){
             return tableData[index].title + " " + tableData[index].sentence;
         }));
+
+    var metricSelector = d3.select("#barChart").append("select")
+        .attr("id", "barChartMetricSelector")
+        .on("change", selectedMetricChange);
+
+    metricSelector.selectAll("option")
+        .data(lastMetricsUsed)
+        .enter()
+        .append("option")
+        .attr("value",function(elem){return elem.name;})
+        .property("selected", function(elem,index) {return index == metricIndex;})
+        .html(function(elem) {return elem.name;});
+
 
     var chart = d3.select("#barChart").append("svg")
         .attr("width", width + margin.left + margin.right)
@@ -735,4 +751,9 @@ function buildBarChart(tableData, metricId) {
         .attr("y", yaxis.bandwidth() / 2)
         .attr("dy", ".35em")
         .text(function(elem){return elem;});
+
+    function selectedMetricChange(){
+        var activeIndex = metricSelector.property('selectedIndex');
+        buildBarChart(tableData, activeIndex);
+    }
 }
