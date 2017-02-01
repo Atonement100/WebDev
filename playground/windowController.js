@@ -5,6 +5,8 @@ var enabledMetrics = [];
 var disabledMetrics = [];
 var USING_SIDEBAR = false;
 var lastMetricResults = [];
+var lastMetricsUsed = [];
+var lastTreebanksUsed = [];
 
 function openTab(event, tabName){
     var i;
@@ -276,6 +278,7 @@ VNConsoleWindow.prototype.processCommand=function(command){
 function applyMetrics(){
     if (loadedTreebanks.length == 0){
         output.println("No treebanks have been loaded, please load treebank(s) before applying metrics.");
+        return;
     }
 
     if (USING_SIDEBAR) {
@@ -284,12 +287,19 @@ function applyMetrics(){
 
     if (selectedTreebanks.length == 0){
         output.println("No treebanks were selected, please select at least one treebank");
+        return;
     }
 
     enabledMetrics = getCheckedMetrics();
 
     if (enabledMetrics.length == 0){
         output.println("No metrics were selected, please select at least one metrics");
+        return;
+    }
+
+    if (checkArrayEquals(selectedTreebanks, lastTreebanksUsed) && checkArrayEquals(enabledMetrics, lastMetricsUsed)){
+        output.println("Selection of treebanks and metrics has not changed since the last metric application.");
+        return;
     }
 
     lastMetricResults = [];
@@ -298,6 +308,20 @@ function applyMetrics(){
         output.println(tree.getTitle() + " - " + tree.id);
         lastMetricResults.push(tree.apply(enabledMetrics,{progress:output.getProgress()}));
     });
+
+    lastMetricsUsed = enabledMetrics;
+    lastTreebanksUsed = selectedTreebanks;
+}
+
+function checkArrayEquals(one, two){
+    //Should catch most quick error cases
+    if (!one || !two) return false;
+    if (one.length != two.length) return false;
+    if (!one instanceof Array || !two instanceof Array) return false;
+
+    return (!one.some(function (elem, index) {  //Some checks if elements pass text given by the function
+        return elem != two[index];              //Which simply checks if the elem is equal to the element in the corresponding array
+    }));
 }
 
 //These are very similar functions... find a way to consolidate. id could be used for trees vs metrics
@@ -659,14 +683,13 @@ function zz(){
 
 function genBarChartA(){
     applyMetrics();
-    buildBarChart(assembleMetricData());
+    buildBarChart(assembleMetricData(), 0);
 }
 
-function buildBarChart(tableData) {
+function buildBarChart(tableData, metricId) {
     var nodeData = [];
-    var metricToExtract = 0;
     tableData.forEach(function (elem) {
-        nodeData.unshift(elem.metricValues[metricToExtract]);
+        nodeData.unshift(elem.metricValues[metricId]);
     });
 
     var margin = {top: 15, right: 15, bottom: 30, left: 150};
