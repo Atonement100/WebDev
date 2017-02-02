@@ -745,7 +745,7 @@ function buildBarChart(tableData, metricIndex) {
         .attr("y", yaxis.bandwidth() / 2)
         .attr("dy", ".35em")
         .text(function(elem){
-            if (elem == 0){
+            if (d3.format(".2f")(elem) == "0.00"){
                 return ""
             }
             else {
@@ -762,10 +762,22 @@ function buildBarChart(tableData, metricIndex) {
         .attr("class", "axis x-axis")
         .attr("transform", "translate(0," + (height - (margin.bottom + margin.top)) + ")")
         .call(d3.axisBottom(xaxis));
-    parent.append("g")
+
+    var yx = parent.append("g")
         .attr("class", "axis y-axis")
         .attr("transform","translate(" + xaxis(0) + ",0)")
         .call(d3.axisLeft(yaxis));
+
+    var negTicks = yx.selectAll(".tick")
+        .filter(function(elem,index) {return (tableData[index].metricValues[metricIndex] < 0);});
+
+    console.log(negTicks);
+
+    negTicks.select("line")
+        .attr("x2", 6);
+    negTicks.select("text")
+        .attr("x", 9)
+        .style("text-anchor","start");
 
     function selectedMetricChange(){
         var activeIndex = metricSelector.property('selectedIndex');
