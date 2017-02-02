@@ -699,7 +699,7 @@ function buildBarChart(tableData, metricIndex) {
     var width = 1100, height = 800;
 
     var xaxis = d3.scaleLinear()
-        .domain([0,d3.max(nodeData)])
+        .domain([Math.min(d3.min(nodeData), 0),d3.max(nodeData)])
         .range([0,width]);
     var yaxis = d3.scaleBand()
         .range([height - (margin.bottom + margin.top), 0])
@@ -726,13 +726,7 @@ function buildBarChart(tableData, metricIndex) {
     var parent = chart.append("g")
         .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
-    parent.append("g")
-        .attr("class", "axis x-axis")
-        .attr("transform", "translate(0," + (height - (margin.bottom + margin.top)) + ")")
-        .call(d3.axisBottom(xaxis));
-    parent.append("g")
-        .attr("class", "axis y-axis")
-        .call(d3.axisLeft(yaxis));
+
 
     var barparent = parent.append("g");
     var bars = barparent.selectAll("g")
@@ -742,15 +736,24 @@ function buildBarChart(tableData, metricIndex) {
 
     bars.append("rect")
         .attr("class", "bar")
-        .attr("x", 1)
+        .attr("x", function(elem) {return xaxis(Math.min(0,elem))})
         .attr("height", yaxis.bandwidth())
-        .attr("width", function(elem){return xaxis(elem)});
+        .attr("width", function(elem){return Math.abs(xaxis(elem) - xaxis(0))});
 
     bars.append("text")
         .attr("x", function(elem){return xaxis(elem) - 4;})
         .attr("y", yaxis.bandwidth() / 2)
         .attr("dy", ".35em")
-        .text(function(elem){return elem;});
+        .text(function(elem){return elem == 0 ? "" : elem;});
+
+    parent.append("g")
+        .attr("class", "axis x-axis")
+        .attr("transform", "translate(0," + (height - (margin.bottom + margin.top)) + ")")
+        .call(d3.axisBottom(xaxis));
+    parent.append("g")
+        .attr("class", "axis y-axis")
+        .attr("transform", "translate(" + xaxis(0) + ",0)")
+        .call(d3.axisLeft(yaxis));
 
     function selectedMetricChange(){
         var activeIndex = metricSelector.property('selectedIndex');
