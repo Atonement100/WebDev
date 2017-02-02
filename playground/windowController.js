@@ -744,7 +744,19 @@ function buildBarChart(tableData, metricIndex) {
         .attr("x", function(elem){return xaxis(elem) - 4;})
         .attr("y", yaxis.bandwidth() / 2)
         .attr("dy", ".35em")
-        .text(function(elem){return elem == 0 ? "" : elem;});
+        .text(function(elem){
+            if (elem == 0){
+                return ""
+            }
+            else {
+                if (Number.isInteger(elem)){
+                    return elem;
+                }
+                else{
+                    return d3.format(".2f")(elem);
+                }
+            }
+        });
 
     parent.append("g")
         .attr("class", "axis x-axis")
@@ -752,7 +764,7 @@ function buildBarChart(tableData, metricIndex) {
         .call(d3.axisBottom(xaxis));
     parent.append("g")
         .attr("class", "axis y-axis")
-        .attr("transform", "translate(" + xaxis(0) + ",0)")
+        .attr("transform","translate(" + xaxis(0) + ",0)")
         .call(d3.axisLeft(yaxis));
 
     function selectedMetricChange(){
