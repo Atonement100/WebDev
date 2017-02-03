@@ -7,6 +7,7 @@ var USING_SIDEBAR = false;
 var lastMetricResults = [];
 var lastMetricsUsed = [];
 var lastTreebanksUsed = [];
+var debugData = [];
 
 function openTab(event, tabName){
     var i;
@@ -669,6 +670,7 @@ function assembleMetricData(){
         }
     }
 
+    debugData = data;
     return data;
 }
 
@@ -690,21 +692,17 @@ function genBarChartA(){
 function buildBarChart(tableData, metricIndex) {
     d3.select("#barChart").html(" ");
 
-    var nodeData = [];
-    tableData.forEach(function (elem) {
-        nodeData.unshift(elem.metricValues[metricIndex]);
-    });
-
     var margin = {top: 15, right: 15, bottom: 30, left: 150};
     var width = 1100, height = 800;
 
     var xaxis = d3.scaleLinear()
-        .domain([Math.min(d3.min(nodeData), 0),d3.max(nodeData)])
+        .domain([ Math.min(d3.min(tableData, function(elem){return elem.metricValues[metricIndex];}), 0),
+                            d3.max(tableData, function (elem) {return elem.metricValues[metricIndex];}) ])
         .range([0,width]);
     var yaxis = d3.scaleBand()
         .range([height - (margin.bottom + margin.top), 0])
-        .domain(nodeData.map(function(elem, index){
-            return tableData[index].title + " " + tableData[index].sentence;
+        .domain(tableData.map(function(elem){
+            return elem.title + " " + elem.sentence;
         }));
 
     var metricSelector = d3.select("#barChart").append("select")
@@ -719,6 +717,10 @@ function buildBarChart(tableData, metricIndex) {
         .property("selected", function(elem,index) {return index == metricIndex;})
         .html(function(elem) {return elem.name;});
 
+    d3.select("#barChart").append("input")
+        .attr("type","checkbox")
+        .html("Sort")
+        .on("change",toggleSort);
 
     var chart = d3.select("#barChart").append("svg")
         .attr("width", width + margin.left + margin.right)
@@ -726,34 +728,32 @@ function buildBarChart(tableData, metricIndex) {
     var parent = chart.append("g")
         .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
-
-
     var barparent = parent.append("g");
     var bars = barparent.selectAll("g")
-        .data(nodeData)
+        .data(tableData, function (elem) { return elem.metricValues[metricIndex]; })
         .enter().append("g")
-        .attr("transform", function(elem,index){return "translate(0," + index*yaxis.bandwidth() + ")";});
+        .attr("transform", function(elem){return "translate(0," + yaxis(elem.title + " " + elem.sentence) + ")";});
 
     bars.append("rect")
         .attr("class", "bar")
-        .attr("x", function(elem) {return xaxis(Math.min(0,elem))})
+        .attr("x", function(elem) {return xaxis(Math.min(0,elem.metricValues[metricIndex]))})
         .attr("height", yaxis.bandwidth())
-        .attr("width", function(elem){return Math.abs(xaxis(elem) - xaxis(0))});
+        .attr("width", function(elem){return Math.abs(xaxis(elem.metricValues[metricIndex]) - xaxis(0))});
 
     bars.append("text")
-        .attr("x", function(elem){return xaxis(elem) - 4;})
+        .attr("x", function(elem){return xaxis(elem.metricValues[metricIndex]) - 4;})
         .attr("y", yaxis.bandwidth() / 2)
         .attr("dy", ".35em")
         .text(function(elem){
-            if (d3.format(".2f")(elem) == "0.00"){
+            if (d3.format(".2f")(elem.metricValues[metricIndex]) == "0.00"){
                 return ""
             }
             else {
-                if (Number.isInteger(elem)){
-                    return elem;
+                if (Number.isInteger(elem.metricValues[metricIndex])){
+                    return elem.metricValues[metricIndex];
                 }
                 else{
-                    return d3.format(".2f")(elem);
+                    return d3.format(".2f")(elem.metricValues[metricIndex]);
                 }
             }
         });
@@ -769,9 +769,7 @@ function buildBarChart(tableData, metricIndex) {
         .call(d3.axisLeft(yaxis));
 
     var negTicks = yx.selectAll(".tick")
-        .filter(function(elem,index) {return (tableData[index].metricValues[metricIndex] < 0);});
-
-    console.log(negTicks);
+        .filter(function(elem,index) { return (tableData[index].metricValues[metricIndex] < 0);});
 
     negTicks.select("line")
         .attr("x2", 6);
@@ -782,5 +780,9 @@ function buildBarChart(tableData, metricIndex) {
     function selectedMetricChange(){
         var activeIndex = metricSelector.property('selectedIndex');
         buildBarChart(tableData, activeIndex);
+    }
+
+    function toggleSort(){
+
     }
 }
