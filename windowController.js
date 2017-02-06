@@ -701,7 +701,8 @@ function buildBarChart(tableData, metricIndex) {
     });
 
     var margin = {top: 15, right: 15, bottom: 30, left: 150};
-    var width = 1100, height = 800;
+    var barThickness = 16; //px
+    var width = 1100, height = tableData.length * barThickness + margin.top + margin.bottom;
 
     var xaxis = d3.scaleLinear()
         .domain([ Math.min(d3.min(tableData, function(elem){return elem.metricValues[metricIndex];}), 0),
