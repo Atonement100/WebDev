@@ -194,6 +194,17 @@ body{
     text-anchor:end;
 }
 
+#barChart .tick.grid line{
+    fill: none;
+    stroke: lightgrey;
+    shape-rendering: crispEdges;
+}
+
+#barChart .tick.grid path{
+    fill:none;
+    stroke:none;
+}
+
 .axis text {
     font: 10px sans-serif;
 }

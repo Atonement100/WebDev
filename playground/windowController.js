@@ -695,9 +695,9 @@ function genBarChartA(){
 function buildBarChart(tableData, metricIndex) {
     d3.select("#barChart").html(" ");
 
-    var margin = {top: 15, right: 15, bottom: 30, left: 150};
+    var margin = {top: 15, right: 15, bottom: 30, left: 200};
     var barThickness = 16; //px
-    var width = 1100, height = tableData.length * barThickness + margin.top + margin.bottom;
+    var width = 1200, height = tableData.length * barThickness + margin.top + margin.bottom;
 
     var xaxis = d3.scaleLinear()
         .domain([ Math.min(d3.min(tableData, function(elem){return elem.metricValues[metricIndex];}), 0),
@@ -772,6 +772,12 @@ function buildBarChart(tableData, metricIndex) {
         .attr("transform","translate(" + xaxis(0) + ",0)")
         .call(d3.axisLeft(yaxis));
 
+    parent.insert("g", ":first-child")
+        .attr("class", "tick grid")
+        .call(d3.axisBottom().scale(xaxis)
+            .tickSize(height - (margin.bottom + margin.top))
+            .tickFormat(""));
+
     var negTicks = yx.selectAll(".tick")
         .filter(function(elem,index) { return (tableData[index].metricValues[metricIndex] < 0);});
 
@@ -796,7 +802,7 @@ function buildBarChart(tableData, metricIndex) {
             .sort(function(a, b) { return y0(a.refString) - y0(b.refString); });
 
         var transition = parent.transition().duration(750),
-            delay = function(d, i) { return i * 10; };
+            delay = function(elem, index) { return index/tableData.length * 20; };
 
 
         transition.select(".axis.y-axis")
