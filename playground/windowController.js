@@ -657,6 +657,7 @@ function buildTableHeader(tableData, headId){
 
 function assembleMetricData(){
     var data = [];
+    var runningIndex = 0;
 
     for (var index = 0; index < selectedTreebanks.length; index++){
         for (var sentenceIndex = 0; sentenceIndex < lastMetricResults[index].length; sentenceIndex++){
@@ -665,7 +666,9 @@ function assembleMetricData(){
                 sentence: (+sentenceIndex + 1),
                 numSentences: lastMetricResults[index].length,
                 metrics: enabledMetrics,
-                metricValues: lastMetricResults[index][sentenceIndex]
+                metricValues: lastMetricResults[index][sentenceIndex],
+                originalIndex: runningIndex++,
+                refString: selectedTreebanks[index].getTitle() + " " + (+sentenceIndex + 1)
             });
         }
     }
@@ -732,10 +735,10 @@ function buildBarChart(tableData, metricIndex) {
     var bars = barparent.selectAll("g")
         .data(tableData, function (elem) { return elem.metricValues[metricIndex]; })
         .enter().append("g")
+        .attr("class", "bar")
         .attr("transform", function(elem){return "translate(0," + yaxis(elem.title + " " + elem.sentence) + ")";});
 
     bars.append("rect")
-        .attr("class", "bar")
         .attr("x", function(elem) {return xaxis(Math.min(0,elem.metricValues[metricIndex]))})
         .attr("height", yaxis.bandwidth())
         .attr("width", function(elem){return Math.abs(xaxis(elem.metricValues[metricIndex]) - xaxis(0))});
@@ -783,6 +786,28 @@ function buildBarChart(tableData, metricIndex) {
     }
 
     function toggleSort(){
+        var y0 = yaxis.range([height - (margin.bottom + margin.top), 0])
+            .domain(tableData.sort(this.checked ? function(a, b) { return b.metricValues[metricIndex] - a.metricValues[metricIndex]; } : function(a, b) { return d3.ascending(a.originalIndex,b.originalIndex); })
+            .map(function(elem) { console.log(elem.refString); return elem.refString; }))
+            .copy();
+
+        parent.selectAll(".bar")
+            .sort(function(a, b) { return y0(a.refString) - y0(b.refString); });
+
+        var transition = parent.transition().duration(750),
+            delay = function(d, i) { return i * 10; };
+
+
+        transition.select(".axis.y-axis")
+            .call(yaxis)
+            .selectAll("g")
+            .delay(delay)
+            .attr("transform", function(elem) {return "translate(0," + (y0(elem) + yaxis.bandwidth()/2) + ")"; });
+
+
+        transition.selectAll(".bar")
+            .delay(delay)
+            .attr("transform",function(elem){ return "translate(0," + y0(elem.refString) + ")";});
 
     }
 }
