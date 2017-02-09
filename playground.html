@@ -45,6 +45,7 @@
         <li><a href="javascript:void(0)" class="visualTab" name="console" onclick="openTab(event, 'Console')" id="startingVisualTab">Console</a></li>
         <li><a href="javascript:void(0)" class="visualTab" name="graphs" onclick="openTab(event, 'Graphs')">Table</a></li>
         <li><a href="javascript:void(0)" class="visualTab" name="chart" onclick="openTab(event, 'Charts')">Chart</a></li>
+        <li><a href="javascript:void(0)" class="visualTab" name="scatter" onclick="openTab(event, 'Scatter')">Scatter</a></li>
     </ul>
 
     <div id="Console" class="visualTabContent">
@@ -58,6 +59,11 @@
     <div id="Charts" class="visualTabContent">
         <div id="barChart">
             <button type="button" onclick="genBarChartA()">generate bar chart</button><br>
+        </div>
+    </div>
+    <div id="Scatter" class="visualTabContent">
+        <div id="scatterPlot">
+            <button type="button" onclick="genScatterPlot()">generate scatter plot</button><br>
         </div>
     </div>
 </div>

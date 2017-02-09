@@ -677,21 +677,6 @@ function assembleMetricData(){
     return data;
 }
 
-function q(){
-    applyMetrics();
-    buildBasicTable();
-}
-
-function zz(){
-    applyMetrics();
-    buildBasicTableInverted();
-}
-
-function genBarChartA(){
-    applyMetrics();
-    buildBarChart(assembleMetricData(), 0);
-}
-
 function buildBarChart(tableData, metricIndex) {
     d3.select("#barChart").html(" ");
 
@@ -710,7 +695,7 @@ function buildBarChart(tableData, metricIndex) {
 
     var xaxis = d3.scaleLinear()
         .domain([ Math.min(d3.min(tableData, function(elem){return elem.metricValues[metricIndex];}), 0),
-                            d3.max(tableData, function (elem) {return elem.metricValues[metricIndex];}) ])
+            d3.max(tableData, function (elem) {return elem.metricValues[metricIndex];}) ])
         .range([0,width]);
     var yaxis = d3.scaleBand()
         .range([height - (margin.bottom + margin.top), 0])
@@ -804,7 +789,7 @@ function buildBarChart(tableData, metricIndex) {
     function toggleSort(){
         var y0 = yaxis.range([height - (margin.bottom + margin.top), 0])
             .domain(tableData.sort(this.checked ? function(a, b) { return b.metricValues[metricIndex] - a.metricValues[metricIndex]; } : function(a, b) { return d3.ascending(a.originalIndex,b.originalIndex); })
-            .map(function(elem) { console.log(elem.refString); return elem.refString; }))
+                .map(function(elem) { console.log(elem.refString); return elem.refString; }))
             .copy();
 
         parent.selectAll(".bar")
@@ -825,5 +810,98 @@ function buildBarChart(tableData, metricIndex) {
             .delay(delay)
             .attr("transform",function(elem){ return "translate(0," + y0(elem.refString) + ")";});
 
+    }
+}
+
+function q(){
+    applyMetrics();
+    buildBasicTable();
+}
+
+function zz(){
+    applyMetrics();
+    buildBasicTableInverted();
+}
+
+function genBarChartA(){
+    applyMetrics();
+    buildBarChart(assembleMetricData(), 0);
+}
+
+function genScatterPlot(){
+    applyMetrics();
+    buildScatterPlot(assembleMetricData(), 0, 1);
+}
+
+function buildScatterPlot(tableData, yMetricIndex, xMetricIndex) {
+    d3.select("#scatterPlot").html(" ");
+
+    var xMetricSelector = d3.select("#scatterPlot").append("select")
+        .attr("id", "scatterxSelect")
+        .on("change", selectedMetricChange);
+    var yMetricSelector = d3.select("#scatterPlot").append("select")
+        .attr("id", "scatterySelect")
+        .on("change", selectedMetricChange);
+
+   xMetricSelector.selectAll("option")
+        .data(lastMetricsUsed)
+        .enter()
+        .append("option")
+        .attr("value",function(elem){return elem.name;})
+        .property("selected", function(elem,index) {return index == xMetricIndex;})
+        .html(function(elem) {return elem.name;});
+
+    yMetricSelector.selectAll("option")
+        .data(lastMetricsUsed)
+        .enter()
+        .append("option")
+        .attr("value",function(elem){return elem.name;})
+        .property("selected", function(elem,index) {return index == yMetricIndex;})
+        .html(function(elem) {return elem.name;})
+        .append("br");
+
+
+    var margin = {top: 15, right: 15, bottom: 30, left: 30};
+    var bubbleThickness = 4; //px
+    var width = 800, height = 800;
+
+    console.log(d3.extent(tableData, function(elem){return elem.metricValues[xMetricIndex]}));
+    console.log(d3.extent(tableData, function(elem){return elem.metricValues[yMetricIndex]}));
+
+    var xaxis = d3.scaleLinear()
+        .range([0, width])
+        .domain(d3.extent(tableData, function(elem){return elem.metricValues[xMetricIndex];}));
+    var yaxis = d3.scaleLinear()
+        .range([height, 0])
+        .domain(d3.extent(tableData, function(elem){return elem.metricValues[yMetricIndex];}));
+    //potential 'z axis' in terms of size of bubbles
+
+    var chart = d3.select("#scatterPlot").append("svg")
+        .attr("width", width + margin.left + margin.right)
+        .attr("height", height + margin.bottom + margin.top);
+    var parent = chart.append("g")
+        .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+    parent.append("g")
+        .attr("class", "axis x-axis")
+        .attr("transform", "translate(0," + height + ")")
+        .call(d3.axisBottom(xaxis));
+
+    parent.append("g")
+        .attr("class", "axis y-axis")
+        .call(d3.axisLeft(yaxis));
+
+    parent.selectAll(".scatterPoint")
+        .data(tableData)
+        .enter().append("circle")
+        .attr("class","scatterPoint")
+        .attr("r",  bubbleThickness)
+        .attr("fill", function(elem){return elem.title;})
+        .attr("cx", function(elem){return xaxis(elem.metricValues[xMetricIndex]);})
+        .attr("cy", function(elem){return yaxis(elem.metricValues[yMetricIndex]);});
+
+
+    function selectedMetricChange(){
+        buildScatterPlot(tableData, yMetricSelector.property('selectedIndex'), xMetricSelector.property('selectedIndex'));
     }
 }
