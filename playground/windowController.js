@@ -906,3 +906,40 @@ function computeCovariance(arr){
     var deviationMatrix = math.subtract(dataMatrix, math.multiply(1/observations, math.ones(observations, observations), dataMatrix));
     return math.multiply(1/observations,math.transpose(deviationMatrix),deviationMatrix); //covariance matrix
 }
+
+//takes 2d array, not math.matrix. Can use math.matrix()._data to retrieve 2d array
+function computeEigendecomposition(covarianceArray){
+    var eigResult = numeric.eig(covarianceArray);
+    return {
+      eigVals: eigResult.lambda.x,
+      eigVecs: eigResult.E.x
+    };
+}
+
+function sortEigenpairs(eigenVals, eigenVecs) {
+    var eigPairs = [];
+    eigenVals.forEach(function(elem, index){
+       eigPairs.push({
+           val: elem,
+           vec: eigenVecs[index]
+       }) ;
+    });
+
+    eigPairs.sort(function(a,b){
+       return b.val - a.val;
+    });
+
+    return eigPairs;
+}
+
+function eigenDriver(){
+   var  A = [[ 1.00671141, -0.11010327,  0.87760486,  0.82344326],
+        [-0.11010327,  1.00671141, -0.42333835, -0.358937  ],
+        [ 0.87760486, -0.42333835,  1.00671141,  0.96921855],
+        [ 0.82344326, -0.358937,    0.96921855,  1.00671141]];
+
+
+   var C = computeEigendecomposition(A);
+   var D = sortEigenpairs(C.eigVals, C.eigVecs);
+   console.log(D);
+}
