@@ -804,25 +804,6 @@ function buildBarChart(tableData, metricIndex) {
     }
 }
 
-function q(){
-    applyMetrics();
-    buildBasicTable();
-}
-
-function zz(){
-    applyMetrics();
-    buildBasicTableInverted();
-}
-
-function genBarChartA(){
-    applyMetrics();
-    buildBarChart(assembleMetricData(), 0);
-}
-
-function genScatterPlot(){
-    applyMetrics();
-    buildScatterPlot(assembleMetricData(), 0, 1);
-}
 
 function buildScatterPlot(tableData, yMetricIndex, xMetricIndex) {
     d3.select("#scatterPlot").html(" ");
@@ -834,7 +815,7 @@ function buildScatterPlot(tableData, yMetricIndex, xMetricIndex) {
         .attr("id", "scatterySelect")
         .on("change", selectedMetricChange);
 
-   xMetricSelector.selectAll("option")
+    xMetricSelector.selectAll("option")
         .data(lastMetricsUsed)
         .enter()
         .append("option")
@@ -851,13 +832,9 @@ function buildScatterPlot(tableData, yMetricIndex, xMetricIndex) {
         .html(function(elem) {return elem.name;})
         .append("br");
 
-
     var margin = {top: 15, right: 15, bottom: 30, left: 30};
     var bubbleThickness = 4; //px
     var width = 800, height = 800;
-
-    console.log(d3.extent(tableData, function(elem){return elem.metricValues[xMetricIndex]}));
-    console.log(d3.extent(tableData, function(elem){return elem.metricValues[yMetricIndex]}));
 
     var xaxis = d3.scaleLinear()
         .range([0, width])
@@ -895,4 +872,37 @@ function buildScatterPlot(tableData, yMetricIndex, xMetricIndex) {
     function selectedMetricChange(){
         buildScatterPlot(tableData, yMetricSelector.property('selectedIndex'), xMetricSelector.property('selectedIndex'));
     }
+}
+
+function q(){
+    applyMetrics();
+    buildBasicTable();
+}
+
+function zz(){
+    applyMetrics();
+    buildBasicTableInverted();
+}
+
+function genBarChartA(){
+    applyMetrics();
+    buildBarChart(assembleMetricData(), 0);
+}
+
+function genScatterPlot(){
+    applyMetrics();
+    buildScatterPlot(assembleMetricData(), 0, 1);
+}
+
+
+/**
+ *
+ * @param arr Should be passed as an m x n array (of arrays), with columns being variables and rows being the related observations.
+ *              First index should be observations (sentences). Second index should be variables (metrics).
+ */
+function computeCovariance(arr){
+    var dataMatrix = math.matrix(arr);
+    var observations = arr.length;
+    var deviationMatrix = math.subtract(dataMatrix, math.multiply(1/observations, math.ones(observations, observations), dataMatrix));
+    return math.multiply(1/observations,math.transpose(deviationMatrix),deviationMatrix); //covariance matrix
 }
