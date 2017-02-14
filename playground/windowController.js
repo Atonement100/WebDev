@@ -894,17 +894,25 @@ function genScatterPlot(){
     buildScatterPlot(assembleMetricData(), 0, 1);
 }
 
+function genPCAPlot(){
+    applyMetrics();
+    eigenDriver(assembleMetricData());
+}
 
 /**
  *
- * @param arr Should be passed as an m x n array (of arrays), with columns being variables and rows being the related observations.
+ * @param data Should be passed as an m x n array (of arrays), with columns being variables and rows being the related observations.
  *              First index should be observations (sentences). Second index should be variables (metrics).
  */
-function computeCovariance(arr){
-    var dataMatrix = math.matrix(arr);
-    var observations = arr.length;
-    var deviationMatrix = math.subtract(dataMatrix, math.multiply(1/observations, math.ones(observations, observations), dataMatrix));
-    return math.multiply(1/observations,math.transpose(deviationMatrix),deviationMatrix); //covariance matrix
+function computeCovariance(data){
+    var dataMatrix = math.matrix(data);
+    var observations = data.length;
+    var a = math.multiply(math.ones(observations, observations), 1/observations);
+    console.log(a);
+    console.log(dataMatrix);
+    var b = math.multiply(a, dataMatrix);
+    var deviationMatrix = math.subtract(dataMatrix, b);
+    return math.multiply(1/observations,math.transpose(deviationMatrix),deviationMatrix)._data; //covariance matrix
 }
 
 //takes 2d array, not math.matrix. Can use math.matrix()._data to retrieve 2d array
@@ -916,30 +924,86 @@ function computeEigendecomposition(covarianceArray){
     };
 }
 
-function sortEigenpairs(eigenVals, eigenVecs) {
+/**
+ * Sorts eigenvalues and record original vector index so that the top two can be used for projection
+ * @param eigenVals
+ * @returns {Array}
+ */
+function sortEigenvals(eigenVals) {
     var eigPairs = [];
     eigenVals.forEach(function(elem, index){
        eigPairs.push({
            val: elem,
-           vec: eigenVecs[index]
-       }) ;
+           vecIndex: index
+       });
     });
 
     eigPairs.sort(function(a,b){
        return b.val - a.val;
     });
 
+
     return eigPairs;
 }
 
-function eigenDriver(){
-   var  A = [[ 1.00671141, -0.11010327,  0.87760486,  0.82344326],
-        [-0.11010327,  1.00671141, -0.42333835, -0.358937  ],
-        [ 0.87760486, -0.42333835,  1.00671141,  0.96921855],
-        [ 0.82344326, -0.358937,    0.96921855,  1.00671141]];
+function computeEigenProjection(eigenIndexInfo, eigenVecs, data){
+    var primaryEigenIndex = eigenIndexInfo[0].vecIndex,
+        secondaryEigenIndex = eigenIndexInfo[1].vecIndex,
+        projectionMatrix = [];
 
+    eigenVecs.forEach(function (elem) {
+       projectionMatrix.push([elem[primaryEigenIndex], elem[secondaryEigenIndex]]);
+    });
 
-   var C = computeEigendecomposition(A);
-   var D = sortEigenpairs(C.eigVals, C.eigVecs);
-   console.log(D);
+    return math.multiply(math.matrix(data),math.matrix(projectionMatrix));
+}
+
+function eigenDriver(data){
+    var metricValues = data.map(function (elem) {
+       return elem.metricValues;
+    });
+    var covMatrix = computeCovariance(metricValues);
+    var eigenPairs = computeEigendecomposition(covMatrix);
+    var eigenIndexInfo = sortEigenvals(eigenPairs.eigVals);
+    var projectionMatrix = computeEigenProjection(eigenIndexInfo, eigenPairs.eigVecs, metricValues);
+    console.log(projectionMatrix);
+
+    var projectionData = projectionMatrix._data;
+
+    d3.select("#PCAPlot").html(" ");
+
+    var margin = {top: 15, right: 15, bottom: 30, left: 30};
+    var bubbleThickness = 4; //px
+    var width = 800, height = 800;
+
+    var xaxis = d3.scaleLinear()
+        .range([0, width])
+        .domain(d3.extent(projectionData, function(elem){return elem[0];}));
+    var yaxis = d3.scaleLinear()
+        .range([height, 0])
+        .domain(d3.extent(projectionData, function(elem){return elem[1];}));
+
+    var chart = d3.select("#PCAPlot").append("svg")
+        .attr("width", width + margin.left + margin.right)
+        .attr("height", height + margin.bottom + margin.top);
+    var parent = chart.append("g")
+        .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+    parent.append("g")
+        .attr("class", "axis x-axis")
+        .attr("transform", "translate(0," + height + ")")
+        .call(d3.axisBottom(xaxis));
+
+    parent.append("g")
+        .attr("class", "axis y-axis")
+        .call(d3.axisLeft(yaxis));
+
+    parent.selectAll(".scatterPoint")
+        .data(projectionData)
+        .enter().append("circle")
+        .attr("class","scatterPoint")
+        .attr("r",  bubbleThickness)
+        //.attr("fill", function(elem){return elem.title;})
+        .attr("cx", function(elem){return xaxis(elem[0]);})
+        .attr("cy", function(elem){return yaxis(elem[1]);});
 }
