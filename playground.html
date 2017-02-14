@@ -48,6 +48,7 @@
         <li><a href="javascript:void(0)" class="visualTab" name="graphs" onclick="openTab(event, 'Graphs')">Table</a></li>
         <li><a href="javascript:void(0)" class="visualTab" name="chart" onclick="openTab(event, 'Charts')">Chart</a></li>
         <li><a href="javascript:void(0)" class="visualTab" name="scatter" onclick="openTab(event, 'Scatter')">Scatter</a></li>
+        <li><a href="javascript:void(0)" class="visualTab" name="PCA" onclick="openTab(event, 'PCA')">PCA</a></li>
     </ul>
 
     <div id="Console" class="visualTabContent">
@@ -66,6 +67,11 @@
     <div id="Scatter" class="visualTabContent">
         <div id="scatterPlot">
             <button type="button" onclick="genScatterPlot()">generate scatter plot</button><br>
+        </div>
+    </div>
+    <div id="PCA" class="visualTabContent">
+        <div id="PCAPlot">
+            <button type="button" onclick="genPCAPlot()">generate principal component analysis plot</button><br>
         </div>
     </div>
 </div>
