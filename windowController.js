@@ -668,7 +668,8 @@ function assembleMetricData(){
                 metrics: enabledMetrics,
                 metricValues: lastMetricResults[index][sentenceIndex],
                 originalIndex: runningIndex++,
-                refString: selectedTreebanks[index].getTitle() + " " + (+sentenceIndex + 1)
+                refString: selectedTreebanks[index].getTitle() + " " + (+sentenceIndex + 1),
+                author: identifyAuthor(selectedTreebanks[index].getTitle())
             });
         }
     }
@@ -852,6 +853,10 @@ function buildScatterPlot(tableData, yMetricIndex, xMetricIndex) {
         .range([height, 0])
         .domain(d3.extent(tableData, function(elem){return elem.metricValues[yMetricIndex];}));
     //potential 'z axis' in terms of size of bubbles
+    var coloraxis = d3.scaleOrdinal(d3.schemeAccent)
+        .domain(tableData.map(function (elem) {
+            return elem.author;
+        }));
 
     var chart = d3.select("#scatterPlot").append("svg")
         .attr("width", width + margin.left + margin.right)
@@ -873,7 +878,7 @@ function buildScatterPlot(tableData, yMetricIndex, xMetricIndex) {
         .enter().append("circle")
         .attr("class","scatterPoint")
         .attr("r",  bubbleThickness)
-        .attr("fill", function(elem){return elem.title;})
+        .style("fill", function(elem){return coloraxis(elem.author);})
         .attr("cx", function(elem){return xaxis(elem.metricValues[xMetricIndex]);})
         .attr("cy", function(elem){return yaxis(elem.metricValues[yMetricIndex]);});
 
@@ -964,6 +969,7 @@ function computeEigenProjection(eigenIndexInfo, eigenVecs, data){
        projectionMatrix.push([elem[primaryEigenIndex], elem[secondaryEigenIndex]]);
     });
 
+    console.log(projectionMatrix);
     return math.multiply(math.matrix(data),math.matrix(projectionMatrix));
 }
 
@@ -1015,4 +1021,226 @@ function eigenDriver(data){
         //.attr("fill", function(elem){return elem.title;})
         .attr("cx", function(elem){return xaxis(elem[0]);})
         .attr("cy", function(elem){return yaxis(elem[1]);});
+}
+
+function fakeEigen(){
+    var metricValues = [
+        [ 5.1 , 3.5 , 1.4 , 0.2 ],
+        [ 4.9 , 3.0 , 1.4 , 0.2 ],
+        [ 4.7 , 3.2 , 1.3 , 0.2 ],
+        [ 4.6 , 3.1 , 1.5 , 0.2 ],
+        [ 5.0 , 3.6 , 1.4 , 0.2 ],
+        [ 5.4 , 3.9 , 1.7 , 0.4 ],
+        [ 4.6 , 3.4 , 1.4 , 0.3 ],
+        [ 5.0 , 3.4 , 1.5 , 0.2 ],
+        [ 4.4 , 2.9 , 1.4 , 0.2 ],
+        [ 4.9 , 3.1 , 1.5 , 0.1 ],
+        [ 5.4 , 3.7 , 1.5 , 0.2 ],
+        [ 4.8 , 3.4 , 1.6 , 0.2 ],
+        [ 4.8 , 3.0 , 1.4 , 0.1 ],
+        [ 4.3 , 3.0 , 1.1 , 0.1 ],
+        [ 5.8 , 4.0 , 1.2 , 0.2 ],
+        [ 5.7 , 4.4 , 1.5 , 0.4 ],
+        [ 5.4 , 3.9 , 1.3 , 0.4 ],
+        [ 5.1 , 3.5 , 1.4 , 0.3 ],
+        [ 5.7 , 3.8 , 1.7 , 0.3 ],
+        [ 5.1 , 3.8 , 1.5 , 0.3 ],
+        [ 5.4 , 3.4 , 1.7 , 0.2 ],
+        [ 5.1 , 3.7 , 1.5 , 0.4 ],
+        [ 4.6 , 3.6 , 1.0 , 0.2 ],
+        [ 5.1 , 3.3 , 1.7 , 0.5 ],
+        [ 4.8 , 3.4 , 1.9 , 0.2 ],
+        [ 5.0 , 3.0 , 1.6 , 0.2 ],
+        [ 5.0 , 3.4 , 1.6 , 0.4 ],
+        [ 5.2 , 3.5 , 1.5 , 0.2 ],
+        [ 5.2 , 3.4 , 1.4 , 0.2 ],
+        [ 4.7 , 3.2 , 1.6 , 0.2 ],
+        [ 4.8 , 3.1 , 1.6 , 0.2 ],
+        [ 5.4 , 3.4 , 1.5 , 0.4 ],
+        [ 5.2 , 4.1 , 1.5 , 0.1 ],
+        [ 5.5 , 4.2 , 1.4 , 0.2 ],
+        [ 4.9 , 3.1 , 1.5 , 0.2 ],
+        [ 5.0 , 3.2 , 1.2 , 0.2 ],
+        [ 5.5 , 3.5 , 1.3 , 0.2 ],
+        [ 4.9 , 3.6 , 1.4 , 0.1 ],
+        [ 4.4 , 3.0 , 1.3 , 0.2 ],
+        [ 5.1 , 3.4 , 1.5 , 0.2 ],
+        [ 5.0 , 3.5 , 1.3 , 0.3 ],
+        [ 4.5 , 2.3 , 1.3 , 0.3 ],
+        [ 4.4 , 3.2 , 1.3 , 0.2 ],
+        [ 5.0 , 3.5 , 1.6 , 0.6 ],
+        [ 5.1 , 3.8 , 1.9 , 0.4 ],
+        [ 4.8 , 3.0 , 1.4 , 0.3 ],
+        [ 5.1 , 3.8 , 1.6 , 0.2 ],
+        [ 4.6 , 3.2 , 1.4 , 0.2 ],
+        [ 5.3 , 3.7 , 1.5 , 0.2 ],
+        [ 5.0 , 3.3 , 1.4 , 0.2 ],
+        [ 7.0 , 3.2 , 4.7 , 1.4 ],
+        [ 6.4 , 3.2 , 4.5 , 1.5 ],
+        [ 6.9 , 3.1 , 4.9 , 1.5 ],
+        [ 5.5 , 2.3 , 4.0 , 1.3 ],
+        [ 6.5 , 2.8 , 4.6 , 1.5 ],
+        [ 5.7 , 2.8 , 4.5 , 1.3 ],
+        [ 6.3 , 3.3 , 4.7 , 1.6 ],
+        [ 4.9 , 2.4 , 3.3 , 1.0 ],
+        [ 6.6 , 2.9 , 4.6 , 1.3 ],
+        [ 5.2 , 2.7 , 3.9 , 1.4 ],
+        [ 5.0 , 2.0 , 3.5 , 1.0 ],
+        [ 5.9 , 3.0 , 4.2 , 1.5 ],
+        [ 6.0 , 2.2 , 4.0 , 1.0 ],
+        [ 6.1 , 2.9 , 4.7 , 1.4 ],
+        [ 5.6 , 2.9 , 3.6 , 1.3 ],
+        [ 6.7 , 3.1 , 4.4 , 1.4 ],
+        [ 5.6 , 3.0 , 4.5 , 1.5 ],
+        [ 5.8 , 2.7 , 4.1 , 1.0 ],
+        [ 6.2 , 2.2 , 4.5 , 1.5 ],
+        [ 5.6 , 2.5 , 3.9 , 1.1 ],
+        [ 5.9 , 3.2 , 4.8 , 1.8 ],
+        [ 6.1 , 2.8 , 4.0 , 1.3 ],
+        [ 6.3 , 2.5 , 4.9 , 1.5 ],
+        [ 6.1 , 2.8 , 4.7 , 1.2 ],
+        [ 6.4 , 2.9 , 4.3 , 1.3 ],
+        [ 6.6 , 3.0 , 4.4 , 1.4 ],
+        [ 6.8 , 2.8 , 4.8 , 1.4 ],
+        [ 6.7 , 3.0 , 5.0 , 1.7 ],
+        [ 6.0 , 2.9 , 4.5 , 1.5 ],
+        [ 5.7 , 2.6 , 3.5 , 1.0 ],
+        [ 5.5 , 2.4 , 3.8 , 1.1 ],
+        [ 5.5 , 2.4 , 3.7 , 1.0 ],
+        [ 5.8 , 2.7 , 3.9 , 1.2 ],
+        [ 6.0 , 2.7 , 5.1 , 1.6 ],
+        [ 5.4 , 3.0 , 4.5 , 1.5 ],
+        [ 6.0 , 3.4 , 4.5 , 1.6 ],
+        [ 6.7 , 3.1 , 4.7 , 1.5 ],
+        [ 6.3 , 2.3 , 4.4 , 1.3 ],
+        [ 5.6 , 3.0 , 4.1 , 1.3 ],
+        [ 5.5 , 2.5 , 4.0 , 1.3 ],
+        [ 5.5 , 2.6 , 4.4 , 1.2 ],
+        [ 6.1 , 3.0 , 4.6 , 1.4 ],
+        [ 5.8 , 2.6 , 4.0 , 1.2 ],
+        [ 5.0 , 2.3 , 3.3 , 1.0 ],
+        [ 5.6 , 2.7 , 4.2 , 1.3 ],
+        [ 5.7 , 3.0 , 4.2 , 1.2 ],
+        [ 5.7 , 2.9 , 4.2 , 1.3 ],
+        [ 6.2 , 2.9 , 4.3 , 1.3 ],
+        [ 5.1 , 2.5 , 3.0 , 1.1 ],
+        [ 5.7 , 2.8 , 4.1 , 1.3 ],
+        [ 6.3 , 3.3 , 6.0 , 2.5 ],
+        [ 5.8 , 2.7 , 5.1 , 1.9 ],
+        [ 7.1 , 3.0 , 5.9 , 2.1 ],
+        [ 6.3 , 2.9 , 5.6 , 1.8 ],
+        [ 6.5 , 3.0 , 5.8 , 2.2 ],
+        [ 7.6 , 3.0 , 6.6 , 2.1 ],
+        [ 4.9 , 2.5 , 4.5 , 1.7 ],
+        [ 7.3 , 2.9 , 6.3 , 1.8 ],
+        [ 6.7 , 2.5 , 5.8 , 1.8 ],
+        [ 7.2 , 3.6 , 6.1 , 2.5 ],
+        [ 6.5 , 3.2 , 5.1 , 2.0 ],
+        [ 6.4 , 2.7 , 5.3 , 1.9 ],
+        [ 6.8 , 3.0 , 5.5 , 2.1 ],
+        [ 5.7 , 2.5 , 5.0 , 2.0 ],
+        [ 5.8 , 2.8 , 5.1 , 2.4 ],
+        [ 6.4 , 3.2 , 5.3 , 2.3 ],
+        [ 6.5 , 3.0 , 5.5 , 1.8 ],
+        [ 7.7 , 3.8 , 6.7 , 2.2 ],
+        [ 7.7 , 2.6 , 6.9 , 2.3 ],
+        [ 6.0 , 2.2 , 5.0 , 1.5 ],
+        [ 6.9 , 3.2 , 5.7 , 2.3 ],
+        [ 5.6 , 2.8 , 4.9 , 2.0 ],
+        [ 7.7 , 2.8 , 6.7 , 2.0 ],
+        [ 6.3 , 2.7 , 4.9 , 1.8 ],
+        [ 6.7 , 3.3 , 5.7 , 2.1 ],
+        [ 7.2 , 3.2 , 6.0 , 1.8 ],
+        [ 6.2 , 2.8 , 4.8 , 1.8 ],
+        [ 6.1 , 3.0 , 4.9 , 1.8 ],
+        [ 6.4 , 2.8 , 5.6 , 2.1 ],
+        [ 7.2 , 3.0 , 5.8 , 1.6 ],
+        [ 7.4 , 2.8 , 6.1 , 1.9 ],
+        [ 7.9 , 3.8 , 6.4 , 2.0 ],
+        [ 6.4 , 2.8 , 5.6 , 2.2 ],
+        [ 6.3 , 2.8 , 5.1 , 1.5 ],
+        [ 6.1 , 2.6 , 5.6 , 1.4 ],
+        [ 7.7 , 3.0 , 6.1 , 2.3 ],
+        [ 6.3 , 3.4 , 5.6 , 2.4 ],
+        [ 6.4 , 3.1 , 5.5 , 1.8 ],
+        [ 6.0 , 3.0 , 4.8 , 1.8 ],
+        [ 6.9 , 3.1 , 5.4 , 2.1 ],
+        [ 6.7 , 3.1 , 5.6 , 2.4 ],
+        [ 6.9 , 3.1 , 5.1 , 2.3 ],
+        [ 5.8 , 2.7 , 5.1 , 1.9 ],
+        [ 6.8 , 3.2 , 5.9 , 2.3 ],
+        [ 6.7 , 3.3 , 5.7 , 2.5 ],
+        [ 6.7 , 3.0 , 5.2 , 2.3 ],
+        [ 6.3 , 2.5 , 5.0 , 1.9 ],
+        [ 6.5 , 3.0 , 5.2 , 2.0 ],
+        [ 6.2 , 3.4 , 5.4 , 2.3 ],
+        [ 5.9 , 3.0 , 5.1 , 1.8 ]
+    ];
+
+    var covMatrix = computeCovariance(metricValues);
+
+    covMatrix = [[ 1.00671141, -0.11010327,  0.87760486,  0.82344326],
+                [-0.11010327,  1.00671141, -0.42333835, -0.358937  ],
+                [ 0.87760486, -0.42333835,  1.00671141,  0.96921855],
+                [ 0.82344326, -0.358937,    0.96921855,  1.00671141]];
+
+    var eigenPairs = computeEigendecomposition(covMatrix);
+    var eigenIndexInfo = sortEigenvals(eigenPairs.eigVals);
+    var projectionMatrix = computeEigenProjection(eigenIndexInfo, eigenPairs.eigVecs, metricValues);
+    console.log(covMatrix);
+    console.log(eigenPairs);
+    console.log(eigenIndexInfo);
+    console.log(projectionMatrix);
+
+    var projectionData = projectionMatrix._data;
+
+    d3.select("#PCAPlot").html(" ");
+
+    var margin = {top: 15, right: 15, bottom: 30, left: 30};
+    var bubbleThickness = 4; //px
+    var width = 800, height = 800;
+
+    var xaxis = d3.scaleLinear()
+        .range([0, width])
+        .domain(d3.extent(projectionData, function(elem){return elem[0];}));
+    var yaxis = d3.scaleLinear()
+        .range([height, 0])
+        .domain(d3.extent(projectionData, function(elem){return elem[1];}));
+
+    var chart = d3.select("#PCAPlot").append("svg")
+        .attr("width", width + margin.left + margin.right)
+        .attr("height", height + margin.bottom + margin.top);
+    var parent = chart.append("g")
+        .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+    parent.append("g")
+        .attr("class", "axis x-axis")
+        .attr("transform", "translate(0," + height + ")")
+        .call(d3.axisBottom(xaxis));
+
+    parent.append("g")
+        .attr("class", "axis y-axis")
+        .call(d3.axisLeft(yaxis));
+
+    parent.selectAll(".scatterPoint")
+        .data(projectionData)
+        .enter().append("circle")
+        .attr("class","scatterPoint")
+        .attr("r",  bubbleThickness)
+        //.attr("fill", function(elem){return elem.title;})
+        .attr("cx", function(elem){return xaxis(elem[0]);})
+        .attr("cy", function(elem){return yaxis(elem[1]);});
+}
+
+function identifyAuthor(title){
+    title = title.toLowerCase();
+    if (title.indexOf("dion") >= 0) return "Dionysus";
+    else if (title.indexOf("dio") >= 0) return "Dio";
+    else if (title.indexOf("demo") >= 0) return "Demosthenes";
+    else if (title.indexOf("lys") >= 0) return "Lysias";
+    else if (title.indexOf("ael") >= 0) return "Aelius";
+    else if (title.indexOf("isoc") >= 0) return "Isocrates";
+    else if (title.indexOf("luci") >= 0) return "Lucian";
+    else if (title.indexOf("thuc") >= 0) return "Thucydides";
+    else return "unattributed";
 }
