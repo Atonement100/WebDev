@@ -694,7 +694,10 @@ function buildBarChart(tableData, metricIndex) {
         .domain(tableData.map(function(elem){
             return elem.title + " " + elem.sentence;
         }));
-
+    var coloraxis = d3.scaleOrdinal(d3.schemeSet2)
+        .domain(tableData.map(function (elem) {
+            return elem.author;
+        }));
     var metricSelector = d3.select("#barChart").append("select")
         .attr("id", "barChartMetricSelector")
         .on("change", selectedMetricChange);
@@ -728,7 +731,8 @@ function buildBarChart(tableData, metricIndex) {
     bars.append("rect")
         .attr("x", function(elem) {return xaxis(Math.min(0,elem.metricValues[metricIndex]))})
         .attr("height", yaxis.bandwidth())
-        .attr("width", function(elem){return Math.abs(xaxis(elem.metricValues[metricIndex]) - xaxis(0))});
+        .attr("width", function(elem){return Math.abs(xaxis(elem.metricValues[metricIndex]) - xaxis(0))})
+        .style("fill", function(elem){return coloraxis(elem.author);});
 
     bars.append("text")
         .attr("x", function(elem){return xaxis(elem.metricValues[metricIndex]) - 4;})
@@ -844,7 +848,7 @@ function buildScatterPlot(tableData, yMetricIndex, xMetricIndex) {
         .range([height, 0])
         .domain(d3.extent(tableData, function(elem){return elem.metricValues[yMetricIndex];}));
     //potential 'z axis' in terms of size of bubbles
-    var coloraxis = d3.scaleOrdinal(d3.schemeAccent)
+    var coloraxis = d3.scaleOrdinal(d3.schemeSet2)
         .domain(tableData.map(function (elem) {
             return elem.author;
         }));
