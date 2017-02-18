@@ -1,0 +1,30 @@
+body {
+    margin: 0px;
+    height: 100vh;
+    width: 100vw;
+}
+
+#header {
+    position: absolute;
+    width: 100vw;
+    height: 10vh;
+    background-color: #d6dde8;
+    font-family: "Lato", sans-serif;
+    font-size: 15px;
+    text-align: center;
+    border: none;
+    overflow:hidden;
+    line-height: 10vh;
+    letter-spacing: 2px;
+    z-index: 10;
+}
+
+#body-wrapper {
+    height:100vh;
+    width:100vw;
+    background-color:#afc0d7;
+}
+
+#footer {
+
+}
