@@ -916,9 +916,9 @@ function genPCAPlot(){
 function computeCovariance(data){
     var dataMatrix = math.matrix(data);
     var observations = data.length;
+    console.log(dataMatrix);
     var a = math.multiply(math.ones(observations, observations), 1/observations);
     console.log(a);
-    console.log(dataMatrix);
     var b = math.multiply(a, dataMatrix);
     var deviationMatrix = math.subtract(dataMatrix, b);
     return math.multiply(1/observations,math.transpose(deviationMatrix),deviationMatrix)._data; //covariance matrix
@@ -972,6 +972,7 @@ function eigenDriver(data){
     var metricValues = data.map(function (elem) {
        return elem.metricValues;
     });
+    console.log(metricValues);
     var covMatrix = computeCovariance(metricValues);
     var eigenPairs = computeEigendecomposition(covMatrix);
     var eigenIndexInfo = sortEigenvals(eigenPairs.eigVals);
@@ -992,6 +993,10 @@ function eigenDriver(data){
     var yaxis = d3.scaleLinear()
         .range([height, 0])
         .domain(d3.extent(projectionData, function(elem){return elem[1];}));
+    var coloraxis = d3.scaleOrdinal(d3.schemeSet2)
+        .domain(data.map(function (elem) {
+            return elem.author;
+        }));
 
     var chart = d3.select("#PCAPlot").append("svg")
         .attr("width", width + margin.left + margin.right)
@@ -1013,178 +1018,78 @@ function eigenDriver(data){
         .enter().append("circle")
         .attr("class","scatterPoint")
         .attr("r",  bubbleThickness)
-        //.attr("fill", function(elem){return elem.title;})
+        .style("fill", function(elem, index){return coloraxis(data[index].author);})
         .attr("cx", function(elem){return xaxis(elem[0]);})
         .attr("cy", function(elem){return yaxis(elem[1]);});
+
+    //Start gaussian distribution stuff
+    //f(x,y) = (1 / (2*pi*stdev(x)*stdev(y))) * e ^ -[(x-mean(x))^2/(2(stdev(x)^2)) + (y-mean(y))^2/(2(stdev(y)^2))]
+    //need to solve for the width, height, and rotation of the ellipse.
+
+    console.log(projectionData);
+
+    var projectionCovMat = computeCovariance(projectionData),
+        projectionEigenVal = computeEigendecomposition(projectionCovMat),
+        ellipseScale = Math.sqrt(2.705543454), //http://onlinelibrary.wiley.com/doi/10.1002/0471998303.app4/pdf 1 degree of freedom, p=0.9
+        maxEigen = getMaxIndex(projectionEigenVal.eigVals),
+        minEigen = getMinIndex(projectionEigenVal.eigVals),
+        projXstdev = d3.deviation(projectionData, function(elem){return elem[0]}),
+        projYstdev = d3.deviation(projectionData, function(elem){return elem[1]}),
+        ellRX = projXstdev > projYstdev ? Math.sqrt(projectionEigenVal.eigVals[maxEigen]) * ellipseScale : Math.sqrt(projectionEigenVal.eigVals[minEigen]) * ellipseScale,
+        ellRY = projXstdev < projYstdev ? Math.sqrt(projectionEigenVal.eigVals[maxEigen]) * ellipseScale : Math.sqrt(projectionEigenVal.eigVals[minEigen]) * ellipseScale,
+        dominantEigenVec = projectionEigenVal.eigVecs[maxEigen],
+        rot = Math.atan2(dominantEigenVec[1], dominantEigenVec[0]);
+
+    console.log(projectionEigenVal);
+
+    rot = (rot < 0) ? (rot + 2 * math.PI) : rot;
+
+    var projXextent = d3.extent(projectionData, function(elem){return elem[0]}),
+        projYextent = d3.extent(projectionData, function (elem) {return elem[1];});
+
+    parent.append("ellipse")
+        //.attr("cx",d3.mean(projectionData, function(elem){return elem[0];}))
+        //.attr("cy",d3.mean(projectionData, function(elem){return elem[1];}))
+        .attr("class", "PCA-ellipse")
+        .attr("rx",Math.abs(xaxis(projXextent[0] + ellRX) - xaxis(projXextent[0])))
+        .attr("ry",Math.abs(yaxis(projYextent[0] + ellRY) - yaxis(projYextent[0])))
+        .attr("transform", "translate(" + xaxis(d3.mean(projectionData, function(elem){return elem[0];})) + "," + yaxis(d3.mean(projectionData, function(elem){return elem[1];})) +
+            ") rotate(" + (rot * 180 / math.PI) + ")");
 }
 
-function fakeEigen(){
-    var metricValues = [
-        [ 5.1 , 3.5 , 1.4 , 0.2 ],
-        [ 4.9 , 3.0 , 1.4 , 0.2 ],
-        [ 4.7 , 3.2 , 1.3 , 0.2 ],
-        [ 4.6 , 3.1 , 1.5 , 0.2 ],
-        [ 5.0 , 3.6 , 1.4 , 0.2 ],
-        [ 5.4 , 3.9 , 1.7 , 0.4 ],
-        [ 4.6 , 3.4 , 1.4 , 0.3 ],
-        [ 5.0 , 3.4 , 1.5 , 0.2 ],
-        [ 4.4 , 2.9 , 1.4 , 0.2 ],
-        [ 4.9 , 3.1 , 1.5 , 0.1 ],
-        [ 5.4 , 3.7 , 1.5 , 0.2 ],
-        [ 4.8 , 3.4 , 1.6 , 0.2 ],
-        [ 4.8 , 3.0 , 1.4 , 0.1 ],
-        [ 4.3 , 3.0 , 1.1 , 0.1 ],
-        [ 5.8 , 4.0 , 1.2 , 0.2 ],
-        [ 5.7 , 4.4 , 1.5 , 0.4 ],
-        [ 5.4 , 3.9 , 1.3 , 0.4 ],
-        [ 5.1 , 3.5 , 1.4 , 0.3 ],
-        [ 5.7 , 3.8 , 1.7 , 0.3 ],
-        [ 5.1 , 3.8 , 1.5 , 0.3 ],
-        [ 5.4 , 3.4 , 1.7 , 0.2 ],
-        [ 5.1 , 3.7 , 1.5 , 0.4 ],
-        [ 4.6 , 3.6 , 1.0 , 0.2 ],
-        [ 5.1 , 3.3 , 1.7 , 0.5 ],
-        [ 4.8 , 3.4 , 1.9 , 0.2 ],
-        [ 5.0 , 3.0 , 1.6 , 0.2 ],
-        [ 5.0 , 3.4 , 1.6 , 0.4 ],
-        [ 5.2 , 3.5 , 1.5 , 0.2 ],
-        [ 5.2 , 3.4 , 1.4 , 0.2 ],
-        [ 4.7 , 3.2 , 1.6 , 0.2 ],
-        [ 4.8 , 3.1 , 1.6 , 0.2 ],
-        [ 5.4 , 3.4 , 1.5 , 0.4 ],
-        [ 5.2 , 4.1 , 1.5 , 0.1 ],
-        [ 5.5 , 4.2 , 1.4 , 0.2 ],
-        [ 4.9 , 3.1 , 1.5 , 0.2 ],
-        [ 5.0 , 3.2 , 1.2 , 0.2 ],
-        [ 5.5 , 3.5 , 1.3 , 0.2 ],
-        [ 4.9 , 3.6 , 1.4 , 0.1 ],
-        [ 4.4 , 3.0 , 1.3 , 0.2 ],
-        [ 5.1 , 3.4 , 1.5 , 0.2 ],
-        [ 5.0 , 3.5 , 1.3 , 0.3 ],
-        [ 4.5 , 2.3 , 1.3 , 0.3 ],
-        [ 4.4 , 3.2 , 1.3 , 0.2 ],
-        [ 5.0 , 3.5 , 1.6 , 0.6 ],
-        [ 5.1 , 3.8 , 1.9 , 0.4 ],
-        [ 4.8 , 3.0 , 1.4 , 0.3 ],
-        [ 5.1 , 3.8 , 1.6 , 0.2 ],
-        [ 4.6 , 3.2 , 1.4 , 0.2 ],
-        [ 5.3 , 3.7 , 1.5 , 0.2 ],
-        [ 5.0 , 3.3 , 1.4 , 0.2 ],
-        [ 7.0 , 3.2 , 4.7 , 1.4 ],
-        [ 6.4 , 3.2 , 4.5 , 1.5 ],
-        [ 6.9 , 3.1 , 4.9 , 1.5 ],
-        [ 5.5 , 2.3 , 4.0 , 1.3 ],
-        [ 6.5 , 2.8 , 4.6 , 1.5 ],
-        [ 5.7 , 2.8 , 4.5 , 1.3 ],
-        [ 6.3 , 3.3 , 4.7 , 1.6 ],
-        [ 4.9 , 2.4 , 3.3 , 1.0 ],
-        [ 6.6 , 2.9 , 4.6 , 1.3 ],
-        [ 5.2 , 2.7 , 3.9 , 1.4 ],
-        [ 5.0 , 2.0 , 3.5 , 1.0 ],
-        [ 5.9 , 3.0 , 4.2 , 1.5 ],
-        [ 6.0 , 2.2 , 4.0 , 1.0 ],
-        [ 6.1 , 2.9 , 4.7 , 1.4 ],
-        [ 5.6 , 2.9 , 3.6 , 1.3 ],
-        [ 6.7 , 3.1 , 4.4 , 1.4 ],
-        [ 5.6 , 3.0 , 4.5 , 1.5 ],
-        [ 5.8 , 2.7 , 4.1 , 1.0 ],
-        [ 6.2 , 2.2 , 4.5 , 1.5 ],
-        [ 5.6 , 2.5 , 3.9 , 1.1 ],
-        [ 5.9 , 3.2 , 4.8 , 1.8 ],
-        [ 6.1 , 2.8 , 4.0 , 1.3 ],
-        [ 6.3 , 2.5 , 4.9 , 1.5 ],
-        [ 6.1 , 2.8 , 4.7 , 1.2 ],
-        [ 6.4 , 2.9 , 4.3 , 1.3 ],
-        [ 6.6 , 3.0 , 4.4 , 1.4 ],
-        [ 6.8 , 2.8 , 4.8 , 1.4 ],
-        [ 6.7 , 3.0 , 5.0 , 1.7 ],
-        [ 6.0 , 2.9 , 4.5 , 1.5 ],
-        [ 5.7 , 2.6 , 3.5 , 1.0 ],
-        [ 5.5 , 2.4 , 3.8 , 1.1 ],
-        [ 5.5 , 2.4 , 3.7 , 1.0 ],
-        [ 5.8 , 2.7 , 3.9 , 1.2 ],
-        [ 6.0 , 2.7 , 5.1 , 1.6 ],
-        [ 5.4 , 3.0 , 4.5 , 1.5 ],
-        [ 6.0 , 3.4 , 4.5 , 1.6 ],
-        [ 6.7 , 3.1 , 4.7 , 1.5 ],
-        [ 6.3 , 2.3 , 4.4 , 1.3 ],
-        [ 5.6 , 3.0 , 4.1 , 1.3 ],
-        [ 5.5 , 2.5 , 4.0 , 1.3 ],
-        [ 5.5 , 2.6 , 4.4 , 1.2 ],
-        [ 6.1 , 3.0 , 4.6 , 1.4 ],
-        [ 5.8 , 2.6 , 4.0 , 1.2 ],
-        [ 5.0 , 2.3 , 3.3 , 1.0 ],
-        [ 5.6 , 2.7 , 4.2 , 1.3 ],
-        [ 5.7 , 3.0 , 4.2 , 1.2 ],
-        [ 5.7 , 2.9 , 4.2 , 1.3 ],
-        [ 6.2 , 2.9 , 4.3 , 1.3 ],
-        [ 5.1 , 2.5 , 3.0 , 1.1 ],
-        [ 5.7 , 2.8 , 4.1 , 1.3 ],
-        [ 6.3 , 3.3 , 6.0 , 2.5 ],
-        [ 5.8 , 2.7 , 5.1 , 1.9 ],
-        [ 7.1 , 3.0 , 5.9 , 2.1 ],
-        [ 6.3 , 2.9 , 5.6 , 1.8 ],
-        [ 6.5 , 3.0 , 5.8 , 2.2 ],
-        [ 7.6 , 3.0 , 6.6 , 2.1 ],
-        [ 4.9 , 2.5 , 4.5 , 1.7 ],
-        [ 7.3 , 2.9 , 6.3 , 1.8 ],
-        [ 6.7 , 2.5 , 5.8 , 1.8 ],
-        [ 7.2 , 3.6 , 6.1 , 2.5 ],
-        [ 6.5 , 3.2 , 5.1 , 2.0 ],
-        [ 6.4 , 2.7 , 5.3 , 1.9 ],
-        [ 6.8 , 3.0 , 5.5 , 2.1 ],
-        [ 5.7 , 2.5 , 5.0 , 2.0 ],
-        [ 5.8 , 2.8 , 5.1 , 2.4 ],
-        [ 6.4 , 3.2 , 5.3 , 2.3 ],
-        [ 6.5 , 3.0 , 5.5 , 1.8 ],
-        [ 7.7 , 3.8 , 6.7 , 2.2 ],
-        [ 7.7 , 2.6 , 6.9 , 2.3 ],
-        [ 6.0 , 2.2 , 5.0 , 1.5 ],
-        [ 6.9 , 3.2 , 5.7 , 2.3 ],
-        [ 5.6 , 2.8 , 4.9 , 2.0 ],
-        [ 7.7 , 2.8 , 6.7 , 2.0 ],
-        [ 6.3 , 2.7 , 4.9 , 1.8 ],
-        [ 6.7 , 3.3 , 5.7 , 2.1 ],
-        [ 7.2 , 3.2 , 6.0 , 1.8 ],
-        [ 6.2 , 2.8 , 4.8 , 1.8 ],
-        [ 6.1 , 3.0 , 4.9 , 1.8 ],
-        [ 6.4 , 2.8 , 5.6 , 2.1 ],
-        [ 7.2 , 3.0 , 5.8 , 1.6 ],
-        [ 7.4 , 2.8 , 6.1 , 1.9 ],
-        [ 7.9 , 3.8 , 6.4 , 2.0 ],
-        [ 6.4 , 2.8 , 5.6 , 2.2 ],
-        [ 6.3 , 2.8 , 5.1 , 1.5 ],
-        [ 6.1 , 2.6 , 5.6 , 1.4 ],
-        [ 7.7 , 3.0 , 6.1 , 2.3 ],
-        [ 6.3 , 3.4 , 5.6 , 2.4 ],
-        [ 6.4 , 3.1 , 5.5 , 1.8 ],
-        [ 6.0 , 3.0 , 4.8 , 1.8 ],
-        [ 6.9 , 3.1 , 5.4 , 2.1 ],
-        [ 6.7 , 3.1 , 5.6 , 2.4 ],
-        [ 6.9 , 3.1 , 5.1 , 2.3 ],
-        [ 5.8 , 2.7 , 5.1 , 1.9 ],
-        [ 6.8 , 3.2 , 5.9 , 2.3 ],
-        [ 6.7 , 3.3 , 5.7 , 2.5 ],
-        [ 6.7 , 3.0 , 5.2 , 2.3 ],
-        [ 6.3 , 2.5 , 5.0 , 1.9 ],
-        [ 6.5 , 3.0 , 5.2 , 2.0 ],
-        [ 6.2 , 3.4 , 5.4 , 2.3 ],
-        [ 5.9 , 3.0 , 5.1 , 1.8 ]
-    ];
+function getMaxIndex(array){
+    var max = array[0], maxIndex = 0;
+    for (var index = 1; index < array.length; index++){
+        if (array[index] < max){
+            max = array[index];
+            maxIndex = index;
+        }
+    }
+    return maxIndex;
+}
 
+function getMinIndex(array) {
+    var min = array[0], minIndex = 0;
+    for (var index = 1; index < array.length; index++){
+        if (array[index] < min){
+            min = array[index];
+            minIndex = index;
+        }
+    }
+    return minIndex;
+}
+
+function gaussianDistr(stdevX, stdevY, meanX, meanY, x, y){
+    return (1 / (2 * math.pi * stdevX * stdevY)) * Math.pow(math.e, -(Math.pow((x-meanX),2)/(2*(Math.pow(stdevX,2))) + Math.pow((y-meanY),2)/(2*Math.pow(stdevY,2))));
+}
+
+function fakeEigen(data){
+    var metricValues = [[5,8],[7,5],[11,8],[15,9],[16,17],[17,18],[18,25]];
+    console.log(metricValues);
     var covMatrix = computeCovariance(metricValues);
-
-    covMatrix = [[ 1.00671141, -0.11010327,  0.87760486,  0.82344326],
-                [-0.11010327,  1.00671141, -0.42333835, -0.358937  ],
-                [ 0.87760486, -0.42333835,  1.00671141,  0.96921855],
-                [ 0.82344326, -0.358937,    0.96921855,  1.00671141]];
-
     var eigenPairs = computeEigendecomposition(covMatrix);
     var eigenIndexInfo = sortEigenvals(eigenPairs.eigVals);
     var projectionMatrix = computeEigenProjection(eigenIndexInfo, eigenPairs.eigVecs, metricValues);
-    console.log(covMatrix);
-    console.log(eigenPairs);
-    console.log(eigenIndexInfo);
     console.log(projectionMatrix);
 
     var projectionData = projectionMatrix._data;
@@ -1201,6 +1106,10 @@ function fakeEigen(){
     var yaxis = d3.scaleLinear()
         .range([height, 0])
         .domain(d3.extent(projectionData, function(elem){return elem[1];}));
+    var coloraxis = d3.scaleOrdinal(d3.schemeSet2)
+        .domain(data.map(function (elem) {
+            return elem.author;
+        }));
 
     var chart = d3.select("#PCAPlot").append("svg")
         .attr("width", width + margin.left + margin.right)
@@ -1222,9 +1131,43 @@ function fakeEigen(){
         .enter().append("circle")
         .attr("class","scatterPoint")
         .attr("r",  bubbleThickness)
-        //.attr("fill", function(elem){return elem.title;})
+        .style("fill", function(elem, index){return coloraxis(data[index].author);})
         .attr("cx", function(elem){return xaxis(elem[0]);})
         .attr("cy", function(elem){return yaxis(elem[1]);});
+
+    //Start gaussian distribution stuff
+    //f(x,y) = (1 / (2*pi*stdev(x)*stdev(y))) * e ^ -[(x-mean(x))^2/(2(stdev(x)^2)) + (y-mean(y))^2/(2(stdev(y)^2))]
+    //need to solve for the width, height, and rotation of the ellipse.
+
+    console.log(projectionData);
+
+    var projectionCovMat = computeCovariance(projectionData),
+        projectionEigenVal = computeEigendecomposition(projectionCovMat),
+        ellipseScale = Math.sqrt(2.705543454), //http://onlinelibrary.wiley.com/doi/10.1002/0471998303.app4/pdf 1 degree of freedom, p=0.9
+        maxEigen = getMaxIndex(projectionEigenVal.eigVals),
+        minEigen = getMinIndex(projectionEigenVal.eigVals),
+        projXstdev = d3.deviation(projectionData, function(elem){return elem[0]}),
+        projYstdev = d3.deviation(projectionData, function(elem){return elem[1]}),
+        ellRX = projXstdev > projYstdev ? Math.sqrt(projectionEigenVal.eigVals[maxEigen]) * ellipseScale : Math.sqrt(projectionEigenVal.eigVals[minEigen]) * ellipseScale,
+        ellRY = projXstdev < projYstdev ? Math.sqrt(projectionEigenVal.eigVals[maxEigen]) * ellipseScale : Math.sqrt(projectionEigenVal.eigVals[minEigen]) * ellipseScale,
+        dominantEigenVec = projectionEigenVal.eigVecs[maxEigen],
+        rot = Math.atan2(dominantEigenVec[1], dominantEigenVec[0]);
+
+    console.log(projectionEigenVal);
+
+    rot = (rot < 0) ? (rot + 2 * math.PI) : rot;
+
+    var projXextent = d3.extent(projectionData, function(elem){return elem[0]}),
+        projYextent = d3.extent(projectionData, function (elem) {return elem[1];});
+
+    parent.append("ellipse")
+    //.attr("cx",d3.mean(projectionData, function(elem){return elem[0];}))
+    //.attr("cy",d3.mean(projectionData, function(elem){return elem[1];}))
+        .attr("class", "PCA-ellipse")
+        .attr("rx",Math.abs(xaxis(projXextent[0] + ellRX) - xaxis(projXextent[0])))
+        .attr("ry",Math.abs(yaxis(projYextent[0] + ellRY) - yaxis(projYextent[0])))
+        .attr("transform", "translate(" + xaxis(d3.mean(projectionData, function(elem){return elem[0];})) + "," + yaxis(d3.mean(projectionData, function(elem){return elem[1];})) +
+            ") rotate(" + (rot * 180 / math.PI) + ")");
 }
 
 function identifyAuthor(title){
