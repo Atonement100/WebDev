@@ -215,3 +215,9 @@ body{
     stroke: #000;
     shape-rendering: crispEdges;
 }
+
+.PCA-ellipse {
+    fill: none;
+    stroke: black;
+    stroke-width: 2px;
+}
