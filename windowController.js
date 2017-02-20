@@ -1022,7 +1022,7 @@ function eigenDriver(data){
     parent.selectAll(".scatterPoint")
         .data(projectionData)
         .enter().append("circle")
-        .attr("class","scatterPoint")
+        .attr("class", function(elem, index){return "PCA-point " + data[index].author + " active";})
         .attr("r",  bubbleThickness)
         .style("fill", function(elem, index){return coloraxis(data[index].author);})
         .attr("cx", function(elem){return xaxis(elem[0]);})
@@ -1092,6 +1092,28 @@ function eigenDriver(data){
         console.log(elem);
        addErrorEllipse(elem, parent, xaxis, yaxis, coloraxis, authors[index]);
     });
+
+    var legend = d3.select("#PCAPlot").append("svg")
+        .attr("width", 300)
+        .attr("height", authors.length*30);
+    legend.selectAll("rect")
+        .data(authors)
+        .enter()
+        .append("rect")
+        .attr("x", 10)
+        .attr("y", function(elem, index){return index * 20;})
+        .attr("width", 15)
+        .attr("height", 10)
+        .style("fill", function(elem){return coloraxis(elem);});
+    legend.selectAll("text")
+        .data(authors)
+        .enter()
+        .append("text")
+        .attr("x", 30)
+        .attr("y", function(elem, index){return index * 20 + 10;})
+        .text(function(elem){return elem;});
+
+    d3.select("#PCAPlot").append("")
 }
 
 function build2DArray(rows){
