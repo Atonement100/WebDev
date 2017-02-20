@@ -785,7 +785,7 @@ function buildBarChart(tableData, metricIndex) {
     function toggleSort(){
         var y0 = yaxis.range([height - (margin.bottom + margin.top), 0])
             .domain(tableData.sort(this.checked ? function(a, b) { return b.metricValues[metricIndex] - a.metricValues[metricIndex]; } : function(a, b) { return d3.ascending(a.originalIndex,b.originalIndex); })
-                .map(function(elem) { console.log(elem.refString); return elem.refString; }))
+                .map(function(elem) { return elem.refString; }))
             .copy();
 
         parent.selectAll(".bar")
@@ -914,13 +914,11 @@ function genPCAPlot(){
  *              First index should be observations (sentences). Second index should be variables (metrics).
  */
 function computeCovariance(data){
-    var dataMatrix = math.matrix(data);
-    var observations = data.length;
-    console.log(dataMatrix);
-    var a = math.multiply(math.ones(observations, observations), 1/observations);
-    console.log(a);
-    var b = math.multiply(a, dataMatrix);
-    var deviationMatrix = math.subtract(dataMatrix, b);
+    var dataMatrix = math.matrix(data),
+        observations = data.length,
+        a = math.multiply(math.ones(observations, observations), 1/observations),
+        b = math.multiply(a, dataMatrix),
+        deviationMatrix = math.subtract(dataMatrix, b);
     return math.multiply(1/observations,math.transpose(deviationMatrix),deviationMatrix)._data; //covariance matrix
 }
 
@@ -951,7 +949,6 @@ function sortEigenvals(eigenVals) {
        return b.val - a.val;
     });
 
-
     return eigPairs;
 }
 
@@ -964,7 +961,6 @@ function computeEigenProjection(eigenIndexInfo, eigenVecs, data){
        projectionMatrix.push([elem[primaryEigenIndex], elem[secondaryEigenIndex]]);
     });
 
-    console.log(projectionMatrix);
     return math.multiply(math.matrix(data),math.matrix(projectionMatrix));
 }
 
@@ -972,20 +968,21 @@ function eigenDriver(data){
     var metricValues = data.map(function (elem) {
        return elem.metricValues;
     });
-    console.log(metricValues);
-    var covMatrix = computeCovariance(metricValues);
-    var eigenPairs = computeEigendecomposition(covMatrix);
-    var eigenIndexInfo = sortEigenvals(eigenPairs.eigVals);
-    var projectionMatrix = computeEigenProjection(eigenIndexInfo, eigenPairs.eigVecs, metricValues);
-    console.log(projectionMatrix);
+    var covMatrix = computeCovariance(metricValues),
+        eigenPairs = computeEigendecomposition(covMatrix),
+        eigenIndexInfo = sortEigenvals(eigenPairs.eigVals),
+        projectionMatrix = computeEigenProjection(eigenIndexInfo, eigenPairs.eigVecs, metricValues),
+        projectionData = projectionMatrix._data;
 
-    var projectionData = projectionMatrix._data;
+        console.log(projectionData);
+        console.log(eigenIndexInfo);
+        console.log(eigenPairs);
 
-    d3.select("#PCAPlot").html(" ");
+    //d3.select("#PCAPlot").html(" ");
 
-    var margin = {top: 15, right: 15, bottom: 30, left: 30};
-    var bubbleThickness = 4; //px
-    var width = 800, height = 800;
+    var margin = {top: 15, right: 15, bottom: 30, left: 30},
+        bubbleThickness = 4, //px
+        width = 800, height = 800;
 
     var xaxis = d3.scaleLinear()
         .range([0, width])
@@ -1025,27 +1022,39 @@ function eigenDriver(data){
     //Start gaussian distribution stuff
     //f(x,y) = (1 / (2*pi*stdev(x)*stdev(y))) * e ^ -[(x-mean(x))^2/(2(stdev(x)^2)) + (y-mean(y))^2/(2(stdev(y)^2))]
     //need to solve for the width, height, and rotation of the ellipse.
+/*
+    var projXdata = [], projYdata = [];
+    projectionData.forEach(function (elem) {
+        projXdata.push(elem[0]);
+        projYdata.push(elem[1]);
+    });
 
-    console.log(projectionData);
+    //console.log(projXdata);
 
-    var projectionCovMat = computeCovariance(projectionData),
+    var correlation = jStat.corrcoeff(projXdata,projYdata);
+
+    //console.log(correlation);
+
+    var projXstdev = d3.deviation(projectionData, function(elem){return elem[0]}),
+        projYstdev = d3.deviation(projectionData, function(elem){return elem[1]}),
+        covariance = projXstdev * projYstdev * correlation,
+        projectionCovMat = [
+            [projXstdev * projXstdev, covariance],
+            [covariance, projYstdev * projYstdev]
+    ],//computeCovariance(projectionData),
         projectionEigenVal = computeEigendecomposition(projectionCovMat),
-        ellipseScale = Math.sqrt(2.705543454), //http://onlinelibrary.wiley.com/doi/10.1002/0471998303.app4/pdf 1 degree of freedom, p=0.9
+        ellipseScale = Math.sqrt(2.705543454096032), //http://onlinelibrary.wiley.com/doi/10.1002/0471998303.app4/pdf 1 degree of freedom, p=0.9
         maxEigen = getMaxIndex(projectionEigenVal.eigVals),
         minEigen = getMinIndex(projectionEigenVal.eigVals),
-        projXstdev = d3.deviation(projectionData, function(elem){return elem[0]}),
-        projYstdev = d3.deviation(projectionData, function(elem){return elem[1]}),
         ellRX = projXstdev > projYstdev ? Math.sqrt(projectionEigenVal.eigVals[maxEigen]) * ellipseScale : Math.sqrt(projectionEigenVal.eigVals[minEigen]) * ellipseScale,
         ellRY = projXstdev < projYstdev ? Math.sqrt(projectionEigenVal.eigVals[maxEigen]) * ellipseScale : Math.sqrt(projectionEigenVal.eigVals[minEigen]) * ellipseScale,
         dominantEigenVec = projectionEigenVal.eigVecs[maxEigen],
         rot = Math.atan2(dominantEigenVec[1], dominantEigenVec[0]);
 
-    console.log(projectionEigenVal);
-
     rot = (rot < 0) ? (rot + 2 * math.PI) : rot;
 
     var projXextent = d3.extent(projectionData, function(elem){return elem[0]}),
-        projYextent = d3.extent(projectionData, function (elem) {return elem[1];});
+        projYextent = d3.extent(projectionData, function(elem){return elem[1];});
 
     parent.append("ellipse")
         //.attr("cx",d3.mean(projectionData, function(elem){return elem[0];}))
@@ -1055,7 +1064,90 @@ function eigenDriver(data){
         .attr("ry",Math.abs(yaxis(projYextent[0] + ellRY) - yaxis(projYextent[0])))
         .attr("transform", "translate(" + xaxis(d3.mean(projectionData, function(elem){return elem[0];})) + "," + yaxis(d3.mean(projectionData, function(elem){return elem[1];})) +
             ") rotate(" + (rot * 180 / math.PI) + ")");
+            */
+
+
+    var authors = Array.from(new Set(data.map(function(elem){return elem.author;}))),
+        authdata = build2DArray(authors.length);
+
+    for (var index = 0; index < data.length; index++){
+        for (var authIndex = 0; authIndex < authors.length; authIndex++){
+            if (data[index].author == authors[authIndex]) break;
+        }
+
+        console.log(authIndex);
+        authdata[authIndex].push(projectionData[index]);
+    }
+
+    authdata.forEach(function (elem, index) {
+        console.log(elem);
+       addErrorEllipse(elem, parent, xaxis, yaxis, coloraxis, authors[index]);
+    });
 }
+
+function build2DArray(rows){
+    var array = [];
+    for (var index = 0; index < rows; index++){
+        array.push([]);
+    }
+    console.log(array);
+    return array;
+}
+
+function addErrorEllipse(projectionData, parent, xaxis, yaxis, coloraxis, author){
+    var projXdata = [], projYdata = [];
+
+    if (projectionData.length == 1){
+        projectionData.push(projectionData[0]);
+    }
+
+    projectionData.forEach(function (elem) {
+        projXdata.push(elem[0]);
+        projYdata.push(elem[1]);
+    });
+
+
+    var correlation = jStat.corrcoeff(projXdata,projYdata);
+    correlation = correlation ? correlation : 0;
+
+    var projXstdev = d3.deviation(projectionData, function(elem){return elem[0]}),
+        projYstdev = d3.deviation(projectionData, function(elem){return elem[1]}),
+        covariance = projXstdev * projYstdev * correlation,
+        projectionCovMat = [
+            [projXstdev * projXstdev, covariance],
+            [covariance, projYstdev * projYstdev]
+        ],//computeCovariance(projectionData),
+        projectionEigenVal = computeEigendecomposition(projectionCovMat),
+        ellipseScale = Math.sqrt(2.705543454096032), //http://onlinelibrary.wiley.com/doi/10.1002/0471998303.app4/pdf 1 degree of freedom, p=0.9
+        maxEigen = getMaxIndex(projectionEigenVal.eigVals),
+        minEigen = getMinIndex(projectionEigenVal.eigVals),
+        ellRX = projXstdev > projYstdev ? Math.sqrt(projectionEigenVal.eigVals[maxEigen]) * ellipseScale : Math.sqrt(projectionEigenVal.eigVals[minEigen]) * ellipseScale,
+        ellRY = projXstdev < projYstdev ? Math.sqrt(projectionEigenVal.eigVals[maxEigen]) * ellipseScale : Math.sqrt(projectionEigenVal.eigVals[minEigen]) * ellipseScale,
+        dominantEigenVec = projectionEigenVal.eigVecs[maxEigen],
+        rot = Math.atan2(dominantEigenVec[1], dominantEigenVec[0]);
+
+    rot = (rot < 0) ? (rot + 2 * math.PI) : rot;
+
+    var projXextent = d3.extent(projectionData, function(elem){return elem[0];}),
+        projYextent = d3.extent(projectionData, function(elem){return elem[1];});
+
+    console.log(correlation + " " + projXstdev + " " + projYstdev);
+
+    console.log(projectionCovMat);
+    console.log(projectionEigenVal);
+    console.log(projXextent + " " + ellRX);
+
+    parent.append("ellipse")
+    //.attr("cx",d3.mean(projectionData, function(elem){return elem[0];}))
+    //.attr("cy",d3.mean(projectionData, function(elem){return elem[1];}))
+        .attr("class", "PCA-ellipse")
+        .attr("rx",Math.abs(xaxis(projXextent[0] + ellRX) - xaxis(projXextent[0])))
+        .attr("ry",Math.abs(yaxis(projYextent[0] + ellRY) - yaxis(projYextent[0])))
+        .style("stroke",coloraxis(author))
+        .attr("transform", "translate(" + xaxis(d3.mean(projectionData, function(elem){return elem[0];})) + "," + yaxis(d3.mean(projectionData, function(elem){return elem[1];})) +
+            ") rotate(" + (rot * 180 / math.PI) + ")");
+}
+
 
 function getMaxIndex(array){
     var max = array[0], maxIndex = 0;
@@ -1083,16 +1175,15 @@ function gaussianDistr(stdevX, stdevY, meanX, meanY, x, y){
     return (1 / (2 * math.pi * stdevX * stdevY)) * Math.pow(math.e, -(Math.pow((x-meanX),2)/(2*(Math.pow(stdevX,2))) + Math.pow((y-meanY),2)/(2*Math.pow(stdevY,2))));
 }
 
-function fakeEigen(data){
-    var metricValues = [[5,8],[7,5],[11,8],[15,9],[16,17],[17,18],[18,25]];
-    console.log(metricValues);
+function fakeEigen(){
+    //var metricValues = [[5,8],[7,5],[11,8],[15,9],[16,17],[17,18],[18,25]];
+    var metricValues = [[1,3],[2,1],[3,2],[5,6],[7,6],[8,9],[9,10],[11,12],[14,18],[19,21],[20,20],[21,22],[22,20],[23,23],[25,19],[2,1],[3,2],[5,6],[7,6],[8,9],[9,10],[11,12],[14,18],[19,21],[20,20],[21,22],[22,20],[23,23],[25,19],[2,1],[3,2],[5,6],[7,6],[8,9],[9,10],[11,12],[14,18],[19,21],[20,20],[21,22],[22,20],[23,23],[25,19],[2,1],[3,2],[5,6],[7,6],[8,9],[9,10],[11,12],[14,18],[19,21],[20,20],[21,22],[22,20],[23,23],[25,19],[2,1],[3,2],[5,6],[7,6],[8,9],[9,10],[11,12],[14,18],[19,21],[20,20],[21,22],[22,20],[23,23],[25,19],[2,1],[3,2],[5,6],[7,6],[8,9],[9,10],[11,12],[14,18],[19,21],[20,20],[21,22],[22,20],[23,23],[25,19],[2,1],[3,2],[5,6],[7,6],[8,9],[9,10],[11,12],[14,18],[19,21],[20,20],[21,22],[22,20],[23,23],[25,19]];
     var covMatrix = computeCovariance(metricValues);
     var eigenPairs = computeEigendecomposition(covMatrix);
     var eigenIndexInfo = sortEigenvals(eigenPairs.eigVals);
     var projectionMatrix = computeEigenProjection(eigenIndexInfo, eigenPairs.eigVecs, metricValues);
-    console.log(projectionMatrix);
 
-    var projectionData = projectionMatrix._data;
+    var projectionData = metricValues;
 
     d3.select("#PCAPlot").html(" ");
 
@@ -1106,10 +1197,6 @@ function fakeEigen(data){
     var yaxis = d3.scaleLinear()
         .range([height, 0])
         .domain(d3.extent(projectionData, function(elem){return elem[1];}));
-    var coloraxis = d3.scaleOrdinal(d3.schemeSet2)
-        .domain(data.map(function (elem) {
-            return elem.author;
-        }));
 
     var chart = d3.select("#PCAPlot").append("svg")
         .attr("width", width + margin.left + margin.right)
@@ -1131,15 +1218,12 @@ function fakeEigen(data){
         .enter().append("circle")
         .attr("class","scatterPoint")
         .attr("r",  bubbleThickness)
-        .style("fill", function(elem, index){return coloraxis(data[index].author);})
         .attr("cx", function(elem){return xaxis(elem[0]);})
         .attr("cy", function(elem){return yaxis(elem[1]);});
 
     //Start gaussian distribution stuff
     //f(x,y) = (1 / (2*pi*stdev(x)*stdev(y))) * e ^ -[(x-mean(x))^2/(2(stdev(x)^2)) + (y-mean(y))^2/(2(stdev(y)^2))]
     //need to solve for the width, height, and rotation of the ellipse.
-
-    console.log(projectionData);
 
     var projectionCovMat = computeCovariance(projectionData),
         projectionEigenVal = computeEigendecomposition(projectionCovMat),
@@ -1153,8 +1237,6 @@ function fakeEigen(data){
         dominantEigenVec = projectionEigenVal.eigVecs[maxEigen],
         rot = Math.atan2(dominantEigenVec[1], dominantEigenVec[0]);
 
-    console.log(projectionEigenVal);
-
     rot = (rot < 0) ? (rot + 2 * math.PI) : rot;
 
     var projXextent = d3.extent(projectionData, function(elem){return elem[0]}),
@@ -1167,17 +1249,17 @@ function fakeEigen(data){
         .attr("rx",Math.abs(xaxis(projXextent[0] + ellRX) - xaxis(projXextent[0])))
         .attr("ry",Math.abs(yaxis(projYextent[0] + ellRY) - yaxis(projYextent[0])))
         .attr("transform", "translate(" + xaxis(d3.mean(projectionData, function(elem){return elem[0];})) + "," + yaxis(d3.mean(projectionData, function(elem){return elem[1];})) +
-            ") rotate(" + (rot * 180 / math.PI) + ")");
+            ") rotate(" + -(rot * 180 / math.PI) + ")");
 }
 
 function identifyAuthor(title){
     title = title.toLowerCase();
     if (title.indexOf("dion") >= 0) return "Dionysus";
+    else if (title.indexOf("isoc") >= 0) return "Isocrates";
     else if (title.indexOf("dio") >= 0) return "Dio";
     else if (title.indexOf("demo") >= 0) return "Demosthenes";
     else if (title.indexOf("lys") >= 0) return "Lysias";
     else if (title.indexOf("ael") >= 0) return "Aelius";
-    else if (title.indexOf("isoc") >= 0) return "Isocrates";
     else if (title.indexOf("luci") >= 0) return "Lucian";
     else if (title.indexOf("thuc") >= 0) return "Thucydides";
     else return "unattributed";
