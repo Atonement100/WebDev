@@ -294,7 +294,7 @@ function applyMetrics(){
     enabledMetrics = getCheckedMetrics();
 
     if (enabledMetrics.length == 0){
-        output.println("No metrics were selected, please select at least one metrics");
+        output.println("No metrics were selected, please select at least one metric");
         return;
     }
 
@@ -974,6 +974,11 @@ function computeEigenProjection(eigenIndexInfo, eigenVecs, data){
 }
 
 function eigenDriver(data){
+    if (lastMetricsUsed.length < 2) {
+        handleGlobalErrorMessage("At least two metrics need to be enabled for Principal Component Analysis.");
+        return;
+    }
+
     var metricValues = data.map(function (elem) {
        return elem.metricValues;
     });
@@ -1028,54 +1033,6 @@ function eigenDriver(data){
         .attr("cx", function(elem){return xaxis(elem[0]);})
         .attr("cy", function(elem){return yaxis(elem[1]);});
 
-    //Start gaussian distribution stuff
-    //f(x,y) = (1 / (2*pi*stdev(x)*stdev(y))) * e ^ -[(x-mean(x))^2/(2(stdev(x)^2)) + (y-mean(y))^2/(2(stdev(y)^2))]
-    //need to solve for the width, height, and rotation of the ellipse.
-/*
-    var projXdata = [], projYdata = [];
-    projectionData.forEach(function (elem) {
-        projXdata.push(elem[0]);
-        projYdata.push(elem[1]);
-    });
-
-    //console.log(projXdata);
-
-    var correlation = jStat.corrcoeff(projXdata,projYdata);
-
-    //console.log(correlation);
-
-    var projXstdev = d3.deviation(projectionData, function(elem){return elem[0]}),
-        projYstdev = d3.deviation(projectionData, function(elem){return elem[1]}),
-        covariance = projXstdev * projYstdev * correlation,
-        projectionCovMat = [
-            [projXstdev * projXstdev, covariance],
-            [covariance, projYstdev * projYstdev]
-    ],//computeCovariance(projectionData),
-        projectionEigenVal = computeEigendecomposition(projectionCovMat),
-        ellipseScale = Math.sqrt(2.705543454096032), //http://onlinelibrary.wiley.com/doi/10.1002/0471998303.app4/pdf 1 degree of freedom, p=0.9
-        maxEigen = getMaxIndex(projectionEigenVal.eigVals),
-        minEigen = getMinIndex(projectionEigenVal.eigVals),
-        ellRX = projXstdev > projYstdev ? Math.sqrt(projectionEigenVal.eigVals[maxEigen]) * ellipseScale : Math.sqrt(projectionEigenVal.eigVals[minEigen]) * ellipseScale,
-        ellRY = projXstdev < projYstdev ? Math.sqrt(projectionEigenVal.eigVals[maxEigen]) * ellipseScale : Math.sqrt(projectionEigenVal.eigVals[minEigen]) * ellipseScale,
-        dominantEigenVec = projectionEigenVal.eigVecs[maxEigen],
-        rot = Math.atan2(dominantEigenVec[1], dominantEigenVec[0]);
-
-    rot = (rot < 0) ? (rot + 2 * math.PI) : rot;
-
-    var projXextent = d3.extent(projectionData, function(elem){return elem[0]}),
-        projYextent = d3.extent(projectionData, function(elem){return elem[1];});
-
-    parent.append("ellipse")
-        //.attr("cx",d3.mean(projectionData, function(elem){return elem[0];}))
-        //.attr("cy",d3.mean(projectionData, function(elem){return elem[1];}))
-        .attr("class", "PCA-ellipse")
-        .attr("rx",Math.abs(xaxis(projXextent[0] + ellRX) - xaxis(projXextent[0])))
-        .attr("ry",Math.abs(yaxis(projYextent[0] + ellRY) - yaxis(projYextent[0])))
-        .attr("transform", "translate(" + xaxis(d3.mean(projectionData, function(elem){return elem[0];})) + "," + yaxis(d3.mean(projectionData, function(elem){return elem[1];})) +
-            ") rotate(" + (rot * 180 / math.PI) + ")");
-            */
-
-
     var authors = Array.from(new Set(data.map(function(elem){return elem.author;}))),
         authdata = build2DArray(authors.length);
 
@@ -1094,14 +1051,14 @@ function eigenDriver(data){
     });
 
     var legend = d3.select("#PCAPlot").append("svg")
-        .attr("width", 300)
-        .attr("height", authors.length*30);
+        .attr("width", 140)
+        .attr("height", authors.length*22);
     legend.selectAll("rect")
         .data(authors)
         .enter()
         .append("rect")
         .attr("x", 10)
-        .attr("y", function(elem, index){return index * 20;})
+        .attr("y", function(elem, index){return index * 22 + 5;})
         .attr("width", 15)
         .attr("height", 10)
         .style("fill", function(elem){return coloraxis(elem);});
@@ -1110,10 +1067,8 @@ function eigenDriver(data){
         .enter()
         .append("text")
         .attr("x", 30)
-        .attr("y", function(elem, index){return index * 20 + 10;})
+        .attr("y", function(elem, index){return index * 22 + 15;})
         .text(function(elem){return elem;});
-
-    d3.select("#PCAPlot").append("")
 }
 
 function build2DArray(rows){
@@ -1294,4 +1249,9 @@ function identifyAuthor(title){
     else if (title.indexOf("luci") >= 0) return "Lucian";
     else if (title.indexOf("thuc") >= 0) return "Thucydides";
     else return "unattributed";
+}
+
+function handleGlobalErrorMessage(message){
+    console.log(message);
+    if (output) output.println(message);
 }
