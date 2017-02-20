@@ -221,3 +221,11 @@ body{
     stroke: black;
     stroke-width: 2px;
 }
+
+.PCA-point.active {
+    display:block;
+}
+
+.PCA-point.inactive {
+    display:none;
+}
