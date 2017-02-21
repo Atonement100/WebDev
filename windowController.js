@@ -1039,33 +1039,7 @@ function principalComponentAnalysis(metricValues){
     var covMatrix = computeCovariance(metricValues),
         eigenPairs = computeEigendecomposition(covMatrix),
         eigenIndexInfo = sortEigenvals(eigenPairs.eigVals),
-        <<<<<<< Updated upstream
-    projectionMatrix = computeEigenProjection(eigenIndexInfo, eigenPairs.eigVecs, metricValues),
-        projectionData = projectionMatrix._data;
-
-    console.log(projectionData);
-    console.log(eigenIndexInfo);
-    console.log(eigenPairs);
-
-    //d3.select("#PCAPlot").html(" ");
-
-    var margin = {top: 15, right: 15, bottom: 30, left: 30},
-        bubbleThickness = 4, //px
-        width = 800, height = 800;
-
-    var xaxis = d3.scaleLinear()
-        .range([0, width])
-        .domain(d3.extent(projectionData, function(elem){return elem[0];}));
-    var yaxis = d3.scaleLinear()
-        .range([height, 0])
-        .domain(d3.extent(projectionData, function(elem){return elem[1];}));
-    var coloraxis = d3.scaleOrdinal(d3.schemeSet2)
-        .domain(data.map(function (elem) {
-            return elem.author;
-        }));
-=======
         projectionMatrix = computeEigenProjection(eigenIndexInfo, eigenPairs.eigVecs, metricValues);
->>>>>>> Stashed changes
 
     return projectionMatrix._data;
 }
@@ -1082,15 +1056,9 @@ function binProjectionDataByAuthor(data, authors, projectionData){
         authdata[authIndex].push(projectionData[index]);
     }
 
-<<<<<<< Updated upstream
-    authdata.forEach(function (elem, index) {
-        console.log(elem);
-        addErrorEllipse(elem, parent, xaxis, yaxis, coloraxis, authors[index]);
-    });
-=======
     return authdata;
 }
->>>>>>> Stashed changes
+
 
 function createAuthorPlotPointToggles(target, authors, pointClassName){
     d3.select(target).selectAll("input")
@@ -1129,7 +1097,6 @@ function createAuthorToColorLegend(legendTarget, authors, coloraxis){
         .text(function(elem){return elem;});
 }
 
-<<<<<<< Updated upstream
 function build2DArray(rows){
     var array = [];
     for (var index = 0; index < rows; index++){
@@ -1137,8 +1104,6 @@ function build2DArray(rows){
     }
     console.log(array);
     return array;
-=======
->>>>>>> Stashed changes
 }
 
 function addErrorEllipse(projectionData, parent, xaxis, yaxis, coloraxis, author){
@@ -1216,87 +1181,6 @@ function getMinIndex(array) {
         }
     }
     return minIndex;
-}
-
-function gaussianDistr(stdevX, stdevY, meanX, meanY, x, y){
-    return (1 / (2 * math.pi * stdevX * stdevY)) * Math.pow(math.e, -(Math.pow((x-meanX),2)/(2*(Math.pow(stdevX,2))) + Math.pow((y-meanY),2)/(2*Math.pow(stdevY,2))));
-}
-
-function fakeEigen(){
-    //var metricValues = [[5,8],[7,5],[11,8],[15,9],[16,17],[17,18],[18,25]];
-    var metricValues = [[1,3],[2,1],[3,2],[5,6],[7,6],[8,9],[9,10],[11,12],[14,18],[19,21],[20,20],[21,22],[22,20],[23,23],[25,19],[2,1],[3,2],[5,6],[7,6],[8,9],[9,10],[11,12],[14,18],[19,21],[20,20],[21,22],[22,20],[23,23],[25,19],[2,1],[3,2],[5,6],[7,6],[8,9],[9,10],[11,12],[14,18],[19,21],[20,20],[21,22],[22,20],[23,23],[25,19],[2,1],[3,2],[5,6],[7,6],[8,9],[9,10],[11,12],[14,18],[19,21],[20,20],[21,22],[22,20],[23,23],[25,19],[2,1],[3,2],[5,6],[7,6],[8,9],[9,10],[11,12],[14,18],[19,21],[20,20],[21,22],[22,20],[23,23],[25,19],[2,1],[3,2],[5,6],[7,6],[8,9],[9,10],[11,12],[14,18],[19,21],[20,20],[21,22],[22,20],[23,23],[25,19],[2,1],[3,2],[5,6],[7,6],[8,9],[9,10],[11,12],[14,18],[19,21],[20,20],[21,22],[22,20],[23,23],[25,19]];
-    var covMatrix = computeCovariance(metricValues);
-    var eigenPairs = computeEigendecomposition(covMatrix);
-    var eigenIndexInfo = sortEigenvals(eigenPairs.eigVals);
-    var projectionMatrix = computeEigenProjection(eigenIndexInfo, eigenPairs.eigVecs, metricValues);
-
-    var projectionData = metricValues;
-
-    d3.select("#PCAPlot").html(" ");
-
-    var margin = {top: 15, right: 15, bottom: 30, left: 30};
-    var bubbleThickness = 4; //px
-    var width = 800, height = 800;
-
-    var xaxis = d3.scaleLinear()
-        .range([0, width])
-        .domain(d3.extent(projectionData, function(elem){return elem[0];}));
-    var yaxis = d3.scaleLinear()
-        .range([height, 0])
-        .domain(d3.extent(projectionData, function(elem){return elem[1];}));
-
-    var chart = d3.select("#PCAPlot").append("svg")
-        .attr("width", width + margin.left + margin.right)
-        .attr("height", height + margin.bottom + margin.top);
-    var parent = chart.append("g")
-        .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
-
-    parent.append("g")
-        .attr("class", "axis x-axis")
-        .attr("transform", "translate(0," + height + ")")
-        .call(d3.axisBottom(xaxis));
-
-    parent.append("g")
-        .attr("class", "axis y-axis")
-        .call(d3.axisLeft(yaxis));
-
-    parent.selectAll(".scatterPoint")
-        .data(projectionData)
-        .enter().append("circle")
-        .attr("class","scatterPoint")
-        .attr("r",  bubbleThickness)
-        .attr("cx", function(elem){return xaxis(elem[0]);})
-        .attr("cy", function(elem){return yaxis(elem[1]);});
-
-    //Start gaussian distribution stuff
-    //f(x,y) = (1 / (2*pi*stdev(x)*stdev(y))) * e ^ -[(x-mean(x))^2/(2(stdev(x)^2)) + (y-mean(y))^2/(2(stdev(y)^2))]
-    //need to solve for the width, height, and rotation of the ellipse.
-
-    var projectionCovMat = computeCovariance(projectionData),
-        projectionEigenVal = computeEigendecomposition(projectionCovMat),
-        ellipseScale = Math.sqrt(2.705543454), //http://onlinelibrary.wiley.com/doi/10.1002/0471998303.app4/pdf 1 degree of freedom, p=0.9
-        maxEigen = getMaxIndex(projectionEigenVal.eigVals),
-        minEigen = getMinIndex(projectionEigenVal.eigVals),
-        projXstdev = d3.deviation(projectionData, function(elem){return elem[0]}),
-        projYstdev = d3.deviation(projectionData, function(elem){return elem[1]}),
-        ellRX = projXstdev > projYstdev ? Math.sqrt(projectionEigenVal.eigVals[maxEigen]) * ellipseScale : Math.sqrt(projectionEigenVal.eigVals[minEigen]) * ellipseScale,
-        ellRY = projXstdev < projYstdev ? Math.sqrt(projectionEigenVal.eigVals[maxEigen]) * ellipseScale : Math.sqrt(projectionEigenVal.eigVals[minEigen]) * ellipseScale,
-        dominantEigenVec = projectionEigenVal.eigVecs[maxEigen],
-        rot = Math.atan2(dominantEigenVec[1], dominantEigenVec[0]);
-
-    rot = (rot < 0) ? (rot + 2 * math.PI) : rot;
-
-    var projXextent = d3.extent(projectionData, function(elem){return elem[0]}),
-        projYextent = d3.extent(projectionData, function (elem) {return elem[1];});
-
-    parent.append("ellipse")
-    //.attr("cx",d3.mean(projectionData, function(elem){return elem[0];}))
-    //.attr("cy",d3.mean(projectionData, function(elem){return elem[1];}))
-        .attr("class", "PCA-ellipse")
-        .attr("rx",Math.abs(xaxis(projXextent[0] + ellRX) - xaxis(projXextent[0])))
-        .attr("ry",Math.abs(yaxis(projYextent[0] + ellRY) - yaxis(projYextent[0])))
-        .attr("transform", "translate(" + xaxis(d3.mean(projectionData, function(elem){return elem[0];})) + "," + yaxis(d3.mean(projectionData, function(elem){return elem[1];})) +
-            ") rotate(" + -(rot * 180 / math.PI) + ")");
 }
 
 function identifyAuthor(title){
