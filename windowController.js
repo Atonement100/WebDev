@@ -1097,20 +1097,11 @@ function createAuthorToColorLegend(legendTarget, authors, coloraxis){
         .text(function(elem){return elem;});
 }
 
-function build2DArray(rows){
-    var array = [];
-    for (var index = 0; index < rows; index++){
-        array.push([]);
-    }
-    console.log(array);
-    return array;
-}
-
 function addErrorEllipse(projectionData, parent, xaxis, yaxis, coloraxis, author){
     var projXdata = [], projYdata = [];
 
     if (projectionData.length == 1){
-        projectionData.push(projectionData[0]);
+        projectionData.push(projectionData[0]); //Could return here instead to save on calculations.
     }
 
     projectionData.forEach(function (elem) {
@@ -1118,21 +1109,13 @@ function addErrorEllipse(projectionData, parent, xaxis, yaxis, coloraxis, author
         projYdata.push(elem[1]);
     });
 
-
-    var correlation = jStat.corrcoeff(projXdata,projYdata);
-    correlation = correlation ? correlation : 0;
-
     var projXstdev = d3.deviation(projectionData, function(elem){return elem[0]}),
         projYstdev = d3.deviation(projectionData, function(elem){return elem[1]}),
-        covariance = projXstdev * projYstdev * correlation,
-        projectionCovMat = [
-            [projXstdev * projXstdev, covariance],
-            [covariance, projYstdev * projYstdev]
-        ],//computeCovariance(projectionData),
+        projectionCovMat = computeCovariance(projectionData),
         projectionEigenVal = computeEigendecomposition(projectionCovMat),
         ellipseScale = Math.sqrt(2.705543454096032), //http://onlinelibrary.wiley.com/doi/10.1002/0471998303.app4/pdf 1 degree of freedom, p=0.9
-        maxEigen = getMaxIndex(projectionEigenVal.eigVals),
-        minEigen = getMinIndex(projectionEigenVal.eigVals),
+        maxEigen = getIndexOfMax(projectionEigenVal.eigVals),
+        minEigen = getIndexOfMin(projectionEigenVal.eigVals),
         ellRX = projXstdev > projYstdev ? Math.sqrt(projectionEigenVal.eigVals[maxEigen]) * ellipseScale : Math.sqrt(projectionEigenVal.eigVals[minEigen]) * ellipseScale,
         ellRY = projXstdev < projYstdev ? Math.sqrt(projectionEigenVal.eigVals[maxEigen]) * ellipseScale : Math.sqrt(projectionEigenVal.eigVals[minEigen]) * ellipseScale,
         dominantEigenVec = projectionEigenVal.eigVecs[maxEigen],
@@ -1143,15 +1126,9 @@ function addErrorEllipse(projectionData, parent, xaxis, yaxis, coloraxis, author
     var projXextent = d3.extent(projectionData, function(elem){return elem[0];}),
         projYextent = d3.extent(projectionData, function(elem){return elem[1];});
 
-    console.log(correlation + " " + projXstdev + " " + projYstdev);
-
-    console.log(projectionCovMat);
-    console.log(projectionEigenVal);
-    console.log(projXextent + " " + ellRX);
-
     parent.append("ellipse")
-    //.attr("cx",d3.mean(projectionData, function(elem){return elem[0];}))
-    //.attr("cy",d3.mean(projectionData, function(elem){return elem[1];}))
+        //.attr("cx",d3.mean(projectionData, function(elem){return elem[0];}))
+        //.attr("cy",d3.mean(projectionData, function(elem){return elem[1];}))
         .attr("class", "PCA-ellipse")
         .attr("rx",Math.abs(xaxis(projXextent[0] + ellRX) - xaxis(projXextent[0])))
         .attr("ry",Math.abs(yaxis(projYextent[0] + ellRY) - yaxis(projYextent[0])))
@@ -1161,7 +1138,7 @@ function addErrorEllipse(projectionData, parent, xaxis, yaxis, coloraxis, author
 }
 
 
-function getMaxIndex(array){
+function getIndexOfMax(array){
     var max = array[0], maxIndex = 0;
     for (var index = 1; index < array.length; index++){
         if (array[index] < max){
@@ -1172,7 +1149,7 @@ function getMaxIndex(array){
     return maxIndex;
 }
 
-function getMinIndex(array) {
+function getIndexOfMin(array) {
     var min = array[0], minIndex = 0;
     for (var index = 1; index < array.length; index++){
         if (array[index] < min){
@@ -1199,4 +1176,14 @@ function identifyAuthor(title){
 function handleGlobalErrorMessage(message){
     console.log(message);
     if (output) output.println(message);
+}
+
+
+function build2DArray(rows){
+    var array = [];
+    for (var index = 0; index < rows; index++){
+        array.push([]);
+    }
+    console.log(array);
+    return array;
 }
