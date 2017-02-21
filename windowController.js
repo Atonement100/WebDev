@@ -828,6 +828,7 @@ function buildScatterPlot(tableData, yMetricIndex, xMetricIndex) {
     var yMetricSelector = d3.select("#scatterPlot").append("select")
         .attr("id", "scatterySelect")
         .on("change", selectedMetricChange);
+    d3.select("#scatterPlot").append("br");
 
     xMetricSelector.selectAll("option")
         .data(lastMetricsUsed)
@@ -877,15 +878,33 @@ function buildScatterPlot(tableData, yMetricIndex, xMetricIndex) {
         .attr("class", "axis y-axis")
         .call(d3.axisLeft(yaxis));
 
+    var tooltip = d3.select("body").append("div")
+        .attr("class", "tooltip")
+        .style("display", "none")
+        .style("z-index", 12);
+
     parent.selectAll(".scatterPoint")
         .data(tableData)
         .enter().append("circle")
-        .attr("class","scatterPoint")
+        .attr("class", function(elem){return "scatterPoint " + elem.author;})
         .attr("r",  bubbleThickness)
         .style("fill", function(elem){return coloraxis(elem.author);})
         .attr("cx", function(elem){return xaxis(elem.metricValues[xMetricIndex]);})
-        .attr("cy", function(elem){return yaxis(elem.metricValues[yMetricIndex]);});
+        .attr("cy", function(elem){return yaxis(elem.metricValues[yMetricIndex]);})
+        .on("mouseover", function(elem){
+            tooltip.html("Author: " + elem.author + "<br>Treebank Title: " + elem.title + "<br>Sentence no.: " + elem.sentence)
+                .style("left", (d3.event.pageX + 10) + "px")
+                .style("top", (d3.event.pageY + 10) + "px")
+                .style("display","inline");
+        })
+        .on("mouseout", function(){
+            tooltip.style("display","none");
+        });
 
+    var authors = Array.from(new Set(tableData.map(function(elem){return elem.author;})));
+
+    createAuthorToColorLegend("#scatterPlot", authors, coloraxis);
+    createAuthorPlotPointToggles("#scatterPlot", authors, ".scatterPoint");
 
     function selectedMetricChange(){
         buildScatterPlot(tableData, yMetricSelector.property('selectedIndex'), xMetricSelector.property('selectedIndex'));
@@ -959,6 +978,11 @@ function buildPCAPlot(data){
         .attr("class", "axis y-axis")
         .call(d3.axisLeft(yaxis));
 
+    var tooltip = d3.select("body").append("div")
+        .attr("class", "tooltip")
+        .style("display", "none")
+        .style("z-index", 12);
+
     parent.selectAll(".scatterPoint")
         .data(projectionData)
         .enter().append("circle")
@@ -966,7 +990,17 @@ function buildPCAPlot(data){
         .attr("r",  bubbleThickness)
         .style("fill", function(elem, index){return coloraxis(data[index].author);})
         .attr("cx", function(elem){return xaxis(elem[0]);})
-        .attr("cy", function(elem){return yaxis(elem[1]);});
+        .attr("cy", function(elem){return yaxis(elem[1]);})
+        .on("mouseover", function(elem, index){
+            tooltip.html("Author: " + data[index].author + "<br>Treebank Title: " + data[index].title + "<br>Sentence no.: " + data[index].sentence)
+                .style("left", (d3.event.pageX + 10) + "px")
+                .style("top", (d3.event.pageY + 10) + "px")
+                .style("display","inline");
+            console.log(tooltip.text());
+        })
+        .on("mouseout", function(){
+            tooltip.style("display","none");
+        });
 
     var authors = Array.from(new Set(data.map(function(elem){return elem.author;}))),
         authdata = binProjectionDataByAuthor(data, authors, projectionData);
@@ -1051,8 +1085,6 @@ function binProjectionDataByAuthor(data, authors, projectionData){
         for (var authIndex = 0; authIndex < authors.length; authIndex++){
             if (data[index].author == authors[authIndex]) break;
         }
-
-        console.log(authIndex);
         authdata[authIndex].push(projectionData[index]);
     }
 
@@ -1094,6 +1126,7 @@ function createAuthorToColorLegend(legendTarget, authors, coloraxis){
         .append("text")
         .attr("x", 30)
         .attr("y", function(elem, index){return index * 22 + 15;})
+        .attr("class", "legend")
         .text(function(elem){return elem;});
 }
 
@@ -1127,8 +1160,8 @@ function addErrorEllipse(projectionData, parent, xaxis, yaxis, coloraxis, author
         projYextent = d3.extent(projectionData, function(elem){return elem[1];});
 
     parent.append("ellipse")
-        //.attr("cx",d3.mean(projectionData, function(elem){return elem[0];}))
-        //.attr("cy",d3.mean(projectionData, function(elem){return elem[1];}))
+    //.attr("cx",d3.mean(projectionData, function(elem){return elem[0];}))
+    //.attr("cy",d3.mean(projectionData, function(elem){return elem[1];}))
         .attr("class", "PCA-ellipse")
         .attr("rx",Math.abs(xaxis(projXextent[0] + ellRX) - xaxis(projXextent[0])))
         .attr("ry",Math.abs(yaxis(projYextent[0] + ellRY) - yaxis(projYextent[0])))
@@ -1184,6 +1217,5 @@ function build2DArray(rows){
     for (var index = 0; index < rows; index++){
         array.push([]);
     }
-    console.log(array);
     return array;
 }

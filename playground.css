@@ -233,3 +233,16 @@ body{
 .PCA-legend {
     font-family:sans-serif;
 }
+
+.tooltip {
+    position: absolute;
+    text-align: center;
+    width: 200px;
+    height: auto;
+    padding: 2px;
+    font: 12px sans-serif;
+    background: powderblue;
+    border: none;
+    border-radius: 5px; /*rounds edges*/
+    pointer-events: none;
+}

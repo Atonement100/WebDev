@@ -1,7 +1,32 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="1d8edbe8-fb30-438b-bf61-3fdc6c32c69f" name="Default" comment="" />
+    <list default="true" id="1d8edbe8-fb30-438b-bf61-3fdc6c32c69f" name="Default" comment="">
+      <change type="DELETED" beforePath="$PROJECT_DIR$/personal_website/.idea/modules.xml" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/personal_website/.idea/personal_website.iml" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/personal_website/.idea/workspace.xml" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/personal_website/index.html" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/personal_website/reset.css" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/personal_website/style.css" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/playground/.idea/jsLibraryMappings.xml" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/playground/.idea/modules.xml" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/playground/.idea/playground.iml" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/playground/.idea/workspace.xml" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/playground/d3-scale-chromatic.js" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/playground/localmetreex-1.0.js" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/playground/localwindows-3.js" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/playground/math.js" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/playground/metricSource.js" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/playground/numeric-1.2.6.js" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/playground/playground.css" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/playground/playground.html" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/playground/windowController.js" afterPath="" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/jsLibraryMappings.xml" afterPath="$PROJECT_DIR$/.idea/jsLibraryMappings.xml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/playground.iml" afterPath="$PROJECT_DIR$/.idea/playground.iml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/playground.css" afterPath="$PROJECT_DIR$/playground.css" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/windowController.js" afterPath="$PROJECT_DIR$/windowController.js" />
+    </list>
     <ignored path="$PROJECT_DIR$/.tmp/" />
     <ignored path="$PROJECT_DIR$/temp/" />
     <ignored path="$PROJECT_DIR$/tmp/" />
@@ -21,68 +46,29 @@
       <file leaf-file-name="playground.html" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/playground.html">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="391">
-              <caret line="23" column="7" lean-forward="true" selection-start-line="23" selection-start-column="7" selection-end-line="23" selection-end-column="7" />
+            <state relative-caret-position="301">
+              <caret line="33" column="7" lean-forward="false" selection-start-line="33" selection-start-column="7" selection-end-line="33" selection-end-column="7" />
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="windowController.js" pinned="false" current-in-tab="false">
+      <file leaf-file-name="playground.css" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/playground.css">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="830">
+              <caret line="246" column="25" lean-forward="false" selection-start-line="246" selection-start-column="25" selection-end-line="246" selection-end-column="25" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="windowController.js" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/windowController.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="85">
-              <caret line="5" column="8" lean-forward="false" selection-start-line="5" selection-start-column="8" selection-end-line="5" selection-end-column="8" />
+            <state relative-caret-position="207">
+              <caret line="879" column="59" lean-forward="false" selection-start-line="879" selection-start-column="59" selection-end-line="879" selection-end-column="59" />
               <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="http_www.metreex.org_js_metreex-1.0.js" pinned="false" current-in-tab="false">
-        <entry file="file://$APPLICATION_CONFIG_DIR$/javascript/extLibs/http_www.metreex.org_js_metreex-1.0.js">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="272">
-              <caret line="679" column="0" lean-forward="false" selection-start-line="679" selection-start-column="0" selection-end-line="679" selection-end-column="0" />
-              <caret line="665" column="12" lean-forward="false" selection-start-line="665" selection-start-column="12" selection-end-line="665" selection-end-column="12" />
-              <folding>
-                <element signature="n#!!doc" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="localwindows-3.js" pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/localwindows-3.js">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="476">
-              <caret line="2516" column="39" lean-forward="false" selection-start-line="2516" selection-start-column="39" selection-end-line="2516" selection-end-column="39" />
-              <folding>
-                <marker date="1483636446248" expanded="true" signature="96836:96859" ph="..." />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="http_www.visineat.com_js_vn-1.8.js" pinned="false" current-in-tab="false">
-        <entry file="file://$APPLICATION_CONFIG_DIR$/javascript/extLibs/http_www.visineat.com_js_vn-1.8.js">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="456">
-              <caret line="922" column="19" lean-forward="false" selection-start-line="922" selection-start-column="16" selection-end-line="922" selection-end-column="19" />
-              <folding>
-                <element signature="n#!!doc" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="metreex.org - Treebank Metric System.html" pinned="false" current-in-tab="false">
-        <entry file="file://V:/Downloads/metreex.org - Treebank Metric System.html">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-51">
-              <caret line="279" column="15" lean-forward="false" selection-start-line="279" selection-start-column="9" selection-end-line="279" selection-end-column="15" />
-              <folding>
-                <element signature="n#style#0;n#div#2;n#div#1;n#div#11;n#div#3;n#div#1;n#body#0;n#html#0;n#!!top" expanded="true" />
-              </folding>
             </state>
           </provider>
         </entry>
@@ -100,13 +86,6 @@
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
-      <find>Nodemetric</find>
-      <find>name</find>
-      <find>window</find>
-      <find>.load</find>
-      <find>gettitle</find>
-      <find>createwindow</find>
-      <find>windowmanager</find>
       <find>_u</find>
       <find>vn||</find>
       <find>createw</find>
@@ -129,33 +108,51 @@
       <find>createconsole</find>
       <find>handlekeydown</find>
       <find>handlekey</find>
+      <find>build2darra</find>
+      <find>&amp;</find>
+      <find>scatterplot</find>
+      <find>build2d</find>
+      <find>tooltip</find>
+      <find>var authors</find>
+      <find>var author</find>
+      <find>createauthorpl</find>
     </findStrings>
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
   <component name="IdeDocumentHistory">
     <option name="CHANGED_PATHS">
       <list>
         <option value="$PROJECT_DIR$/testxml.xml" />
         <option value="$APPLICATION_CONFIG_DIR$/javascript/extLibs/http_www.metreex.org_js_metreex-1.0.js" />
-        <option value="$PROJECT_DIR$/playground.css" />
         <option value="V:/Downloads/metreex.org - Treebank Metric System.html" />
         <option value="$APPLICATION_CONFIG_DIR$/javascript/extLibs/http_www.visineat.com_js_vn_windows-3.js" />
         <option value="$PROJECT_DIR$/http_www.visineat.com_js_vn_windows-3.js" />
-        <option value="$PROJECT_DIR$/windowController.js" />
         <option value="$PROJECT_DIR$/playground.html" />
         <option value="$PROJECT_DIR$/localwindows-3.js" />
+        <option value="$PROJECT_DIR$/playground.css" />
+        <option value="$PROJECT_DIR$/windowController.js" />
       </list>
     </option>
   </component>
   <component name="JsBuildToolGruntFileManager" detection-done="true" sorting="DEFINITION_ORDER" />
   <component name="JsBuildToolPackageJson" detection-done="true" sorting="DEFINITION_ORDER" />
+  <component name="JsFlowSettings">
+    <service-enabled>false</service-enabled>
+    <exe-path />
+    <annotation-enable>false</annotation-enable>
+    <other-services-enabled>false</other-services-enabled>
+  </component>
   <component name="JsGulpfileManager">
     <detection-done>true</detection-done>
     <sorting>DEFINITION_ORDER</sorting>
   </component>
   <component name="ProjectFrameBounds">
-    <option name="x" value="-7" />
-    <option name="width" value="1934" />
-    <option name="height" value="1087" />
+    <option name="x" value="-8" />
+    <option name="y" value="-8" />
+    <option name="width" value="1936" />
+    <option name="height" value="1096" />
   </component>
   <component name="ProjectView">
     <navigator currentView="ProjectPane" proportions="" version="1">
@@ -172,25 +169,12 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
+      <pane id="Scope" />
       <pane id="ProjectPane">
         <subPane>
           <PATH>
             <PATH_ELEMENT>
-              <option name="myItemId" value="playground" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="External Libraries" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ExternalLibrariesNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="windows-3" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.NamedLibraryElementNode" />
-            </PATH_ELEMENT>
-          </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="playground" />
+              <option name="myItemId" value="metreex-analysis-tool" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
             </PATH_ELEMENT>
             <PATH_ELEMENT>
@@ -200,45 +184,16 @@
           </PATH>
           <PATH>
             <PATH_ELEMENT>
-              <option name="myItemId" value="playground" />
+              <option name="myItemId" value="metreex-analysis-tool" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
             </PATH_ELEMENT>
             <PATH_ELEMENT>
-              <option name="myItemId" value="External Libraries" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ExternalLibrariesNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="vn-1.8" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.NamedLibraryElementNode" />
-            </PATH_ELEMENT>
-          </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="playground" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="External Libraries" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ExternalLibrariesNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="metreex-1.0" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.NamedLibraryElementNode" />
-            </PATH_ELEMENT>
-          </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="playground" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="playground" />
+              <option name="myItemId" value="metreex-analysis-tool" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
           </PATH>
         </subPane>
       </pane>
-      <pane id="Scope" />
       <pane id="Scratches" />
     </panes>
   </component>
@@ -248,14 +203,15 @@
     <property name="DefaultHtmlFileTemplate" value="HTML File" />
     <property name="js.eslint.eslintPackage" value="" />
     <property name="list.type.of.created.stylesheet" value="CSS" />
-    <property name="last_opened_file_path" value="V:/Downloads/metreex.org - Treebank Metric System.html" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/playground.html" />
+    <property name="settings.editor.selected.configurable" value="Settings.JavaScript.Linters" />
   </component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
       <recent name="V:\GitHub\WebDev\playground" />
     </key>
   </component>
-  <component name="RunManager" selected="JavaScript Debug.playground.html">
+  <component name="RunManager" selected="JavaScript Debug.metreex">
     <configuration default="false" name="playground.html" type="JavascriptDebugType" factoryName="JavaScript Debug" temporary="true" nameIsGenerated="true" uri="http://localhost:63342/playground/playground.html">
       <method />
     </configuration>
@@ -321,9 +277,13 @@
       <recursive>false</recursive>
       <method />
     </configuration>
-    <list size="2">
-      <item index="0" class="java.lang.String" itemvalue="JavaScript Debug.playground.html" />
-      <item index="1" class="java.lang.String" itemvalue="Node.js.http_www.visineat.com_js_vn_windows-3.js" />
+    <configuration default="false" name="metreex" type="JavascriptDebugType" factoryName="JavaScript Debug" uri="http://localhost:63342/metreex-analysis-tool/playground.html">
+      <method />
+    </configuration>
+    <list size="3">
+      <item index="0" class="java.lang.String" itemvalue="JavaScript Debug.metreex" />
+      <item index="1" class="java.lang.String" itemvalue="JavaScript Debug.playground.html" />
+      <item index="2" class="java.lang.String" itemvalue="Node.js.http_www.visineat.com_js_vn_windows-3.js" />
     </list>
     <recent_temporary>
       <list size="2">
@@ -353,20 +313,21 @@
       <workItem from="1483461523432" duration="1444000" />
       <workItem from="1483563662432" duration="10573000" />
       <workItem from="1483627434329" duration="4576000" />
+      <workItem from="1487697077251" duration="3975000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="38419000" />
+    <option name="totallyTimeSpent" value="42394000" />
   </component>
   <component name="ToolWindowManager">
-    <frame x="-7" y="0" width="1934" height="1087" extended-state="0" />
+    <frame x="-8" y="-8" width="1936" height="1096" extended-state="6" />
     <editor active="true" />
     <layout>
-      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.18039624" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.18020834" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="true" content_ui="tabs" />
-      <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="false" weight="0.33" sideWeight="0.5" order="9" side_tool="false" content_ui="tabs" />
+      <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="9" side_tool="false" content_ui="tabs" />
       <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.19186653" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="8" side_tool="false" content_ui="tabs" />
@@ -394,6 +355,63 @@
   <component name="editorHistoryManager">
     <entry file="file://$PROJECT_DIR$/playground.html">
       <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="391">
+          <caret line="23" column="0" lean-forward="true" selection-start-line="23" selection-start-column="0" selection-end-line="23" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/windowController.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="85">
+          <caret line="5" column="8" lean-forward="false" selection-start-line="5" selection-start-column="8" selection-end-line="5" selection-end-column="8" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$APPLICATION_CONFIG_DIR$/javascript/extLibs/http_www.metreex.org_js_metreex-1.0.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="10829">
+          <caret line="679" column="0" lean-forward="false" selection-start-line="679" selection-start-column="0" selection-end-line="679" selection-end-column="0" />
+          <caret line="665" column="12" lean-forward="false" selection-start-line="665" selection-start-column="12" selection-end-line="665" selection-end-column="12" />
+          <folding>
+            <element signature="n#!!doc" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/localwindows-3.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding>
+            <marker date="1487695135396" expanded="true" signature="97742:97765" ph="..." />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$APPLICATION_CONFIG_DIR$/javascript/extLibs/http_www.visineat.com_js_vn-1.8.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="15198">
+          <caret line="922" column="19" lean-forward="false" selection-start-line="922" selection-start-column="16" selection-end-line="922" selection-end-column="19" />
+          <folding>
+            <element signature="n#!!doc" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://V:/Downloads/metreex.org - Treebank Metric System.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="4743">
+          <caret line="279" column="15" lean-forward="false" selection-start-line="279" selection-start-column="9" selection-end-line="279" selection-end-column="15" />
+          <folding>
+            <element signature="n#style#0;n#div#2;n#div#1;n#div#11;n#div#3;n#div#1;n#body#0;n#html#0;n#!!top" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/playground.html">
+      <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="323">
           <caret line="19" column="0" lean-forward="true" selection-start-line="19" selection-start-column="0" selection-end-line="19" selection-end-column="0" />
           <folding />
@@ -413,7 +431,7 @@
         <state relative-caret-position="4743">
           <caret line="279" column="15" lean-forward="false" selection-start-line="279" selection-start-column="9" selection-end-line="279" selection-end-column="15" />
           <folding>
-            <element signature="n#style#0;n#div#2;n#div#1;n#div#11;n#div#3;n#div#1;n#body#0;n#html#0;n#!!top" expanded="true" />
+            <element signature="n#style#0;n#div#2;n#div#1;n#div#11;n#div#3;n#div#1;n#body#0;n#html#0;n#!!top" expanded="false" />
           </folding>
         </state>
       </provider>
@@ -423,7 +441,7 @@
         <state relative-caret-position="11016">
           <caret line="676" column="52" lean-forward="true" selection-start-line="676" selection-start-column="52" selection-end-line="676" selection-end-column="52" />
           <folding>
-            <element signature="n#!!doc" expanded="true" />
+            <element signature="n#!!doc" expanded="false" />
           </folding>
         </state>
       </provider>
@@ -441,7 +459,7 @@
         <state relative-caret-position="0">
           <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
           <folding>
-            <element signature="n#!!doc" expanded="true" />
+            <element signature="n#!!doc" expanded="false" />
             <marker date="1483632422399" expanded="true" signature="96944:96967" ph="..." />
           </folding>
         </state>
@@ -452,19 +470,12 @@
         <state relative-caret-position="15198">
           <caret line="922" column="19" lean-forward="false" selection-start-line="922" selection-start-column="16" selection-end-line="922" selection-end-column="19" />
           <folding>
-            <element signature="n#!!doc" expanded="true" />
+            <element signature="n#!!doc" expanded="false" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/testxml.xml">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="12359">
-          <caret line="727" column="58" lean-forward="false" selection-start-line="727" selection-start-column="58" selection-end-line="727" selection-end-column="58" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
+    <entry file="file://$PROJECT_DIR$/testxml.xml" />
     <entry file="file://$PROJECT_DIR$/playground.html">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="0">
@@ -486,7 +497,7 @@
         <state relative-caret-position="119">
           <caret line="35" column="30" lean-forward="true" selection-start-line="35" selection-start-column="30" selection-end-line="35" selection-end-column="30" />
           <folding>
-            <element signature="n#!!doc" expanded="true" />
+            <element signature="n#!!doc" expanded="false" />
             <marker date="1483632422399" expanded="true" signature="96944:96967" ph="..." />
           </folding>
         </state>
@@ -497,25 +508,18 @@
         <state relative-caret-position="1020">
           <caret line="88" column="19" lean-forward="false" selection-start-line="88" selection-start-column="7" selection-end-line="88" selection-end-column="19" />
           <folding>
-            <element signature="n#!!doc" expanded="true" />
+            <element signature="n#!!doc" expanded="false" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/testxml.xml">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="12359">
-          <caret line="727" column="58" lean-forward="false" selection-start-line="727" selection-start-column="58" selection-end-line="727" selection-end-column="58" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
+    <entry file="file://$PROJECT_DIR$/testxml.xml" />
     <entry file="file://$APPLICATION_CONFIG_DIR$/javascript/extLibs/http_www.metreex.org_js_metreex-1.0.js">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="10557">
           <caret line="649" column="23" lean-forward="false" selection-start-line="649" selection-start-column="23" selection-end-line="649" selection-end-column="23" />
           <folding>
-            <element signature="n#!!doc" expanded="true" />
+            <element signature="n#!!doc" expanded="false" />
           </folding>
         </state>
       </provider>
@@ -528,20 +532,13 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/testxml.xml">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="12597">
-          <caret line="741" column="44" lean-forward="true" selection-start-line="741" selection-start-column="44" selection-end-line="741" selection-end-column="44" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
+    <entry file="file://$PROJECT_DIR$/testxml.xml" />
     <entry file="file://$APPLICATION_CONFIG_DIR$/javascript/extLibs/http_www.metreex.org_js_metreex-1.0.js">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="10727">
           <caret line="659" column="31" lean-forward="false" selection-start-line="659" selection-start-column="23" selection-end-line="659" selection-end-column="31" />
           <folding>
-            <element signature="n#!!doc" expanded="true" />
+            <element signature="n#!!doc" expanded="false" />
           </folding>
         </state>
       </provider>
@@ -573,40 +570,60 @@
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/metreex-1.0.js" />
-    <entry file="file://$PROJECT_DIR$/../treebanks/v2.1/Greek/texts/tlg0540.tlg015.perseus-grc1.tb.xml">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="85">
-          <caret line="5" column="14" lean-forward="true" selection-start-line="0" selection-start-column="0" selection-end-line="775" selection-end-column="11" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/playground.css">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="136">
-          <caret line="8" column="1" lean-forward="false" selection-start-line="8" selection-start-column="1" selection-end-line="8" selection-end-column="1" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/testxml.xml">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="889">
-          <caret line="727" column="58" lean-forward="false" selection-start-line="727" selection-start-column="58" selection-end-line="727" selection-end-column="58" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
+    <entry file="file://$PROJECT_DIR$/../treebanks/v2.1/Greek/texts/tlg0540.tlg015.perseus-grc1.tb.xml" />
+    <entry file="file://$PROJECT_DIR$/testxml.xml" />
     <entry file="file://V:/Downloads/metreex.org - Treebank Metric System.html">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-51">
+        <state relative-caret-position="4743">
           <caret line="279" column="15" lean-forward="false" selection-start-line="279" selection-start-column="9" selection-end-line="279" selection-end-column="15" />
           <folding>
-            <element signature="n#style#0;n#div#2;n#div#1;n#div#11;n#div#3;n#div#1;n#body#0;n#html#0;n#!!top" expanded="true" />
+            <element signature="n#style#0;n#div#2;n#div#1;n#div#11;n#div#3;n#div#1;n#body#0;n#html#0;n#!!top" expanded="false" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/http_www.visineat.com_js_vn_windows-3.js">
+    <entry file="file://$PROJECT_DIR$/http_www.visineat.com_js_vn_windows-3.js" />
+    <entry file="file://$APPLICATION_CONFIG_DIR$/javascript/extLibs/http_www.visineat.com_js_vn_windows-3.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="2665">
+          <caret line="2503" column="51" lean-forward="false" selection-start-line="2503" selection-start-column="51" selection-end-line="2503" selection-end-column="51" />
+          <folding>
+            <element signature="n#!!doc" expanded="false" />
+            <marker date="1483632422399" expanded="true" signature="96944:96967" ph="..." />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$APPLICATION_CONFIG_DIR$/javascript/extLibs/http_www.metreex.org_js_metreex-1.0.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="10829">
+          <caret line="679" column="0" lean-forward="false" selection-start-line="679" selection-start-column="0" selection-end-line="679" selection-end-column="0" />
+          <caret line="665" column="12" lean-forward="false" selection-start-line="665" selection-start-column="12" selection-end-line="665" selection-end-column="12" />
+          <folding>
+            <element signature="n#!!doc" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$APPLICATION_CONFIG_DIR$/javascript/extLibs/http_www.visineat.com_js_vn-1.8.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="15198">
+          <caret line="922" column="19" lean-forward="false" selection-start-line="922" selection-start-column="16" selection-end-line="922" selection-end-column="19" />
+          <folding>
+            <element signature="n#!!doc" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/LICENSE">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="204">
+          <caret line="12" column="36" lean-forward="false" selection-start-line="12" selection-start-column="36" selection-end-line="12" selection-end-column="36" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/README.md">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="0">
           <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
@@ -614,61 +631,37 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$APPLICATION_CONFIG_DIR$/javascript/extLibs/http_www.visineat.com_js_vn_windows-3.js">
+    <entry file="file://$PROJECT_DIR$/localwindows-3.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="2665">
-          <caret line="2503" column="51" lean-forward="false" selection-start-line="2503" selection-start-column="51" selection-end-line="2503" selection-end-column="51" />
+        <state relative-caret-position="323">
+          <caret line="2507" column="2" lean-forward="true" selection-start-line="2507" selection-start-column="2" selection-end-line="2507" selection-end-column="2" />
           <folding>
-            <element signature="n#!!doc" expanded="true" />
-            <marker date="1483632422399" expanded="true" signature="96944:96967" ph="..." />
+            <marker date="1487695135396" expanded="true" signature="97742:97765" ph="..." />
           </folding>
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/playground.html">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="391">
-          <caret line="23" column="7" lean-forward="true" selection-start-line="23" selection-start-column="7" selection-end-line="23" selection-end-column="7" />
+        <state relative-caret-position="301">
+          <caret line="33" column="7" lean-forward="false" selection-start-line="33" selection-start-column="7" selection-end-line="33" selection-end-column="7" />
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$APPLICATION_CONFIG_DIR$/javascript/extLibs/http_www.metreex.org_js_metreex-1.0.js">
+    <entry file="file://$PROJECT_DIR$/playground.css">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="272">
-          <caret line="679" column="0" lean-forward="false" selection-start-line="679" selection-start-column="0" selection-end-line="679" selection-end-column="0" />
-          <caret line="665" column="12" lean-forward="false" selection-start-line="665" selection-start-column="12" selection-end-line="665" selection-end-column="12" />
-          <folding>
-            <element signature="n#!!doc" expanded="true" />
-          </folding>
+        <state relative-caret-position="830">
+          <caret line="246" column="25" lean-forward="false" selection-start-line="246" selection-start-column="25" selection-end-line="246" selection-end-column="25" />
+          <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/windowController.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="85">
-          <caret line="5" column="8" lean-forward="false" selection-start-line="5" selection-start-column="8" selection-end-line="5" selection-end-column="8" />
+        <state relative-caret-position="207">
+          <caret line="879" column="59" lean-forward="false" selection-start-line="879" selection-start-column="59" selection-end-line="879" selection-end-column="59" />
           <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$APPLICATION_CONFIG_DIR$/javascript/extLibs/http_www.visineat.com_js_vn-1.8.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="456">
-          <caret line="922" column="19" lean-forward="false" selection-start-line="922" selection-start-column="16" selection-end-line="922" selection-end-column="19" />
-          <folding>
-            <element signature="n#!!doc" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/localwindows-3.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="476">
-          <caret line="2516" column="39" lean-forward="false" selection-start-line="2516" selection-start-column="39" selection-end-line="2516" selection-end-column="39" />
-          <folding>
-            <marker date="1483636446248" expanded="true" signature="96836:96859" ph="..." />
-          </folding>
         </state>
       </provider>
     </entry>
