@@ -229,3 +229,7 @@ body{
 .PCA-point.inactive {
     display:none;
 }
+
+.PCA-legend {
+    font-family:sans-serif;
+}
