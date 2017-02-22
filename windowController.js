@@ -54,6 +54,7 @@ function AddLoadedTree(newTree){
         }
     }
 
+    getCloudAuthorAndTitle(newTree);
     loadedTreebanks.push(newTree);
 
     if (USING_SIDEBAR){
@@ -1220,6 +1221,21 @@ function build2DArray(rows){
         array.push([]);
     }
     return array;
+}
+
+function getCloudAuthorAndTitle(treebank){
+    var file = vn.cloud.getObject(treebank.id);
+
+    file.whenReady().then(
+        function (file){
+            var fields = file.getFields();
+
+            treebank.author = fields.Author;
+            treebank.title = fields.Title;
+            treebank.section = fields.Section;
+
+        }
+    )
 }
 
 function cloudTest(){
