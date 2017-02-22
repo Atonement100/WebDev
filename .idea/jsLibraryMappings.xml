@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="JavaScriptLibraryMappings">
-    <file url="PROJECT" libraries="{cloud-1, d3-DefinitelyTyped, d3.v4, documentation-2, gui-3, media-2, metreex-1.0, server-3, utils-1, vn-1.8, webgl-3, windows-3}" />
+    <file url="PROJECT" libraries="{cloud-1, d3-DefinitelyTyped, d3.v4, documentation-2, gui-3, media-2, metreex-1.0, metreex-1.1, server-3, utils-1, vn-1.8, webgl-3, windows-3}" />
   </component>
 </project>

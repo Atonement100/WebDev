@@ -2,29 +2,10 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="1d8edbe8-fb30-438b-bf61-3fdc6c32c69f" name="Default" comment="">
-      <change type="DELETED" beforePath="$PROJECT_DIR$/personal_website/.idea/modules.xml" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/personal_website/.idea/personal_website.iml" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/personal_website/.idea/workspace.xml" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/personal_website/index.html" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/personal_website/reset.css" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/personal_website/style.css" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/playground/.idea/jsLibraryMappings.xml" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/playground/.idea/modules.xml" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/playground/.idea/playground.iml" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/playground/.idea/workspace.xml" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/playground/d3-scale-chromatic.js" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/playground/localmetreex-1.0.js" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/playground/localwindows-3.js" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/playground/math.js" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/playground/metricSource.js" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/playground/numeric-1.2.6.js" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/playground/playground.css" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/playground/playground.html" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/playground/windowController.js" afterPath="" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/jsLibraryMappings.xml" afterPath="$PROJECT_DIR$/.idea/jsLibraryMappings.xml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/playground.iml" afterPath="$PROJECT_DIR$/.idea/playground.iml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/playground.css" afterPath="$PROJECT_DIR$/playground.css" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/playground.html" afterPath="$PROJECT_DIR$/playground.html" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/windowController.js" afterPath="$PROJECT_DIR$/windowController.js" />
     </list>
     <ignored path="$PROJECT_DIR$/.tmp/" />
@@ -46,8 +27,8 @@
       <file leaf-file-name="playground.html" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/playground.html">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="301">
-              <caret line="33" column="7" lean-forward="false" selection-start-line="33" selection-start-column="7" selection-end-line="33" selection-end-column="7" />
+            <state relative-caret-position="80">
+              <caret line="8" column="51" lean-forward="false" selection-start-line="8" selection-start-column="51" selection-end-line="8" selection-end-column="51" />
               <folding />
             </state>
           </provider>
@@ -56,7 +37,7 @@
       <file leaf-file-name="playground.css" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/playground.css">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="830">
+            <state relative-caret-position="813">
               <caret line="246" column="25" lean-forward="false" selection-start-line="246" selection-start-column="25" selection-end-line="246" selection-end-column="25" />
               <folding />
             </state>
@@ -66,9 +47,22 @@
       <file leaf-file-name="windowController.js" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/windowController.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="207">
-              <caret line="879" column="59" lean-forward="false" selection-start-line="879" selection-start-column="59" selection-end-line="879" selection-end-column="59" />
+            <state relative-caret-position="0">
+              <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
               <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="http_www.metreex.org_js_metreex-1.1.js" pinned="false" current-in-tab="false">
+        <entry file="file://$APPLICATION_CONFIG_DIR$/javascript/extLibs/http_www.metreex.org_js_metreex-1.1.js">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="-5505">
+              <caret line="142" column="25" lean-forward="false" selection-start-line="142" selection-start-column="9" selection-end-line="142" selection-end-column="25" />
+              <folding>
+                <element signature="n#!!doc" expanded="true" />
+                <element signature="e#24116#25292#0" expanded="false" />
+              </folding>
             </state>
           </provider>
         </entry>
@@ -86,12 +80,6 @@
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
-      <find>_u</find>
-      <find>vn||</find>
-      <find>createw</find>
-      <find>init</find>
-      <find>this._wm</find>
-      <find>this._screen</find>
       <find>load</find>
       <find>output</find>
       <find>getprogress</find>
@@ -104,7 +92,6 @@
       <find>getCaretPosition</find>
       <find>echo_in_console</find>
       <find>commandpromise</find>
-      <find>onload</find>
       <find>createconsole</find>
       <find>handlekeydown</find>
       <find>handlekey</find>
@@ -116,6 +103,13 @@
       <find>var authors</find>
       <find>var author</find>
       <find>createauthorpl</find>
+      <find>jstat</find>
+      <find>window.onl</find>
+      <find>.load</find>
+      <find>ini</find>
+      <find>treebankcoll</find>
+      <find>onload</find>
+      <find>treebanksentence</find>
     </findStrings>
   </component>
   <component name="Git.Settings">
@@ -125,13 +119,13 @@
     <option name="CHANGED_PATHS">
       <list>
         <option value="$PROJECT_DIR$/testxml.xml" />
-        <option value="$APPLICATION_CONFIG_DIR$/javascript/extLibs/http_www.metreex.org_js_metreex-1.0.js" />
         <option value="V:/Downloads/metreex.org - Treebank Metric System.html" />
         <option value="$APPLICATION_CONFIG_DIR$/javascript/extLibs/http_www.visineat.com_js_vn_windows-3.js" />
         <option value="$PROJECT_DIR$/http_www.visineat.com_js_vn_windows-3.js" />
-        <option value="$PROJECT_DIR$/playground.html" />
         <option value="$PROJECT_DIR$/localwindows-3.js" />
         <option value="$PROJECT_DIR$/playground.css" />
+        <option value="$PROJECT_DIR$/playground.html" />
+        <option value="$APPLICATION_CONFIG_DIR$/javascript/extLibs/http_www.metreex.org_js_metreex-1.0.js" />
         <option value="$PROJECT_DIR$/windowController.js" />
       </list>
     </option>
@@ -169,6 +163,7 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
+      <pane id="Scratches" />
       <pane id="Scope" />
       <pane id="ProjectPane">
         <subPane>
@@ -188,13 +183,68 @@
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
             </PATH_ELEMENT>
             <PATH_ELEMENT>
+              <option name="myItemId" value="External Libraries" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ExternalLibrariesNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="vn-1.8" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.NamedLibraryElementNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="metreex-analysis-tool" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="External Libraries" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ExternalLibrariesNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="metreex-1.1" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.NamedLibraryElementNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="metreex-analysis-tool" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="External Libraries" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ExternalLibrariesNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="metreex-1.0" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.NamedLibraryElementNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="metreex-analysis-tool" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="External Libraries" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ExternalLibrariesNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="cloud-1" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.NamedLibraryElementNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="metreex-analysis-tool" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
               <option name="myItemId" value="metreex-analysis-tool" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
           </PATH>
         </subPane>
       </pane>
-      <pane id="Scratches" />
     </panes>
   </component>
   <component name="PropertiesComponent">
@@ -313,12 +363,13 @@
       <workItem from="1483461523432" duration="1444000" />
       <workItem from="1483563662432" duration="10573000" />
       <workItem from="1483627434329" duration="4576000" />
-      <workItem from="1487697077251" duration="3975000" />
+      <workItem from="1487697077251" duration="4574000" />
+      <workItem from="1487731280151" duration="2688000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="42394000" />
+    <option name="totallyTimeSpent" value="45681000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="-8" y="-8" width="1936" height="1096" extended-state="6" />
@@ -355,6 +406,30 @@
   <component name="editorHistoryManager">
     <entry file="file://$PROJECT_DIR$/playground.html">
       <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="561">
+          <caret line="33" column="7" lean-forward="false" selection-start-line="33" selection-start-column="7" selection-end-line="33" selection-end-column="7" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/playground.css">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="4182">
+          <caret line="246" column="25" lean-forward="false" selection-start-line="246" selection-start-column="25" selection-end-line="246" selection-end-column="25" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/windowController.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/playground.html">
+      <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="391">
           <caret line="23" column="0" lean-forward="true" selection-start-line="23" selection-start-column="0" selection-end-line="23" selection-end-column="0" />
           <folding />
@@ -374,9 +449,7 @@
         <state relative-caret-position="10829">
           <caret line="679" column="0" lean-forward="false" selection-start-line="679" selection-start-column="0" selection-end-line="679" selection-end-column="0" />
           <caret line="665" column="12" lean-forward="false" selection-start-line="665" selection-start-column="12" selection-end-line="665" selection-end-column="12" />
-          <folding>
-            <element signature="n#!!doc" expanded="false" />
-          </folding>
+          <folding />
         </state>
       </provider>
     </entry>
@@ -394,9 +467,7 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="15198">
           <caret line="922" column="19" lean-forward="false" selection-start-line="922" selection-start-column="16" selection-end-line="922" selection-end-column="19" />
-          <folding>
-            <element signature="n#!!doc" expanded="false" />
-          </folding>
+          <folding />
         </state>
       </provider>
     </entry>
@@ -404,9 +475,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="4743">
           <caret line="279" column="15" lean-forward="false" selection-start-line="279" selection-start-column="9" selection-end-line="279" selection-end-column="15" />
-          <folding>
-            <element signature="n#style#0;n#div#2;n#div#1;n#div#11;n#div#3;n#div#1;n#body#0;n#html#0;n#!!top" expanded="false" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -430,9 +498,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="4743">
           <caret line="279" column="15" lean-forward="false" selection-start-line="279" selection-start-column="9" selection-end-line="279" selection-end-column="15" />
-          <folding>
-            <element signature="n#style#0;n#div#2;n#div#1;n#div#11;n#div#3;n#div#1;n#body#0;n#html#0;n#!!top" expanded="false" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -440,9 +505,7 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="11016">
           <caret line="676" column="52" lean-forward="true" selection-start-line="676" selection-start-column="52" selection-end-line="676" selection-end-column="52" />
-          <folding>
-            <element signature="n#!!doc" expanded="false" />
-          </folding>
+          <folding />
         </state>
       </provider>
     </entry>
@@ -458,10 +521,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="0">
           <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding>
-            <element signature="n#!!doc" expanded="false" />
-            <marker date="1483632422399" expanded="true" signature="96944:96967" ph="..." />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -469,9 +528,7 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="15198">
           <caret line="922" column="19" lean-forward="false" selection-start-line="922" selection-start-column="16" selection-end-line="922" selection-end-column="19" />
-          <folding>
-            <element signature="n#!!doc" expanded="false" />
-          </folding>
+          <folding />
         </state>
       </provider>
     </entry>
@@ -496,10 +553,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="119">
           <caret line="35" column="30" lean-forward="true" selection-start-line="35" selection-start-column="30" selection-end-line="35" selection-end-column="30" />
-          <folding>
-            <element signature="n#!!doc" expanded="false" />
-            <marker date="1483632422399" expanded="true" signature="96944:96967" ph="..." />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -507,9 +560,7 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="1020">
           <caret line="88" column="19" lean-forward="false" selection-start-line="88" selection-start-column="7" selection-end-line="88" selection-end-column="19" />
-          <folding>
-            <element signature="n#!!doc" expanded="false" />
-          </folding>
+          <folding />
         </state>
       </provider>
     </entry>
@@ -518,9 +569,7 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="10557">
           <caret line="649" column="23" lean-forward="false" selection-start-line="649" selection-start-column="23" selection-end-line="649" selection-end-column="23" />
-          <folding>
-            <element signature="n#!!doc" expanded="false" />
-          </folding>
+          <folding />
         </state>
       </provider>
     </entry>
@@ -537,9 +586,7 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="10727">
           <caret line="659" column="31" lean-forward="false" selection-start-line="659" selection-start-column="23" selection-end-line="659" selection-end-column="31" />
-          <folding>
-            <element signature="n#!!doc" expanded="false" />
-          </folding>
+          <folding />
         </state>
       </provider>
     </entry>
@@ -576,9 +623,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="4743">
           <caret line="279" column="15" lean-forward="false" selection-start-line="279" selection-start-column="9" selection-end-line="279" selection-end-column="15" />
-          <folding>
-            <element signature="n#style#0;n#div#2;n#div#1;n#div#11;n#div#3;n#div#1;n#body#0;n#html#0;n#!!top" expanded="false" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -587,31 +631,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="2665">
           <caret line="2503" column="51" lean-forward="false" selection-start-line="2503" selection-start-column="51" selection-end-line="2503" selection-end-column="51" />
-          <folding>
-            <element signature="n#!!doc" expanded="false" />
-            <marker date="1483632422399" expanded="true" signature="96944:96967" ph="..." />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$APPLICATION_CONFIG_DIR$/javascript/extLibs/http_www.metreex.org_js_metreex-1.0.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="10829">
-          <caret line="679" column="0" lean-forward="false" selection-start-line="679" selection-start-column="0" selection-end-line="679" selection-end-column="0" />
-          <caret line="665" column="12" lean-forward="false" selection-start-line="665" selection-start-column="12" selection-end-line="665" selection-end-column="12" />
-          <folding>
-            <element signature="n#!!doc" expanded="false" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$APPLICATION_CONFIG_DIR$/javascript/extLibs/http_www.visineat.com_js_vn-1.8.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="15198">
-          <caret line="922" column="19" lean-forward="false" selection-start-line="922" selection-start-column="16" selection-end-line="922" selection-end-column="19" />
-          <folding>
-            <element signature="n#!!doc" expanded="false" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -619,7 +638,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="204">
           <caret line="12" column="36" lean-forward="false" selection-start-line="12" selection-start-column="36" selection-end-line="12" selection-end-column="36" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -627,7 +645,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="0">
           <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -641,26 +658,63 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/playground.html">
+    <entry file="file://$APPLICATION_CONFIG_DIR$/javascript/extLibs/http_www.visineat.com_js_vn_cloud-1.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="301">
-          <caret line="33" column="7" lean-forward="false" selection-start-line="33" selection-start-column="7" selection-end-line="33" selection-end-column="7" />
-          <folding />
+        <state relative-caret-position="0">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding>
+            <element signature="n#!!doc" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/playground.css">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="830">
+        <state relative-caret-position="813">
           <caret line="246" column="25" lean-forward="false" selection-start-line="246" selection-start-column="25" selection-end-line="246" selection-end-column="25" />
           <folding />
         </state>
       </provider>
     </entry>
+    <entry file="file://$APPLICATION_CONFIG_DIR$/javascript/extLibs/http_www.visineat.com_js_vn-1.8.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="309">
+          <caret line="72" column="26" lean-forward="false" selection-start-line="72" selection-start-column="23" selection-end-line="72" selection-end-column="26" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$APPLICATION_CONFIG_DIR$/javascript/extLibs/http_www.metreex.org_js_metreex-1.0.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="547">
+          <caret line="834" column="42" lean-forward="false" selection-start-line="834" selection-start-column="42" selection-end-line="834" selection-end-column="42" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/playground.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="80">
+          <caret line="8" column="51" lean-forward="false" selection-start-line="8" selection-start-column="51" selection-end-line="8" selection-end-column="51" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$APPLICATION_CONFIG_DIR$/javascript/extLibs/http_www.metreex.org_js_metreex-1.1.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-5505">
+          <caret line="142" column="25" lean-forward="false" selection-start-line="142" selection-start-column="9" selection-end-line="142" selection-end-column="25" />
+          <folding>
+            <element signature="n#!!doc" expanded="true" />
+            <element signature="e#24116#25292#0" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/windowController.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="207">
-          <caret line="879" column="59" lean-forward="false" selection-start-line="879" selection-start-column="59" selection-end-line="879" selection-end-column="59" />
+        <state relative-caret-position="0">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
           <folding />
         </state>
       </provider>

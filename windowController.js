@@ -120,6 +120,7 @@ function loadTreebankFile(id){
     output.println("Attempting to load tree with id " + id);
     var newTree = new TreebankFile();
     newTree.onload = function () {
+        console.log(newTree);
         if (newTree.getNumOfSentences() > 0) {
             AddLoadedTree(newTree);
         }
@@ -441,6 +442,7 @@ window.onload = function () {
 
     vn = new VisiNeatAPI();
     vn.setScreen("ConsoleTarget");
+    vn.cloud = new VNCloud();
 
     // Initialization of treebank and metric lists
     USING_SIDEBAR = true;
@@ -454,11 +456,11 @@ window.onload = function () {
     var windowManager = vn.getWindowManager();
     output = windowManager.createConsole({left:10,top:10,width:1000,height:800,title:"metreex analysis"});
 
-    loadTreebankFile("66w1loh5gaclr0ck");
-    loadTreebankFile("ni5cxsbbkypbh0dl");
-    loadTreebankFile("e1i9b02c68c9i2nl");
-    loadTreebankFile("1grifbqibuk0zhxp");
-    loadTreebankFile("ueiw9dcw21hgltlh");
+    loadTreebankFile("m3pmakk93y1nkhxl");
+    loadTreebankFile("9g50guweglwy5kqb");
+    loadTreebankFile("5krwvewpr25f6jf4");
+    loadTreebankFile("ct1ggzdspofmmdch");
+    loadTreebankFile("muq9q52l8gm30von");
 
 };
 
@@ -1218,4 +1220,27 @@ function build2DArray(rows){
         array.push([]);
     }
     return array;
+}
+
+function cloudTest(){
+    var list=vn.cloud.getObject('46nbm13yn7otz7yd');//this is the ID of the list I created that contains all my tree files.
+    list.whenReady().then(function(list){
+        var fields=list.getFields();
+        for(var file_id in fields.VN_LIST)
+        {
+            do_something(file_id);
+        }
+    });
+
+    var do_something=function(file_id)
+    {
+        var file=vn.cloud.getObject(file_id);
+        file.whenReady().then(function(file){
+            var fields=file.getFields();
+            for(var field in fields)
+                console.log('The field '+field+' has value: '+fields[field]);
+            //The corresponding original XML treebank file is at the url:
+            var url=vn.hosturl+'file/'+file.getId()+'/data';
+        });
+    }
 }
