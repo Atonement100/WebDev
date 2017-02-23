@@ -665,13 +665,14 @@ function assembleMetricData(){
     for (var index = 0; index < selectedTreebanks.length; index++){
         for (var sentenceIndex = 0; sentenceIndex < lastMetricResults[index].length; sentenceIndex++){
             data.push({
-                title: selectedTreebanks[index].title + " " + selectedTreebanks[index].section,
+                title: selectedTreebanks[index].title,
+                section: selectedTreebanks[index].section,
                 sentence: (+sentenceIndex + 1),
                 numSentences: lastMetricResults[index].length,
                 metrics: enabledMetrics,
                 metricValues: lastMetricResults[index][sentenceIndex],
                 originalIndex: runningIndex++,
-                refString: selectedTreebanks[index].getTitle() + " " + (+sentenceIndex + 1),
+                refString: selectedTreebanks[index].title + " " + selectedTreebanks[index].section + " " + (+sentenceIndex + 1),
                 author: selectedTreebanks[index].author//identifyAuthor(selectedTreebanks[index].getTitle())
             });
         }
@@ -697,7 +698,7 @@ function buildBarChart(tableData, metricIndex) {
     var yaxis = d3.scaleBand()
         .range([height - (margin.bottom + margin.top), 0])
         .domain(tableData.map(function(elem){
-            return elem.title + " " + elem.sentence;
+            return elem.refString;
         }));
     var coloraxis = d3.scaleOrdinal(d3.schemeSet2)
         .domain(tableData.map(function (elem) {
@@ -731,7 +732,7 @@ function buildBarChart(tableData, metricIndex) {
         .data(tableData, function (elem) { return elem.metricValues[metricIndex]; })
         .enter().append("g")
         .attr("class", "bar")
-        .attr("transform", function(elem){return "translate(0," + yaxis(elem.title + " " + elem.sentence) + ")";});
+        .attr("transform", function(elem){return "translate(0," + yaxis(elem.refString) + ")";});
 
     bars.append("rect")
         .attr("x", function(elem) {return xaxis(Math.min(0,elem.metricValues[metricIndex]))})
@@ -888,7 +889,7 @@ function buildScatterPlot(tableData, yMetricIndex, xMetricIndex) {
         .attr("cx", function(elem){return xaxis(elem.metricValues[xMetricIndex]);})
         .attr("cy", function(elem){return yaxis(elem.metricValues[yMetricIndex]);})
         .on("mouseover", function(elem){
-            tooltip.html("Author: " + elem.author + "<br>Title & Section: " + elem.title + "<br>Sentence no.: " + elem.sentence)
+            tooltip.html("Author: " + elem.author + "<br>Title: " + elem.title + "<br> Section: " + elem.section + "<br>Sentence no.: " + elem.sentence)
                 .style("left", (d3.event.pageX + 10) + "px")
                 .style("top", (d3.event.pageY + 10) + "px")
                 .style("display","inline");
@@ -987,12 +988,11 @@ function buildPCAPlot(data){
         .style("fill", function(elem, index){return coloraxis(data[index].author);})
         .attr("cx", function(elem){return xaxis(elem[0]);})
         .attr("cy", function(elem){return yaxis(elem[1]);})
-        .on("mouseover", function(elem, index){
-            tooltip.html("Author: " + data[index].author + "<br>Treebank Title: " + data[index].title + "<br>Sentence no.: " + data[index].sentence)
+        .on("mouseover", function(elem,index){
+            tooltip.html("Author: " + data[index].author + "<br>Title: " + data[index].title + "<br> Section: " + data[index].section + "<br>Sentence no.: " + data[index].sentence)
                 .style("left", (d3.event.pageX + 10) + "px")
                 .style("top", (d3.event.pageY + 10) + "px")
                 .style("display","inline");
-            console.log(tooltip.text());
         })
         .on("mouseout", function(){
             tooltip.style("display","none");
