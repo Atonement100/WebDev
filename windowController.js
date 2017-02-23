@@ -684,16 +684,9 @@ function assembleMetricData(){
 function buildBarChart(tableData, metricIndex) {
     d3.select("#barChart").html(" ");
 
-<<<<<<< HEAD
-    var nodeData = [];
-    tableData.forEach(function (elem) {
-        nodeData.unshift(elem.metricValues[metricIndex]);
-    });
 
-    var margin = {top: 15, right: 15, bottom: 30, left: 150};
-=======
     var margin = {top: 15, right: 15, bottom: 30, left: 200};
->>>>>>> ef8545e... background ticks for bar charts
+
     var barThickness = 16; //px
     var width = 1200, height = tableData.length * barThickness + margin.top + margin.bottom;
 
