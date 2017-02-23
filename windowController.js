@@ -665,14 +665,14 @@ function assembleMetricData(){
     for (var index = 0; index < selectedTreebanks.length; index++){
         for (var sentenceIndex = 0; sentenceIndex < lastMetricResults[index].length; sentenceIndex++){
             data.push({
-                title: selectedTreebanks[index].getTitle(),
+                title: selectedTreebanks[index].title + " " + selectedTreebanks[index].section,
                 sentence: (+sentenceIndex + 1),
                 numSentences: lastMetricResults[index].length,
                 metrics: enabledMetrics,
                 metricValues: lastMetricResults[index][sentenceIndex],
                 originalIndex: runningIndex++,
                 refString: selectedTreebanks[index].getTitle() + " " + (+sentenceIndex + 1),
-                author: identifyAuthor(selectedTreebanks[index].getTitle())
+                author: selectedTreebanks[index].author//identifyAuthor(selectedTreebanks[index].getTitle())
             });
         }
     }
@@ -895,7 +895,7 @@ function buildScatterPlot(tableData, yMetricIndex, xMetricIndex) {
         .attr("cx", function(elem){return xaxis(elem.metricValues[xMetricIndex]);})
         .attr("cy", function(elem){return yaxis(elem.metricValues[yMetricIndex]);})
         .on("mouseover", function(elem){
-            tooltip.html("Author: " + elem.author + "<br>Treebank Title: " + elem.title + "<br>Sentence no.: " + elem.sentence)
+            tooltip.html("Author: " + elem.author + "<br>Title & Section: " + elem.title + "<br>Sentence no.: " + elem.sentence)
                 .style("left", (d3.event.pageX + 10) + "px")
                 .style("top", (d3.event.pageY + 10) + "px")
                 .style("display","inline");
@@ -1232,8 +1232,9 @@ function getCloudAuthorAndTitle(treebank){
 
             treebank.author = fields.Author;
             treebank.title = fields.Title;
-            treebank.section = fields.Section;
+            treebank.section = fields.Section || fields["Section "];
 
+            console.log(fields);
         }
     )
 }
