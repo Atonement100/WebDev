@@ -819,21 +819,22 @@ function buildBarChart(tableData, metricIndex) {
 function buildScatterPlot(tableData, yMetricIndex, xMetricIndex) {
     d3.select("#scatterPlot").html(" ");
 
-    var xMetricSelector = d3.select("#scatterPlot").append("select")
-        .attr("id", "scatterxSelect")
-        .on("change", selectedMetricChange);
-    var yMetricSelector = d3.select("#scatterPlot").append("select")
+    var yDiv = d3.select("#scatterPlot").append("div")
+        .text("Y Axis: ")
+            .style("display","inline"),
+        yMetricSelector = yDiv.append("select")
         .attr("id", "scatterySelect")
         .on("change", selectedMetricChange);
+
     d3.select("#scatterPlot").append("br");
 
-    xMetricSelector.selectAll("option")
-        .data(lastMetricsUsed)
-        .enter()
-        .append("option")
-        .attr("value",function(elem){return elem.name;})
-        .property("selected", function(elem,index) {return index == xMetricIndex;})
-        .html(function(elem) {return elem.name;});
+    var xDiv = d3.select("#scatterPlot").append("div")
+        .text("X Axis: "),
+        xMetricSelector = xDiv.append("select")
+        .attr("id", "scatterxSelect")
+        .on("change", selectedMetricChange);
+
+    d3.select("#scatterPlot").append("br");
 
     yMetricSelector.selectAll("option")
         .data(lastMetricsUsed)
@@ -843,6 +844,14 @@ function buildScatterPlot(tableData, yMetricIndex, xMetricIndex) {
         .property("selected", function(elem,index) {return index == yMetricIndex;})
         .html(function(elem) {return elem.name;})
         .append("br");
+
+    xMetricSelector.selectAll("option")
+        .data(lastMetricsUsed)
+        .enter()
+        .append("option")
+        .attr("value",function(elem){return elem.name;})
+        .property("selected", function(elem,index) {return index == xMetricIndex;})
+        .html(function(elem) {return elem.name;});
 
     var margin = {top: 15, right: 15, bottom: 30, left: 30};
     var bubbleThickness = 4; //px
@@ -889,7 +898,10 @@ function buildScatterPlot(tableData, yMetricIndex, xMetricIndex) {
         .attr("cx", function(elem){return xaxis(elem.metricValues[xMetricIndex]);})
         .attr("cy", function(elem){return yaxis(elem.metricValues[yMetricIndex]);})
         .on("mouseover", function(elem){
-            tooltip.html("Author: " + elem.author + "<br>Title: " + elem.title + "<br> Section: " + elem.section + "<br>Sentence no.: " + elem.sentence)
+            tooltip.html("Author: " + elem.author + "<br>Title: " + elem.title + "<br> Section: " + elem.section +
+                        "<br>Sentence no.: " + elem.sentence +
+                        "<br>" + lastMetricsUsed[xMetricIndex].name + ": " + d3.format(".4f")(elem.metricValues[xMetricIndex]) +
+                        "<br>" + lastMetricsUsed[yMetricIndex].name + ": " + d3.format(".4f")(elem.metricValues[yMetricIndex]))
                 .style("left", (d3.event.pageX + 10) + "px")
                 .style("top", (d3.event.pageY + 10) + "px")
                 .style("display","inline");
@@ -1187,7 +1199,7 @@ function getIndexOfMin(array) {
         }
     }
     return minIndex;
-}   
+}
 
 function handleGlobalErrorMessage(message){
     console.log(message);
