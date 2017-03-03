@@ -7,8 +7,13 @@ var USING_SIDEBAR = false;
 var lastMetricResults = [];
 var lastMetricsUsed = [];
 var lastTreebanksUsed = [];
-var debugData = [];
 
+/**
+ * Handles the opening of tabs in the page's header. Requires being called from an HTML event such as 'onclick',
+ * in order to properly hide all tabs of the same class.
+ * @param {Event} event Event object passed by browser
+ * @param {String} tabName HTML Id of tab to be displayed.
+ */
 function openTab(event, tabName){
     var i;
     var metricTabContent = document.getElementsByClassName(event.currentTarget.className + "Content");
@@ -25,7 +30,12 @@ function openTab(event, tabName){
     event.currentTarget.className += " active";
 }
 
-
+/**
+ * Sets all checkboxes within a tab to a value specified by newSetting.
+ * Assumes checkboxes are given an HTML attribute 'name' built as "tabName + 'Checkbox'"
+ * @param {String} tabName Name of tab prefix given to checkboxes. First part of "tabName + 'Checkbox'"
+ * @param {Boolean} newSetting Boolean
+ */
 function setAllCheckboxesInTab(tabName, newSetting){
     var cboxes = document.getElementsByName(tabName + "Checkbox");
     Array.prototype.slice.call(cboxes).forEach(function (cbox) {
@@ -33,6 +43,11 @@ function setAllCheckboxesInTab(tabName, newSetting){
     })
 }
 
+/**
+ * Inverts the checked value of all checkboxes within a tab.
+ * Assumes checkboxes are given an HTML attribute 'name' built as "tabName + 'Checkbox'"
+ * @param {String} tabName Name of tab prefix given to checkboxes. First part of "tabName + 'Checkbox'"
+ */
 function invertAllCheckboxesInTab(tabName){
     var cboxes = document.getElementsByName(tabName + "Checkbox");
     Array.prototype.slice.call(cboxes).forEach(function (cbox) {
@@ -41,10 +56,10 @@ function invertAllCheckboxesInTab(tabName){
 }
 
 /**
- *
- * @param newTree Reference to tree to be added to the array of loaded treebanks
- * @returns {boolean} Returns true if a tree was successfully added or false otherwise.
- * @constructor
+ * Handles the post-load functions of Treebank objects. This includes adding the Treebank to the array of loaded treebanks,
+ * and adding the relevant controls to the sidebar. It also asks for the VNCloud author and title information to be retrieved.
+ * @param {Object} newTree Treebank to be added to the array of loaded treebanks
+ * @returns {Boolean} Returns true if a tree was successfully added or false otherwise.
  */
 function AddLoadedTree(newTree){
     for (var index = 0; index < loadedTreebanks.length; index++){
@@ -65,10 +80,9 @@ function AddLoadedTree(newTree){
 }
 
 /**
- *
- * @param id Id of tree which should be removed from the loaded array
- * @returns {boolean} Returns true if a tree was successfully removed or false otherwise.
- * @constructor
+ * Checks the loaded treebanks for a treebank with the given Id, and unloads it if found.
+ * @param {String} id Id of tree which should be removed from the loaded array
+ * @returns {Boolean} Returns true if a tree was successfully removed or false otherwise.
  */
 function RemoveLoadedTreeById(id){
     for (var index = 0; index < loadedTreebanks.length; index++){
@@ -87,6 +101,11 @@ function RemoveLoadedTreeById(id){
     return false;
 }
 
+/**
+ * Retrieves a treebank from the array of loaded treebanks, by its Id. Returns null if the treebank was not found.
+ * @param {string} id Id of tree to search for in the loaded array
+ * @returns {Object} Returns the treebank with the Id given if found, or null otherwise.
+ */
 function GetTreeById(id){
     for (var index = 0; index < loadedTreebanks.length; index++){
         if (loadedTreebanks[index].id === id){
@@ -97,6 +116,9 @@ function GetTreeById(id){
     return;
 }
 
+/**
+ * Empties the array of loaded treebanks and removes all loaded trees from the sidebar, if it is being used.
+ */
 function UnloadAllTreebanks(){
     loadedTreebanks = [];
     output.println("All treebanks have been unloaded.");
@@ -138,42 +160,6 @@ function loadTreebankCollection(){
         });
     };
     t.load();
-}
-
-/**
- *
- * @param name
- * @returns {boolean}
- * @constructor
- */
-function EnableMetric(name){
-    for (var index = 0; index < disabledMetrics.length; index++){
-        if (disabledMetrics[index].title === name){
-            loadedMetrics.push(disabledMetrics[index]);
-            disabledMetrics.splice(index, 1);
-            output.println("The " + name + " metric has been enabled.");
-
-        }
-    }
-    output.println("No metric with the name \"" + name + "\" exists.")
-    return false;
-}
-
-/**
- *
- * @param name
- * @returns {boolean}
- * @constructor
- */
-function DisableMetric(name){
-    for (var index = 0; index < loadedMetrics.length; index++){
-        if (disabledMetrics[index].title === name){
-            disabledMetrics.splice(index, 1);
-            output.println("The " + name + " metric has been disabled.");
-        }
-    }
-    output.println("No metric with the name '" + name + "' exists.")
-    return false;
 }
 
 /**
@@ -293,7 +279,9 @@ function applyMetrics(){
         return;
     }
 
-    enabledMetrics = getCheckedMetrics();
+    var metricPartitions = getMetricPartitions();
+    enabledMetrics = metricPartitions.checkedList;
+    disabledMetrics = metricPartitions.uncheckedList;
 
     if (enabledMetrics.length == 0){
         output.println("No metrics were selected, please select at least one metric");
@@ -345,19 +333,23 @@ function getCheckedTreebanks(){
     return trees;
 }
 
-function getCheckedMetrics(){
-    var list = [];
-    var form = document.getElementById("metricList");
+function getMetricPartitions(){
+    var checkedList = [],
+        uncheckedList = [],
+        form = document.getElementById("metricList");
 
     Array.prototype.slice.call(form.getElementsByTagName("label")).forEach(function (child){
         Array.prototype.slice.call(child.getElementsByTagName("input")).forEach(function (checkbox) {
             if (checkbox.checked){
-                list.push(loadedMetrics[parseInt(checkbox.value)]);
+                checkedList.push(loadedMetrics[parseInt(checkbox.value)]);
+            }
+            else{
+                uncheckedList.push(loadedMetrics[parseInt(checkbox.value)]);
             }
         });
     });
 
-    return list;
+    return {checkedList: checkedList, uncheckedList: uncheckedList};
 }
 
 function buildDefaultMetricList(array){
@@ -678,7 +670,6 @@ function assembleMetricData(){
         }
     }
 
-    debugData = data;
     return data;
 }
 
