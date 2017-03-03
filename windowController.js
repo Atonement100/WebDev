@@ -817,24 +817,33 @@ function buildBarChart(tableData, metricIndex) {
 
 
 function buildScatterPlot(tableData, yMetricIndex, xMetricIndex) {
-    d3.select("#scatterPlot").html(" ");
+    var scatterDiv = d3.select("#scatterPlot");
 
-    var yDiv = d3.select("#scatterPlot").append("div")
+    scatterDiv.html(" ");
+    scatterDiv.append("input")
+        .attr("type","button")
+        .attr("value", function(elem){return "Generate New Scatterplot"})
+        .on("click",function(elem){genScatterPlot();});
+    scatterDiv.append("br");
+
+
+
+    var yDiv = scatterDiv.append("div")
         .text("Y Axis: ")
             .style("display","inline"),
         yMetricSelector = yDiv.append("select")
         .attr("id", "scatterySelect")
         .on("change", selectedMetricChange);
 
-    d3.select("#scatterPlot").append("br");
+    scatterDiv.append("br");
 
-    var xDiv = d3.select("#scatterPlot").append("div")
+    var xDiv = scatterDiv.append("div")
         .text("X Axis: "),
         xMetricSelector = xDiv.append("select")
         .attr("id", "scatterxSelect")
         .on("change", selectedMetricChange);
 
-    d3.select("#scatterPlot").append("br");
+    scatterDiv.append("br");
 
     yMetricSelector.selectAll("option")
         .data(lastMetricsUsed)
@@ -869,7 +878,7 @@ function buildScatterPlot(tableData, yMetricIndex, xMetricIndex) {
             return elem.author;
         }));
 
-    var chart = d3.select("#scatterPlot").append("svg")
+    var chart = scatterDiv.append("svg")
         .attr("width", width + margin.left + margin.right)
         .attr("height", height + margin.bottom + margin.top);
     var parent = chart.append("g")
