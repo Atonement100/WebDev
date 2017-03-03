@@ -1187,20 +1187,7 @@ function getIndexOfMin(array) {
         }
     }
     return minIndex;
-}
-
-function identifyAuthor(title){
-    title = title.toLowerCase();
-    if (title.indexOf("dion") >= 0) return "Dionysus";
-    else if (title.indexOf("isoc") >= 0) return "Isocrates";
-    else if (title.indexOf("dio") >= 0) return "Dio";
-    else if (title.indexOf("demo") >= 0) return "Demosthenes";
-    else if (title.indexOf("lys") >= 0) return "Lysias";
-    else if (title.indexOf("ael") >= 0) return "Aelius";
-    else if (title.indexOf("luci") >= 0) return "Lucian";
-    else if (title.indexOf("thuc") >= 0) return "Thucydides";
-    else return "unattributed";
-}
+}   
 
 function handleGlobalErrorMessage(message){
     console.log(message);
