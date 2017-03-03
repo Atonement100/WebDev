@@ -526,7 +526,7 @@ function buildInvertedTableHeader(tableData, headId) {
 
     tlhead.appendChild(document.createTextNode("Metrics"));
 
-    tableData[0].metrics.forEach(function(elem){
+    lastMetricsUsed.forEach(function(elem){
         tlhead = thead.appendChild(document.createElement("th"));
         tlhead.appendChild(document.createTextNode(elem.name));
     });
@@ -598,7 +598,7 @@ function buildBasicTable(){
         .attr("id", "basicTableBody")
         .style("height", tableDOM.getBoundingClientRect().height - theadDOM.getBoundingClientRect().height + "px");
 
-    for (var metricIndex = 0; metricIndex < tableData[0].metrics.length; metricIndex++){
+    for (var metricIndex = 0; metricIndex < lastMetricsUsed.length; metricIndex++){
         var rowId = "basicTableDataRow" + metricIndex;
         tbody.append("tr")
             .attr("id",rowId);
@@ -625,7 +625,7 @@ function buildBasicTable(){
 function buildTableDataRow(tableData, rowId, rowNum){
     var tr = document.getElementById(rowId);
     var rowHeader = tr.appendChild(document.createElement("td"));
-    rowHeader.appendChild(document.createTextNode(tableData[0].metrics[rowNum].name));
+    rowHeader.appendChild(document.createTextNode(lastMetricsUsed[rowNum].name));
 
     for (var dataIndex = 0; dataIndex < tableData.length; dataIndex++){
         var rowData = tr.appendChild(document.createElement("td"));
@@ -669,7 +669,7 @@ function assembleMetricData(){
                 section: selectedTreebanks[index].section,
                 sentence: (+sentenceIndex + 1),
                 numSentences: lastMetricResults[index].length,
-                metrics: enabledMetrics,
+                //metrics: enabledMetrics, // Functionally equivalent to "lastMetricsUsed" global, and *highly* redundant (one copy per sentence)
                 metricValues: lastMetricResults[index][sentenceIndex],
                 originalIndex: runningIndex++,
                 refString: selectedTreebanks[index].title + " " + selectedTreebanks[index].section + " " + (+sentenceIndex + 1),
