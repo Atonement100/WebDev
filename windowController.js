@@ -116,9 +116,6 @@ function GetTreeById(id){
     return;
 }
 
-/**
- * Empties the array of loaded treebanks and removes all loaded trees from the sidebar, if it is being used.
- */
 function UnloadAllTreebanks(){
     loadedTreebanks = [];
     output.println("All treebanks have been unloaded.");
@@ -127,7 +124,6 @@ function UnloadAllTreebanks(){
         RemoveAllTreesFromSidebar();
     }
 }
-
 function loadTreebankFromSidebar(){
     var input = document.getElementById("treebankIdInput");
     loadTreebankFile(input.value);
@@ -138,6 +134,10 @@ function unloadTreebankFromSidebar(id){
     RemoveLoadedTreeById(id);
 }
 
+/**
+ * Loads a treebank via the metreex API, then adds it to the set of loaded trees.
+ * @param {String} id Id of tree which should be loaded
+ */
 function loadTreebankFile(id){
     id = id.trim();
     output.println("Attempting to load tree with id " + id);
@@ -1014,7 +1014,7 @@ function buildPCAPlot(data){
         authdata = binProjectionDataByAuthor(data, authors, projectionData);
 
     authdata.forEach(function (elem, index) {
-        addErrorEllipse(elem, parent, xaxis, yaxis, coloraxis, authors[index]);
+        addErrorEllipse(elem, parent, xaxis, yaxis, coloraxis(authors[index]));
     });
 
     createAuthorToColorLegend("#PCAPlot", authors, coloraxis);
@@ -1099,7 +1099,12 @@ function binProjectionDataByAuthor(data, authors, projectionData){
     return authdata;
 }
 
-
+/**
+ * Creates a set of buttons, each associated with a specific author, in the target div. Each button toggles the visibility of all elements associated with that author and the class name given.
+ * @param {String} target Name of HTML div that the buttons should be appended to
+ * @param {Array} authors Array of authors to create toggles for
+ * @param {String} pointClassName Class name associated with the elements targeted by the created toggles
+ */
 function createAuthorPlotPointToggles(target, authors, pointClassName){
     d3.select(target).selectAll("input")
         .data(authors)
@@ -1115,6 +1120,12 @@ function createAuthorPlotPointToggles(target, authors, pointClassName){
         });
 }
 
+/**
+ * Creates a legend based on the given authors and color axis and appends it to the given div
+ * @param {String} legendTarget HTML div that the legend should be appended to
+ * @param {Array} authors Array of authors to be added to the legend
+ * @param {Object} coloraxis d3 ScaleOrdinal object associating the authors to their colors
+ */
 function createAuthorToColorLegend(legendTarget, authors, coloraxis){
     var legend = d3.select(legendTarget).append("svg")
         .attr("width", 140)
@@ -1138,7 +1149,15 @@ function createAuthorToColorLegend(legendTarget, authors, coloraxis){
         .text(function(elem){return elem;});
 }
 
-function addErrorEllipse(projectionData, parent, xaxis, yaxis, coloraxis, author){
+/**
+ * Adds a Guassian Error Ellipse representing 90% confidence intervals for both axes of a bivariate scatterplot.
+ * @param {Array} projectionData 2-D array with 2 columns representing the X and Y axes and N rows representing the data along each axis
+ * @param {Object} parent A d3 selection containing only the SVG element which the ellipse should be added to
+ * @param {Object} xaxis d3 ScaleLinear element representing the x axis
+ * @param {Object} yaxis d3 ScaleLinear element representing the y axis
+ * @param strokeColor Color [returned by a d3 scaleOrdinal] to apply to the ellipse's stroke
+ */
+function addErrorEllipse(projectionData, parent, xaxis, yaxis, strokeColor){
     var projXdata = [], projYdata = [];
 
     if (projectionData.length == 1){
@@ -1173,12 +1192,16 @@ function addErrorEllipse(projectionData, parent, xaxis, yaxis, coloraxis, author
         .attr("class", "PCA-ellipse")
         .attr("rx",Math.abs(xaxis(projXextent[0] + ellRX) - xaxis(projXextent[0])))
         .attr("ry",Math.abs(yaxis(projYextent[0] + ellRY) - yaxis(projYextent[0])))
-        .style("stroke",coloraxis(author))
+        .style("stroke",strokeColor)
         .attr("transform", "translate(" + xaxis(d3.mean(projectionData, function(elem){return elem[0];})) + "," + yaxis(d3.mean(projectionData, function(elem){return elem[1];})) +
             ") rotate(" + (rot * 180 / math.PI) + ")");
 }
 
-
+/**
+ * Gets index of the maximum value in an array, returning the first if there are several equal maxima.
+ * @param {Array} array
+ * @returns {Number} Index of maximum value
+ */
 function getIndexOfMax(array){
     var max = array[0], maxIndex = 0;
     for (var index = 1; index < array.length; index++){
@@ -1190,6 +1213,11 @@ function getIndexOfMax(array){
     return maxIndex;
 }
 
+/**
+ * Gets index of the minimum value in an array, returning the first if there are several equal minima.
+ * @param {Array} array
+ * @returns {Number} Index of minimum value
+ */
 function getIndexOfMin(array) {
     var min = array[0], minIndex = 0;
     for (var index = 1; index < array.length; index++){
@@ -1206,7 +1234,11 @@ function handleGlobalErrorMessage(message){
     if (output) output.println(message);
 }
 
-
+/**
+ * Builds the rows of a 2 dimensional array. Columns can be pushed in at will.
+ * @param {Number} rows Number of rows to be pushed into the array
+ * @returns {Array} Empty 2-D array
+ */
 function build2DArray(rows){
     var array = [];
     for (var index = 0; index < rows; index++){
@@ -1215,6 +1247,10 @@ function build2DArray(rows){
     return array;
 }
 
+/**
+ * Requests the proper author and title of a given treebank from the VNCloud.
+ * @param {Object} treebank
+ */
 function getCloudAuthorAndTitle(treebank){
     var file = vn.cloud.getObject(treebank.id);
 
@@ -1224,9 +1260,7 @@ function getCloudAuthorAndTitle(treebank){
 
             treebank.author = fields.Author;
             treebank.title = fields.Title;
-            treebank.section = fields.Section || fields["Section "];
-
-            console.log(fields);
+            treebank.section = fields.Section || fields["Section "]; //Some treebanks have an extra space at the end of the Section field
         }
     )
 }
