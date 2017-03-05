@@ -151,6 +151,9 @@ function loadTreebankFile(id){
     newTree.load(id);
 }
 
+/**
+ * Loads a treebank collection via the metreex API, then adds each tree to the set of loaded trees
+ */
 function loadTreebankCollection(){
     output.println("Attempting to load treebank collection");
     var t=new TreebankCollection();
@@ -264,6 +267,9 @@ VNConsoleWindow.prototype.processCommand=function(command){
     //return false;
 };
 
+/**
+ * Takes all selected treebanks and applies all of the selected metrics to them, recording the used metrics, treebanks, and results.
+ */
 function applyMetrics(){
     if (loadedTreebanks.length == 0){
         output.println("No treebanks have been loaded, please load treebank(s) before applying metrics.");
@@ -304,6 +310,12 @@ function applyMetrics(){
     lastTreebanksUsed = selectedTreebanks;
 }
 
+/**
+ * Checks if arrays one and two are equal, having all of the same elements.
+ * @param one
+ * @param two
+ * @returns {boolean} Returns true if the arrays are equal, and false if they are not equal. Also returns false if either array does not exist.
+ */
 function checkArrayEquals(one, two){
     //Should catch most quick error cases
     if (!one || !two) return false;
@@ -315,7 +327,10 @@ function checkArrayEquals(one, two){
     }));
 }
 
-//These are very similar functions... find a way to consolidate. id could be used for trees vs metrics
+/**
+ * Returns an array of all treebanks that are selected in the sidebar to have metrics applied to them
+ * @returns {Array} All selected treebanks
+ */
 function getCheckedTreebanks(){
     var trees = [];
     var form = document.getElementById("treebankList");
@@ -333,6 +348,10 @@ function getCheckedTreebanks(){
     return trees;
 }
 
+/**
+ * Divides metrics into two arrays, one for selected and another for unselected metrics.
+ * @returns {{checkedList: Array, uncheckedList: Array}}
+ */
 function getMetricPartitions(){
     var checkedList = [],
         uncheckedList = [],
@@ -352,6 +371,11 @@ function getMetricPartitions(){
     return {checkedList: checkedList, uncheckedList: uncheckedList};
 }
 
+/**
+ * Builds the sidebar for the list of metrics with their selection boxes.
+ * @param array Array of selected metrics
+ * @returns {Element} DOM form containing the sidebar of metrics
+ */
 function buildDefaultMetricList(array){
     var list = document.createElement("form");
     list.id = "metricList";
@@ -377,6 +401,11 @@ function buildDefaultMetricList(array){
     return list;
 }
 
+/**
+ * Adds the treebank given by newTree to the sidebar
+ * @param newTree
+ * @constructor
+ */
 function AddTreeToSidebar(newTree){
     var treeList = document.getElementById("treebankList");
 
@@ -403,11 +432,20 @@ function AddTreeToSidebar(newTree){
     treeList.appendChild(label);
 }
 
+/**
+ * Removes the treebank identified by id from the sidebar
+ * @param id
+ * @constructor
+ */
 function RemoveTreeFromSidebar(id){
     var treeToRemove = document.getElementById(id);
     treeToRemove.parentNode.removeChild(treeToRemove);
 }
 
+/**
+ * Builds the empty base for the treebank list in the sidebar to be built on
+ * @returns {Element}
+ */
 function buildDefaultTreebankList(){
     var list = document.createElement("form");
     list.id = "treebankList";
@@ -417,6 +455,10 @@ function buildDefaultTreebankList(){
     return list;
 }
 
+/**
+ * Empties the treebank tab of the sidebar, removing all treebanks.
+ * @constructor
+ */
 function RemoveAllTreesFromSidebar(){
     var list = document.getElementById("treebankList");
     while (list.firstChild){
@@ -650,6 +692,10 @@ function buildTableHeader(tableData, headId){
     }
 }
 
+/**
+ * Converts the most recent metric results into the array of objects used for processing throughout the application
+ * @returns {Array}
+ */
 function assembleMetricData(){
     var data = [];
     var runningIndex = 0;
@@ -673,9 +719,13 @@ function assembleMetricData(){
     return data;
 }
 
+/**
+ * Builds the SVG bar chart visualization for a given metric
+ * @param tableData Set of data to be processed
+ * @param metricIndex Index of the metric to be visualized
+ */
 function buildBarChart(tableData, metricIndex) {
     d3.select("#barChart").html(" ");
-
 
     var margin = {top: 15, right: 15, bottom: 30, left: 200};
 
@@ -806,7 +856,12 @@ function buildBarChart(tableData, metricIndex) {
     }
 }
 
-
+/**
+ * Builds the SVG scatterplot visualization for two given metrics
+ * @param tableData Set of data to be processed
+ * @param yMetricIndex Index of the metric for the y axis
+ * @param xMetricIndex Index of the metric for the x axis
+ */
 function buildScatterPlot(tableData, yMetricIndex, xMetricIndex) {
     var scatterDiv = d3.select("#scatterPlot");
 
@@ -945,6 +1000,10 @@ function genPCAPlot(){
     buildPCAPlot(assembleMetricData());
 }
 
+/**
+ * Builds the SVG Principal Component Analysis for all loaded metrics
+ * @param data Set of data to be processed
+ */
 function buildPCAPlot(data){
     if (lastMetricsUsed.length < 2) {
         handleGlobalErrorMessage("At least two metrics need to be enabled for Principal Component Analysis.");
@@ -1035,6 +1094,11 @@ function computeCovariance(data){
     return math.multiply(1/observations,math.transpose(deviationMatrix),deviationMatrix)._data; //covariance matrix
 }
 
+/**
+ * Computes eigenvalues and eigenvectors
+ * @param covarianceArray
+ * @returns {{eigVals, eigVecs}}
+ */
 //takes 2d array, not math.matrix. Can use math.matrix()._data to retrieve 2d array
 function computeEigendecomposition(covarianceArray){
     var eigResult = numeric.eig(covarianceArray);
@@ -1045,6 +1109,7 @@ function computeEigendecomposition(covarianceArray){
 }
 
 /**
+ * * Component of Principal Component Analysis *
  * Sorts eigenvalues and record original vector index so that the top two can be used for projection
  * @param eigenVals
  * @returns {Array}
@@ -1065,6 +1130,15 @@ function sortEigenvals(eigenVals) {
     return eigPairs;
 }
 
+/**
+ * * Component of Principal Component Analysis *
+ * Computes the projection matrix Y of the primary and secondary eigen-indices onto the new plane.
+ * Mathematically, Z = X x Y, where X is the matrix of all metric data, Y is the projection matrix built from the Eigenvectors
+ * @param eigenIndexInfo Array with information about what indices the two most influential eigenvectors are located at
+ * @param eigenVecs All eigenvectors, to extract the needed ones from
+ * @param data All metric values, declares as X previously
+ * @returns {Array} Projection matrix Z, as described above
+ */
 function computeEigenProjection(eigenIndexInfo, eigenVecs, data){
     var primaryEigenIndex = eigenIndexInfo[0].vecIndex,
         secondaryEigenIndex = eigenIndexInfo[1].vecIndex,
@@ -1077,6 +1151,11 @@ function computeEigenProjection(eigenIndexInfo, eigenVecs, data){
     return math.multiply(math.matrix(data),math.matrix(projectionMatrix));
 }
 
+/**
+ * Driver function for principal component analysis
+ * @param {Array} metricValues Full 2-dimensional array of metric values from applying metrics to loaded treebanks
+ * @returns {Array} Data generated by PCA, to be plotted.
+ */
 function principalComponentAnalysis(metricValues){
     var covMatrix = computeCovariance(metricValues),
         eigenPairs = computeEigendecomposition(covMatrix),
@@ -1086,6 +1165,13 @@ function principalComponentAnalysis(metricValues){
     return projectionMatrix._data;
 }
 
+/**
+ * Creates a 2-dimensional array, with each row containing the projection data associated with a particular author
+ * @param {Array} data Full set of metric data
+ * @param {Array} authors Set of authors
+ * @param {Array} projectionData Array containing the full set of projection data generated by PCA
+ * @returns {Array} PCA projection data sorted into bins by author
+ */
 function binProjectionDataByAuthor(data, authors, projectionData){
     var authdata = build2DArray(authors.length);
 
@@ -1100,7 +1186,7 @@ function binProjectionDataByAuthor(data, authors, projectionData){
 }
 
 /**
- * Creates a set of buttons, each associated with a specific author, in the target div. Each button toggles the visibility of all elements associated with that author and the class name given.
+ * Creates a set of buttons, in the target div, each associated with a specific author. Each button toggles the visibility of all elements associated with that author and the class name given.
  * @param {String} target Name of HTML div that the buttons should be appended to
  * @param {Array} authors Array of authors to create toggles for
  * @param {String} pointClassName Class name associated with the elements targeted by the created toggles
