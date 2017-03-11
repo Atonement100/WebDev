@@ -3,7 +3,6 @@
   <component name="ChangeListManager">
     <list default="true" id="1d8edbe8-fb30-438b-bf61-3fdc6c32c69f" name="Default" comment="">
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/metreex.html" afterPath="$PROJECT_DIR$/metreex.html" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/windowController.js" afterPath="$PROJECT_DIR$/windowController.js" />
     </list>
     <ignored path="$PROJECT_DIR$/.tmp/" />
@@ -25,8 +24,18 @@
       <file leaf-file-name="windowController.js" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/windowController.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="207">
-              <caret line="613" column="36" lean-forward="true" selection-start-line="613" selection-start-column="36" selection-end-line="613" selection-end-column="36" />
+            <state relative-caret-position="-5463">
+              <caret line="1012" column="25" lean-forward="true" selection-start-line="1012" selection-start-column="25" selection-end-line="1012" selection-end-column="25" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="http_d3js.org_d3.v4.js" pinned="false" current-in-tab="false">
+        <entry file="file://$APPLICATION_CONFIG_DIR$/javascript/extLibs/http_d3js.org_d3.v4.js">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="0">
+              <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
               <folding />
             </state>
           </provider>
@@ -37,7 +46,14 @@
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="758">
               <caret line="75" column="94" lean-forward="false" selection-start-line="75" selection-start-column="94" selection-end-line="75" selection-end-column="94" />
-              <folding />
+              <folding>
+                <marker date="1489255065274" expanded="true" signature="3709:3853" ph="..." />
+                <marker date="1489255065274" expanded="true" signature="3737:3842" ph="..." />
+                <marker date="1489255065274" expanded="true" signature="3901:4054" ph="..." />
+                <marker date="1489255065274" expanded="true" signature="3932:4043" ph="..." />
+                <marker date="1489255065274" expanded="true" signature="4098:4259" ph="..." />
+                <marker date="1489255065274" expanded="true" signature="4125:4248" ph="..." />
+              </folding>
             </state>
           </provider>
         </entry>
@@ -78,10 +94,6 @@
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
-      <find>build2darra</find>
-      <find>&amp;</find>
-      <find>build2d</find>
-      <find>var authors</find>
       <find>var author</find>
       <find>createauthorpl</find>
       <find>jstat</find>
@@ -108,6 +120,10 @@
       <find>zz()</find>
       <find>buildpca</find>
       <find>zz</find>
+      <find>removealltree</find>
+      <find>removeAllTreesFromSidebar</find>
+      <find>@constr</find>
+      <find>margin</find>
     </findStrings>
   </component>
   <component name="Git.Settings">
@@ -171,6 +187,30 @@
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
             </PATH_ELEMENT>
             <PATH_ELEMENT>
+              <option name="myItemId" value="External Libraries" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ExternalLibrariesNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="WebDev" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="External Libraries" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ExternalLibrariesNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="d3.v4" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.NamedLibraryElementNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="WebDev" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
               <option name="myItemId" value="WebDev" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
@@ -187,7 +227,9 @@
     <property name="js.eslint.eslintPackage" value="" />
     <property name="list.type.of.created.stylesheet" value="CSS" />
     <property name="last_opened_file_path" value="$PROJECT_DIR$" />
-    <property name="settings.editor.selected.configurable" value="Settings.JavaScript.Linters" />
+    <property name="settings.editor.selected.configurable" value="JavaScript.Libraries" />
+    <property name="JavaScriptPreferStrict" value="false" />
+    <property name="JavaScriptWeakerCompletionTypeGuess" value="true" />
   </component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
@@ -302,12 +344,12 @@
       <workItem from="1488042600542" duration="848000" />
       <workItem from="1488597625898" duration="5080000" />
       <workItem from="1488661939097" duration="8862000" />
-      <workItem from="1489252832131" duration="3395000" />
+      <workItem from="1489252832131" duration="4975000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="65374000" />
+    <option name="totallyTimeSpent" value="66954000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="-8" y="-8" width="1936" height="1096" extended-state="6" />
@@ -342,14 +384,6 @@
     <watches-manager />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/windowController.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="0">
-          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$APPLICATION_CONFIG_DIR$/javascript/extLibs/http_www.metreex.org_js_metreex-1.1.js">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="2414">
@@ -565,7 +599,14 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="758">
           <caret line="75" column="94" lean-forward="false" selection-start-line="75" selection-start-column="94" selection-end-line="75" selection-end-column="94" />
-          <folding />
+          <folding>
+            <marker date="1489255065274" expanded="true" signature="3709:3853" ph="..." />
+            <marker date="1489255065274" expanded="true" signature="3737:3842" ph="..." />
+            <marker date="1489255065274" expanded="true" signature="3901:4054" ph="..." />
+            <marker date="1489255065274" expanded="true" signature="3932:4043" ph="..." />
+            <marker date="1489255065274" expanded="true" signature="4098:4259" ph="..." />
+            <marker date="1489255065274" expanded="true" signature="4125:4248" ph="..." />
+          </folding>
         </state>
       </provider>
     </entry>
@@ -577,10 +618,18 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$APPLICATION_CONFIG_DIR$/javascript/extLibs/http_d3js.org_d3.v4.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/windowController.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="207">
-          <caret line="613" column="36" lean-forward="true" selection-start-line="613" selection-start-column="36" selection-end-line="613" selection-end-column="36" />
+        <state relative-caret-position="-5463">
+          <caret line="1012" column="25" lean-forward="true" selection-start-line="1012" selection-start-column="25" selection-end-line="1012" selection-end-column="25" />
           <folding />
         </state>
       </provider>

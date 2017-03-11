@@ -15,13 +15,14 @@ var lastTreebanksUsed = [];
  * @param {String} tabName HTML Id of tab to be displayed.
  */
 function openTab(event, tabName){
-    var i;
-    var metricTabContent = document.getElementsByClassName(event.currentTarget.className + "Content");
+    var i,
+        metricTabContent = document.getElementsByClassName(event.currentTarget.className + "Content"),
+        headerTabs = document.getElementsByClassName(event.currentTarget.className);
+
     for (i = 0; i < metricTabContent.length; i++){
         metricTabContent[i].style.display = "none";
     }
 
-    var headerTabs = document.getElementsByClassName(event.currentTarget.className);
     for (i = 0; i < headerTabs.length; i++){
         headerTabs[i].className = headerTabs[i].className.replace(" active", "");
     }
@@ -61,7 +62,7 @@ function invertAllCheckboxesInTab(tabName){
  * @param {Object} newTree Treebank to be added to the array of loaded treebanks
  * @returns {Boolean} Returns true if a tree was successfully added or false otherwise.
  */
-function AddLoadedTree(newTree){
+function addLoadedTree(newTree){
     for (var index = 0; index < loadedTreebanks.length; index++){
         if (loadedTreebanks[index].id === newTree.id){
             output.println("Treebank " + newTree.id + " has been loaded previously");
@@ -73,7 +74,7 @@ function AddLoadedTree(newTree){
     loadedTreebanks.push(newTree);
 
     if (USING_SIDEBAR){
-        AddTreeToSidebar(newTree);
+        addTreeToSidebar(newTree);
     }
 
     return true;
@@ -84,14 +85,14 @@ function AddLoadedTree(newTree){
  * @param {String} id Id of tree which should be removed from the loaded array
  * @returns {Boolean} Returns true if a tree was successfully removed or false otherwise.
  */
-function RemoveLoadedTreeById(id){
+function removeLoadedTreeById(id){
     for (var index = 0; index < loadedTreebanks.length; index++){
         if (loadedTreebanks[index].id === id){
             loadedTreebanks.splice(index, 1);
             output.println("Treebank " + id + " has been unloaded");
 
             if (USING_SIDEBAR){
-                RemoveTreeFromSidebar(id)
+                removeTreeFromSidebar(id);
             }
 
             return true; //Should not have to worry about duplicates.
@@ -106,22 +107,21 @@ function RemoveLoadedTreeById(id){
  * @param {string} id Id of tree to search for in the loaded array
  * @returns {Object} Returns the treebank with the Id given if found, or null otherwise.
  */
-function GetTreeById(id){
+function getTreeById(id){
     for (var index = 0; index < loadedTreebanks.length; index++){
         if (loadedTreebanks[index].id === id){
             return loadedTreebanks[index];
         }
     }
     output.println("Treebank " + id + " was not previously loaded");
-    return;
 }
 
-function UnloadAllTreebanks(){
+function unloadAllTreebanks(){
     loadedTreebanks = [];
     output.println("All treebanks have been unloaded.");
 
     if(USING_SIDEBAR){
-        RemoveAllTreesFromSidebar();
+        removeAllTreesFromSidebar();
     }
 }
 function loadTreebankFromSidebar(){
@@ -131,7 +131,7 @@ function loadTreebankFromSidebar(){
 }
 
 function unloadTreebankFromSidebar(id){
-    RemoveLoadedTreeById(id);
+    removeLoadedTreeById(id);
 }
 
 /**
@@ -145,7 +145,7 @@ function loadTreebankFile(id){
     newTree.onload = function () {
         console.log(newTree);
         if (newTree.getNumOfSentences() > 0) {
-            AddLoadedTree(newTree);
+            addLoadedTree(newTree);
         }
     };
     newTree.load(id);
@@ -159,7 +159,7 @@ function loadTreebankCollection(){
     var t=new TreebankCollection();
     t.onload=function(){
         t.treebank.forEach(function(tree){
-            AddLoadedTree(tree);
+            addLoadedTree(tree);
         });
     };
     t.load();
@@ -170,8 +170,8 @@ function loadTreebankCollection(){
  */
 VNConsoleWindow.prototype.init=function()
 {
-    var d=""+new Date();
-    var i=d.indexOf("GMT");
+    var d=""+new Date(),
+        i=d.indexOf("GMT");
     if(i>-1) d=d.substring(0,i-1);
     this.println(d);
     this.println("---- Console started. Type 'help' for a list of commands. ----");
@@ -202,10 +202,10 @@ VNConsoleWindow.prototype.processCommand=function(command){
         case "unload":
             if (args.length > 1 && args[1]){
                 if (args[1] === "-a"){
-                    UnloadAllTreebanks();
+                    unloadAllTreebanks();
                 }
                 else{
-                    RemoveLoadedTreeById(args[1]);
+                    removeLoadedTreeById(args[1]);
                 }
             }
             else{
@@ -332,15 +332,15 @@ function checkArrayEquals(one, two){
  * @returns {Array} All selected treebanks
  */
 function getCheckedTreebanks(){
-    var trees = [];
-    var form = document.getElementById("treebankList");
+    var trees = [],
+        form = document.getElementById("treebankList");
 
     //Workaround for .forEach not being a member function of what .getElementsByTagName returns
     //Converts to array so that .forEach can be used.
     Array.prototype.slice.call(form.getElementsByTagName("label")).forEach(function (child) {
         Array.prototype.slice.call(child.getElementsByTagName("input")).forEach(function (checkbox) {
             if (checkbox.checked){
-                trees.push(GetTreeById(checkbox.value));
+                trees.push(getTreeById(checkbox.value));
             }
         });
     });
@@ -404,12 +404,10 @@ function buildDefaultMetricList(array){
 /**
  * Adds the treebank given by newTree to the sidebar
  * @param newTree
- * @constructor
  */
-function AddTreeToSidebar(newTree){
-    var treeList = document.getElementById("treebankList");
-
-    var checkbox = document.createElement("input");
+function addTreeToSidebar(newTree){
+    var treeList = document.getElementById("treebankList"),
+        checkbox = document.createElement("input");
     checkbox.type = "checkbox";
     checkbox.name = "treebankCheckbox";
     checkbox.value = newTree.id;
@@ -428,16 +426,14 @@ function AddTreeToSidebar(newTree){
     label.appendChild(unloadButton);
     label.appendChild(document.createElement("br"));
 
-
     treeList.appendChild(label);
 }
 
 /**
  * Removes the treebank identified by id from the sidebar
  * @param id
- * @constructor
  */
-function RemoveTreeFromSidebar(id){
+function removeTreeFromSidebar(id){
     var treeToRemove = document.getElementById(id);
     treeToRemove.parentNode.removeChild(treeToRemove);
 }
@@ -457,9 +453,8 @@ function buildDefaultTreebankList(){
 
 /**
  * Empties the treebank tab of the sidebar, removing all treebanks.
- * @constructor
  */
-function RemoveAllTreesFromSidebar(){
+function removeAllTreesFromSidebar(){
     var list = document.getElementById("treebankList");
     while (list.firstChild){
         list.removeChild(list.firstChild);
@@ -500,11 +495,15 @@ window.onload = function () {
 };
 
 function debugMetricResults(){
-    for (var index = 0; index < selectedTreebanks.length; index++){
+    var index,
+        sentenceIndex,
+        metrIndex;
+
+    for (index = 0; index < selectedTreebanks.length; index++){
         console.log("treebank: " + selectedTreebanks[index].getTitle());
-        for (var sentenceIndex = 0; sentenceIndex < lastMetricResults[index].length; sentenceIndex++){
+        for (sentenceIndex = 0; sentenceIndex < lastMetricResults[index].length; sentenceIndex++){
             console.log("sentence: " + sentenceIndex);
-            for (var metrIndex = 0; metrIndex < lastMetricResults[index][sentenceIndex].length; metrIndex++){
+            for (metrIndex = 0; metrIndex < lastMetricResults[index][sentenceIndex].length; metrIndex++){
                 console.log("metric no. " + metrIndex + ": " + enabledMetrics[metrIndex] + " : " + lastMetricResults[index][sentenceIndex][metrIndex]);
             }
         }
@@ -523,25 +522,23 @@ function buildBasicTableInverted(tableData){
     tableDiv.append("br");
 
     var table = d3.select("#basicTable").append("table")
-        .attr("id", "basicTableBase");
-
-    var thead = table.append("thead")
+        .attr("id", "basicTableBase"),
+        thead = table.append("thead")
         .attr("id", "basicTableThead");
     thead.append("tr")
         .attr("id", "basicTableHeader");
 
     buildInvertedTableHeader(tableData, "basicTableHeader");
 
-    var tableDOM = document.getElementById("basicTableBase");
-    var theadDOM = document.getElementById("basicTableThead");
-
-    var tbody = table.append("tbody")
+    var tableDOM = table.node(),//document.getElementById("basicTableBase");
+        theadDOM = thead.node(),//document.getElementById("basicTableThead");
+        tbody = table.append("tbody")
         .attr("id", "basicTableBody")
-        .style("height", tableDOM.getBoundingClientRect().height - theadDOM.getBoundingClientRect().height + "px");
+        .style("height", tableDOM.getBoundingClientRect().height - theadDOM.getBoundingClientRect().height + "px"),
+        tbodyDOM = tbody.node();
 
     buildInvertedTableBody(tableData, tbody);
 
-    var tbodyDOM = document.getElementById("basicTableBody");
     tbodyDOM.onscroll = function(e) {
         theadDOM.style.left = "-" + tbodyDOM.scrollLeft + "px";
         Array.prototype.slice.call(theadDOM.getElementsByTagName("tr"))
@@ -559,9 +556,9 @@ function buildBasicTableInverted(tableData){
     };
 }
 
-function buildInvertedTableHeader(tableData, headId) {
-    var thead = document.getElementById(headId);
-    var tlhead = thead.appendChild(document.createElement("th"));
+function buildInvertedTableHeader(headId) {
+    var thead = document.getElementById(headId),
+        tlhead = thead.appendChild(document.createElement("th"));
 
     tlhead.appendChild(document.createTextNode("Metrics"));
 
@@ -572,11 +569,11 @@ function buildInvertedTableHeader(tableData, headId) {
 }
 
 function buildInvertedTableBody(tableData, tbody){
+    /*  Note that rows are built in the reverse order - data, sentence number, then title.
+     This is done so that d3 can use select all "td" elements, and not interfere with the row headers
+     Building backwards in terms of sentence number then title allows us to ubiquitously use :first-child in a 'prepend' sense
+     */
     tableData.forEach(function (elem, index) {
-        /*  Note that rows are built in the reverse order - data, sentence number, then title.
-         This is done so that d3 can use select all "td" elements, and not interfere with the row headers
-         Building backwards in terms of sentence number then title allows us to ubiquitously use :first-child in a 'prepend' sense
-         */
         var trow = tbody.append("tr")
             .attr("id", "basicTableDataRow" + index);
 
@@ -622,9 +619,8 @@ function buildBasicTable(tableData){
     tableDiv.append("br");
 
     var table = d3.select("#basicTable").append("table")
-        .attr("id", "basicTableBase");
-
-    var thead = table.append("thead")
+        .attr("id", "basicTableBase"),
+        thead = table.append("thead")
         .attr("id", "basicTableThead");
     thead.append("tr")
         .attr("id", "basicTableHeader");
@@ -635,23 +631,20 @@ function buildBasicTable(tableData){
         .attr("id", "basicTableSubHeader");
     buildTableSubHeader(tableData, "basicTableSubHeader");
 
-    var tableDOM = document.getElementById("basicTableBase");
-    var theadDOM = document.getElementById("basicTableThead");
-
-    var tbody = table.append("tbody")
+    var tableDOM = document.getElementById("basicTableBase"),
+        theadDOM = document.getElementById("basicTableThead"),
+        tbody = table.append("tbody")
         .attr("id", "basicTableBody")
-        .style("height", tableDOM.getBoundingClientRect().height - theadDOM.getBoundingClientRect().height + "px");
+        .style("height", tableDOM.getBoundingClientRect().height - theadDOM.getBoundingClientRect().height + "px"),
+        tbodyDOM = tbody.node(),
+        rowId;
 
     for (var metricIndex = 0; metricIndex < lastMetricsUsed.length; metricIndex++){
-        var rowId = "basicTableDataRow" + metricIndex;
+        rowId = "basicTableDataRow" + metricIndex;
         tbody.append("tr")
             .attr("id",rowId);
         buildTableDataRow(tableData,rowId, metricIndex);
     }
-
-
-    var tbodyDOM = document.getElementById("basicTableBody");
-
 
     tbodyDOM.onscroll = function(e) {
         theadDOM.style.left = "-" + tbodyDOM.scrollLeft + "px";
@@ -667,8 +660,8 @@ function buildBasicTable(tableData){
 }
 
 function buildTableDataRow(tableData, rowId, rowNum){
-    var tr = document.getElementById(rowId);
-    var rowHeader = tr.appendChild(document.createElement("td"));
+    var tr = document.getElementById(rowId),
+        rowHeader = tr.appendChild(document.createElement("td"));
     rowHeader.appendChild(document.createTextNode(lastMetricsUsed[rowNum].name));
 
     for (var dataIndex = 0; dataIndex < tableData.length; dataIndex++){
@@ -689,8 +682,8 @@ function buildTableSubHeader(tableData, subheadId){
 }
 
 function buildTableHeader(tableData, headId){
-    var thead = document.getElementById(headId);
-    var tlhead = thead.appendChild(document.createElement("th"));
+    var thead = document.getElementById(headId),
+        tlhead = thead.appendChild(document.createElement("th"));
     tlhead.appendChild(document.createTextNode("Metrics"));
 
     for (var index = 0; index < tableData.length; ){
@@ -707,11 +700,13 @@ function buildTableHeader(tableData, headId){
  * @returns {Array}
  */
 function assembleMetricData(){
-    var data = [];
-    var runningIndex = 0;
+    var data = [],
+        runningIndex = 0,
+        index,
+        sentenceIndex;
 
-    for (var index = 0; index < selectedTreebanks.length; index++){
-        for (var sentenceIndex = 0; sentenceIndex < lastMetricResults[index].length; sentenceIndex++){
+    for (index = 0; index < selectedTreebanks.length; index++){
+        for (sentenceIndex = 0; sentenceIndex < lastMetricResults[index].length; sentenceIndex++){
             data.push({
                 title: selectedTreebanks[index].title,
                 section: selectedTreebanks[index].section,
@@ -735,7 +730,10 @@ function assembleMetricData(){
  * @param metricIndex Index of the metric to be visualized
  */
 function buildBarChart(tableData, metricIndex) {
-    var barDiv = d3.select("#barChart");
+    var barDiv = d3.select("#barChart"),
+        margin = {top: 15, right: 15, bottom: 30, left: 200},
+        barThickness = 16, //px
+        width = 1200, height = tableData.length * barThickness + margin.top + margin.bottom;
 
     barDiv.html(" ");
     barDiv.append("input")
@@ -744,24 +742,20 @@ function buildBarChart(tableData, metricIndex) {
         .on("click",function(){genBarChart();});
     barDiv.append("br");
 
-    var margin = {top: 15, right: 15, bottom: 30, left: 200};
-    var barThickness = 16; //px
-    var width = 1200, height = tableData.length * barThickness + margin.top + margin.bottom;
-
     var xaxis = d3.scaleLinear()
         .domain([ Math.min(d3.min(tableData, function(elem){return elem.metricValues[metricIndex];}), 0),
             d3.max(tableData, function (elem) {return elem.metricValues[metricIndex];}) ])
-        .range([0,width]);
-    var yaxis = d3.scaleBand()
+        .range([0,width]),
+        yaxis = d3.scaleBand()
         .range([height - (margin.bottom + margin.top), 0])
         .domain(tableData.map(function(elem){
             return elem.refString;
-        }));
-    var coloraxis = d3.scaleOrdinal(d3.schemeSet2)
+        })),
+        coloraxis = d3.scaleOrdinal(d3.schemeSet2)
         .domain(tableData.map(function (elem) {
             return elem.author;
-        }));
-    var metricSelector = barDiv.append("select")
+        })),
+        metricSelector = barDiv.append("select")
         .attr("id", "barChartMetricSelector")
         .on("change", selectedMetricChange);
 
@@ -780,12 +774,14 @@ function buildBarChart(tableData, metricIndex) {
 
     var chart = barDiv.append("svg")
         .attr("width", width + margin.left + margin.right)
-        .attr("height", height + margin.bottom + margin.top);
-    var parent = chart.append("g")
-        .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+        .attr("height", height + margin.bottom + margin.top),
 
-    var barparent = parent.append("g");
-    var bars = barparent.selectAll("g")
+        parent = chart.append("g")
+        .attr("transform", "translate(" + margin.left + "," + margin.top + ")"),
+
+        barparent = parent.append("g"),
+
+        bars = barparent.selectAll("g")
         .data(tableData, function (elem) { return elem.metricValues[metricIndex]; })
         .enter().append("g")
         .attr("class", "bar")
@@ -879,7 +875,9 @@ function buildBarChart(tableData, metricIndex) {
  * @param xMetricIndex Index of the metric for the x axis
  */
 function buildScatterPlot(tableData, yMetricIndex, xMetricIndex) {
-    var scatterDiv = d3.select("#scatterPlot");
+    var scatterDiv = d3.select("#scatterPlot"),
+        xDiv,
+        yDiv;
 
     scatterDiv.html(" ");
     scatterDiv.append("input")
@@ -888,7 +886,7 @@ function buildScatterPlot(tableData, yMetricIndex, xMetricIndex) {
         .on("click",function(elem){genScatterPlot();});
     scatterDiv.append("br");
 
-    var yDiv = scatterDiv.append("div")
+    yDiv = scatterDiv.append("div")
         .text("Y Axis: ")
             .style("display","inline"),
         yMetricSelector = yDiv.append("select")
@@ -897,7 +895,7 @@ function buildScatterPlot(tableData, yMetricIndex, xMetricIndex) {
 
     scatterDiv.append("br");
 
-    var xDiv = scatterDiv.append("div")
+    xDiv = scatterDiv.append("div")
         .text("X Axis: "),
         xMetricSelector = xDiv.append("select")
         .attr("id", "scatterxSelect")
@@ -922,27 +920,30 @@ function buildScatterPlot(tableData, yMetricIndex, xMetricIndex) {
         .property("selected", function(elem,index) {return index == xMetricIndex;})
         .html(function(elem) {return elem.name;});
 
-    var margin = {top: 15, right: 15, bottom: 30, left: 30};
-    var bubbleThickness = 4; //px
-    var width = 800, height = 800;
+    var margin = {top: 15, right: 15, bottom: 30, left: 30},
+        bubbleThickness = 4, //px
+        width = 800, height = 800,
 
-    var xaxis = d3.scaleLinear()
+        xaxis = d3.scaleLinear()
         .range([0, width])
-        .domain(d3.extent(tableData, function(elem){return elem.metricValues[xMetricIndex];}));
-    var yaxis = d3.scaleLinear()
+        .domain(d3.extent(tableData, function(elem){return elem.metricValues[xMetricIndex];})),
+
+        yaxis = d3.scaleLinear()
         .range([height, 0])
-        .domain(d3.extent(tableData, function(elem){return elem.metricValues[yMetricIndex];}));
+        .domain(d3.extent(tableData, function(elem){return elem.metricValues[yMetricIndex];})),
     //potential 'z axis' in terms of size of bubbles
-    var coloraxis = d3.scaleOrdinal(d3.schemeSet2)
+        coloraxis = d3.scaleOrdinal(d3.schemeSet2)
         .domain(tableData.map(function (elem) {
             return elem.author;
-        }));
+        })),
 
-    var chart = scatterDiv.append("svg")
+        chart = scatterDiv.append("svg")
         .attr("width", width + margin.left + margin.right)
-        .attr("height", height + margin.bottom + margin.top);
-    var parent = chart.append("g")
+        .attr("height", height + margin.bottom + margin.top),
+
+        parent = chart.append("g")
         .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+    /*end vars*/
 
     parent.append("g")
         .attr("class", "axis x-axis")
