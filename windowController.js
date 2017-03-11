@@ -512,13 +512,18 @@ function debugMetricResults(){
     return true;
 }
 
-function buildBasicTableInverted(){
+function buildBasicTableInverted(tableData){
     //Clears out existing table if one exists
-    d3.select("#basicTable").html("");
+    var tableDiv = d3.select("#basicTable");
+    tableDiv.html(" ");
+    tableDiv.append("input")
+        .attr("type","button")
+        .attr("value", function(){return "Generate New Table";})
+        .on("click",function(){genMetricOnTopTable();});
+    tableDiv.append("br");
 
     var table = d3.select("#basicTable").append("table")
         .attr("id", "basicTableBase");
-    var tableData = assembleMetricData();
 
     var thead = table.append("thead")
         .attr("id", "basicTableThead");
@@ -606,13 +611,18 @@ function buildInvertedTableBody(tableData, tbody){
     });
 }
 
-function buildBasicTable(){
+function buildBasicTable(tableData){
     //Clear out existing table if there is one already
-    d3.select("#basicTable").html("");
+    var tableDiv = d3.select("#basicTable");
+    tableDiv.html(" ");
+    tableDiv.append("input")
+        .attr("type","button")
+        .attr("value", function(){return "Generate New Table";})
+        .on("click",function(){genMetricOnLeftTable();});
+    tableDiv.append("br");
 
     var table = d3.select("#basicTable").append("table")
         .attr("id", "basicTableBase");
-    var tableData = assembleMetricData();
 
     var thead = table.append("thead")
         .attr("id", "basicTableThead");
@@ -725,10 +735,16 @@ function assembleMetricData(){
  * @param metricIndex Index of the metric to be visualized
  */
 function buildBarChart(tableData, metricIndex) {
-    d3.select("#barChart").html(" ");
+    var barDiv = d3.select("#barChart");
+
+    barDiv.html(" ");
+    barDiv.append("input")
+        .attr("type","button")
+        .attr("value", function(){return "Generate New Bar Chart";})
+        .on("click",function(){genBarChart();});
+    barDiv.append("br");
 
     var margin = {top: 15, right: 15, bottom: 30, left: 200};
-
     var barThickness = 16; //px
     var width = 1200, height = tableData.length * barThickness + margin.top + margin.bottom;
 
@@ -745,7 +761,7 @@ function buildBarChart(tableData, metricIndex) {
         .domain(tableData.map(function (elem) {
             return elem.author;
         }));
-    var metricSelector = d3.select("#barChart").append("select")
+    var metricSelector = barDiv.append("select")
         .attr("id", "barChartMetricSelector")
         .on("change", selectedMetricChange);
 
@@ -757,12 +773,12 @@ function buildBarChart(tableData, metricIndex) {
         .property("selected", function(elem,index) {return index == metricIndex;})
         .html(function(elem) {return elem.name;});
 
-    d3.select("#barChart").append("input")
+    barDiv.append("input")
         .attr("type","checkbox")
         .html("Sort")
         .on("change",toggleSort);
 
-    var chart = d3.select("#barChart").append("svg")
+    var chart = barDiv.append("svg")
         .attr("width", width + margin.left + margin.right)
         .attr("height", height + margin.bottom + margin.top);
     var parent = chart.append("g")
@@ -872,8 +888,6 @@ function buildScatterPlot(tableData, yMetricIndex, xMetricIndex) {
         .on("click",function(elem){genScatterPlot();});
     scatterDiv.append("br");
 
-
-
     var yDiv = scatterDiv.append("div")
         .text("Y Axis: ")
             .style("display","inline"),
@@ -975,31 +989,6 @@ function buildScatterPlot(tableData, yMetricIndex, xMetricIndex) {
     }
 }
 
-function q(){
-    applyMetrics();
-    buildBasicTable();
-}
-
-function zz(){
-    applyMetrics();
-    buildBasicTableInverted();
-}
-
-function genBarChartA(){
-    applyMetrics();
-    buildBarChart(assembleMetricData(), 0);
-}
-
-function genScatterPlot(){
-    applyMetrics();
-    buildScatterPlot(assembleMetricData(), 0, 1);
-}
-
-function genPCAPlot(){
-    applyMetrics();
-    buildPCAPlot(assembleMetricData());
-}
-
 /**
  * Builds the SVG Principal Component Analysis for all loaded metrics
  * @param data Set of data to be processed
@@ -1009,7 +998,18 @@ function buildPCAPlot(data){
         handleGlobalErrorMessage("At least two metrics need to be enabled for Principal Component Analysis.");
         return;
     }
-    //d3.select("#PCAPlot").html(" ");
+    if (data.length < 4){
+        handleGlobalErrorMessage("Not enough data is present for PCA, need at least 3 sentences.");
+        return;
+    }
+
+    var pcaPlot = d3.select("#PCAPlot");
+    pcaPlot.html(" ");
+    pcaPlot.append("input")
+        .attr("type","button")
+        .attr("value", function(){return "Generate New PCA Plot";})
+        .on("click",function(){genPCAPlot();});
+    pcaPlot.append("br");
 
     var metricValues = data.map(function (elem) { return elem.metricValues; }),
         projectionData = principalComponentAnalysis(metricValues),
@@ -1030,7 +1030,7 @@ function buildPCAPlot(data){
                 return elem.author;
             })),
 
-        chart = d3.select("#PCAPlot").append("svg")
+        chart = pcaPlot.append("svg")
             .attr("width", width + margin.left + margin.right)
             .attr("height", height + margin.bottom + margin.top),
 
@@ -1315,6 +1315,10 @@ function getIndexOfMin(array) {
     return minIndex;
 }
 
+/**
+ * Logs the given message in the browser console as well as the metreex console, if it is running
+ * @param message
+ */
 function handleGlobalErrorMessage(message){
     console.log(message);
     if (output) output.println(message);
@@ -1351,25 +1355,27 @@ function getCloudAuthorAndTitle(treebank){
     )
 }
 
-function cloudTest(){
-    var list=vn.cloud.getObject('46nbm13yn7otz7yd');//this is the ID of the list I created that contains all my tree files.
-    list.whenReady().then(function(list){
-        var fields=list.getFields();
-        for(var file_id in fields.VN_LIST)
-        {
-            do_something(file_id);
-        }
-    });
+function genMetricOnLeftTable(){
+    applyMetrics();
+    buildBasicTable(assembleMetricData());
+}
 
-    var do_something=function(file_id)
-    {
-        var file=vn.cloud.getObject(file_id);
-        file.whenReady().then(function(file){
-            var fields=file.getFields();
-            for(var field in fields)
-                console.log('The field '+field+' has value: '+fields[field]);
-            //The corresponding original XML treebank file is at the url:
-            var url=vn.hosturl+'file/'+file.getId()+'/data';
-        });
-    }
+function genMetricOnTopTable(){
+    applyMetrics();
+    buildBasicTableInverted(assembleMetricData());
+}
+
+function genBarChart(){
+    applyMetrics();
+    buildBarChart(assembleMetricData(), 0);
+}
+
+function genScatterPlot(){
+    applyMetrics();
+    buildScatterPlot(assembleMetricData(), 0, 1);
+}
+
+function genPCAPlot(){
+    applyMetrics();
+    buildPCAPlot(assembleMetricData());
 }
