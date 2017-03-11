@@ -8,6 +8,178 @@ var loadedTreebanks = [],
     lastMetricsUsed = [],
     lastTreebanksUsed = [];
 
+
+window.onload = function () {
+    d3.select("#visualDiv")
+        .style("width", screen.width - document.getElementById("metricDiv").getBoundingClientRect().width + "px");
+
+    vn = new VisiNeatAPI();
+    vn.setScreen("ConsoleTarget");
+    vn.cloud = new VNCloud();
+
+    // Initialization of treebank and metric lists
+    USING_SIDEBAR = true;
+    document.getElementById("Treebanks").appendChild(buildDefaultTreebankList());
+    document.getElementById("Metrics").appendChild(buildDefaultMetricList(loadedMetrics));
+    document.getElementById("startingMetricTab").click(); //Simulates opening a tab to start with
+    document.getElementById("startingVisualTab").click();
+
+
+    // Console creation
+    var windowManager = vn.getWindowManager();
+    output = windowManager.createConsole({left:10,top:10,width:1000,height:800,title:"metreex analysis"});
+    output.whenCommandEntered().then(function (command) {
+        processCommand(command);
+    });
+
+    loadTreebankFile("m3pmakk93y1nkhxl");
+    loadTreebankFile("9g50guweglwy5kqb");
+    loadTreebankFile("5krwvewpr25f6jf4");
+    loadTreebankFile("ct1ggzdspofmmdch");
+    loadTreebankFile("muq9q52l8gm30von");
+
+};
+
+VNConsoleWindow.prototype.init=function()
+{
+    var d=""+new Date(),
+        i=d.indexOf("GMT");
+    if(i>-1) d=d.substring(0,i-1);
+    this.println(d);
+    this.println("---- Console started. Type 'help' for a list of commands. ----");
+};
+
+function processCommand(command){
+    console.log("Command received in window controller: " + command);
+
+    var args = command.split(" ");
+    switch (args[0].toLowerCase()){
+        case "help":
+            if (args[1]) {
+                switch (args[1].toLowerCase()){
+                    case "load": output.println("load:<br>Usage: load (&lt;treebank id>|-c)<br>Load will either load a specific treebank, if an Id is given, or all treebanks in a collection, if the -c argument is provided."); break;
+                    case "unload": output.println("unload:<br>Usage: unload (&lt;treebank id>|-a)<br>Unload will unload either a specific treebank, if an Id is given, or all loaded treebanks, if the -a argument is provided."); break;
+                    case "list": output.println("list:<br>Usage: list (trees|metrics)<br>List shows all of loaded treebanks or metrics and displays them. It takes the one argument of (trees, metrics), which determines which set is shown."); break;
+                    case "apply": output.println("apply:<br>Usage: apply<br>Apply will take all of the selected metrics and apply them to all of the selected treebanks. It takes no additional arguments."); break;
+                    case "clear": output.println("clear:<br>Usage: clear<br>Clear will clear all text from the console. It takes no additional arguments. This may help in the event that slowdown is experienced."); break;
+                    case "export": output.println("export:<br>Usage: export<br>Export will generate and download a tab separated values file based on all currently selected treebanks and metrics. It takes no additional arguments. Warning: pop-up blockers may prevent the download from initiating."); break;
+                    case "generate": output.println("generate:<br>Usage: generate (table, bar, scatter, pca)<br>Generate will create the type of plot indicated by the argument in the appropriate tab."); break;
+                    default: output.println("The command given does not have a help entry."); break;
+                }
+            }
+            else {
+                output.println("Welcome to the metreex analysis tool, type 'help &lt;command>' for more information on a command.");
+                output.println("Commands: load, unload, list, apply, clear, export, generate");
+            }
+            return true;
+        case "load":
+            if (args.length > 1 && args[1]) {
+                if (args[1] === "-c"){
+                    loadTreebankCollection();
+                }
+                else {
+                    loadTreebankFile(args[1]);
+                }
+            }
+            else{
+                output.println("Not enough parameters. Usage: load &lt;metreex database id> or load -c (for collection)");
+            }
+            return true;
+        case "unload":
+            if (args.length > 1 && args[1]){
+                if (args[1] === "-a"){
+                    unloadAllTreebanks();
+                }
+                else{
+                    removeLoadedTreeById(args[1]);
+                }
+            }
+            else{
+                output.println("The unload command should be used as either 'unload -a' or load &lt;treebank id>'");
+            }
+            return true;
+        case "list":
+            if (args.length > 1) {
+                switch (args[1]) {
+                    case "trees":
+                        if (loadedTreebanks.length > 0) {
+                            output.println("The following " + loadedTreebanks.length + " treebank(s) have been loaded:");
+                            loadedTreebanks.forEach(function (tree) {
+                                output.println(tree.id + ": " + tree.getTitle());
+                            });
+                        }
+                        else {
+                            output.println("No treebanks have been loaded yet. Use the \"load\" command to load a new treebank.");
+                        }
+                        break;
+                    case "metrics":
+                        if (disabledMetrics.length + loadedMetrics.length == 0) {
+                            output.println("No metrics have been loaded. Check for the metric source file.");
+                            break;
+                        }
+
+                        if (loadedMetrics.length > 0) {
+                            output.println("The following " + loadedMetrics.length + " metric(s) are enabled:");
+                            loadedMetrics.forEach(function (metric) {
+                                output.println(metric.name);
+                            })
+                        }
+
+                        if (disabledMetrics.length > 0){
+                            output.println("The following " + loadedMetrics.length + " metric(s) are disabled:");
+                            disabledMetrics.forEach(function (metric) {
+                                output.println(metric.name);
+                            })
+                        }
+                        break;
+                    default:
+                        output.println("Invalid list argument provided.");
+                        break;
+                }
+            }
+            else{
+                output.println("The list command should be used as 'list trees' or 'list metrics'");
+            }
+            return true;
+        case "apply":
+            applyMetrics();
+            return true;
+        case "clear":
+            output.clear();
+            return true;
+        case "export":
+            exportDataAsTSV();
+            return true;
+        case "generate":
+            if (args.length > 1) {
+                switch (args[1]) {
+                    case "table":
+                        //genMetricOnTopTable();
+                        output.println("The table must be generated from the table tab in order for it to be properly rendered.");
+                        break;
+                    case "bar":
+                        genBarChart();
+                        break;
+                    case "scatter":
+                        genScatterPlot();
+                        break;
+                    case "pca":
+                        genPCAPlot();
+                        break;
+                    default:
+                        output.println("Invalid generate argument provided.");
+                        break;
+                }
+            }
+            else{
+                output.println("See 'help generate' for instructions on how to use this command.");
+            }
+            break;
+        default:
+            return false;
+    }
+}
+
 /**
  * Handles the opening of tabs in the page's header. Requires being called from an HTML event such as 'onclick',
  * in order to properly hide all tabs of the same class.
@@ -164,108 +336,6 @@ function loadTreebankCollection(){
     };
     t.load();
 }
-
-/**
- * Override
- */
-VNConsoleWindow.prototype.init=function()
-{
-    var d=""+new Date(),
-        i=d.indexOf("GMT");
-    if(i>-1) d=d.substring(0,i-1);
-    this.println(d);
-    this.println("---- Console started. Type 'help' for a list of commands. ----");
-};
-
-VNConsoleWindow.prototype.processCommand=function(command){
-    console.log("Command received in window controller: " + command);
-
-    var args = command.split(" ");
-    switch (args[0].toLowerCase()){
-        case "help":
-            output.println("Welcome to the metreex analysis tool, type 'load &lt;metreex id>' to load a Treebank file.");
-            output.println("Type list to see all loaded treebanks.");
-            return true;
-        case "load":
-            if (args.length > 1 && args[1]) {
-                if (args[1] === "-c"){
-                    loadTreebankCollection();
-                }
-                else {
-                    loadTreebankFile(args[1]);
-                }
-            }
-            else{
-                output.println("Not enough parameters. Usage: load &lt;metreex database id> or load -c (for collection)");
-            }
-            return true;
-        case "unload":
-            if (args.length > 1 && args[1]){
-                if (args[1] === "-a"){
-                    unloadAllTreebanks();
-                }
-                else{
-                    removeLoadedTreeById(args[1]);
-                }
-            }
-            else{
-                output.println("The unload command should be used as either 'unload -a' or load &lt;treebank id>'");
-            }
-            return true;
-        case "list":
-            if (args.length > 1) {
-                switch (args[1]) {
-                    case "trees":
-                        if (loadedTreebanks.length > 0) {
-                            output.println("The following " + loadedTreebanks.length + " treebank(s) have been loaded:");
-                            loadedTreebanks.forEach(function (tree) {
-                                output.println(tree.id + ": " + tree.getTitle());
-                            });
-                        }
-                        else {
-                            output.println("No treebanks have been loaded yet. Use the \"load\" command to load a new treebank.");
-                        }
-                        break;
-                    case "metrics":
-                        if (disabledMetrics.length + loadedMetrics.length == 0) {
-                            output.println("No metrics have been loaded. Check for the metric source file.");
-                            break;
-                        }
-
-                        if (loadedMetrics.length > 0) {
-                            output.println("The following " + loadedMetrics.length + " metric(s) are enabled:");
-                            loadedMetrics.forEach(function (metric) {
-                                output.println(metric.name);
-                            })
-                        }
-
-                        if (disabledMetrics.length > 0){
-                            output.println("The following " + loadedMetrics.length + " metric(s) are disabled:");
-                            disabledMetrics.forEach(function (metric) {
-                                output.println(metric.name);
-                            })
-                        }
-                        break;
-                    default:
-                        break;
-                }
-            }
-            else{
-                output.println("The list command should be used as 'list trees' or 'list metrics'");
-            }
-            return true;
-        case "apply":
-            applyMetrics();
-            return true;
-        case "clear":
-            output.clear();
-            return true;
-        default:
-            return false;
-    }
-
-    //return false;
-};
 
 /**
  * Takes all selected treebanks and applies all of the selected metrics to them, recording the used metrics, treebanks, and results.
@@ -466,34 +536,6 @@ function getActiveMetricTab() {
     return elems[0]? elems[0].name : ""; //Should always be exactly one "active" metric tab.
 }
 
-window.onload = function () {
-    d3.select("#visualDiv")
-        .style("width", screen.width - document.getElementById("metricDiv").getBoundingClientRect().width + "px");
-
-    vn = new VisiNeatAPI();
-    vn.setScreen("ConsoleTarget");
-    vn.cloud = new VNCloud();
-
-    // Initialization of treebank and metric lists
-    USING_SIDEBAR = true;
-    document.getElementById("Treebanks").appendChild(buildDefaultTreebankList());
-    document.getElementById("Metrics").appendChild(buildDefaultMetricList(loadedMetrics));
-    document.getElementById("startingMetricTab").click(); //Simulates opening a tab to start with
-    document.getElementById("startingVisualTab").click();
-
-
-    // Console creation
-    var windowManager = vn.getWindowManager();
-    output = windowManager.createConsole({left:10,top:10,width:1000,height:800,title:"metreex analysis"});
-
-    loadTreebankFile("m3pmakk93y1nkhxl");
-    loadTreebankFile("9g50guweglwy5kqb");
-    loadTreebankFile("5krwvewpr25f6jf4");
-    loadTreebankFile("ct1ggzdspofmmdch");
-    loadTreebankFile("muq9q52l8gm30von");
-
-};
-
 function debugMetricResults(){
     var index,
         sentenceIndex,
@@ -528,7 +570,7 @@ function buildBasicTableInverted(tableData){
     thead.append("tr")
         .attr("id", "basicTableHeader");
 
-    buildInvertedTableHeader(tableData, "basicTableHeader");
+    buildInvertedTableHeader("basicTableHeader");
 
     var tableDOM = table.node(),//document.getElementById("basicTableBase");
         theadDOM = thead.node(),//document.getElementById("basicTableThead");
