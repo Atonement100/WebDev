@@ -17,38 +17,28 @@
   <component name="CreatePatchCommitExecutor">
     <option name="PATCH_PATH" value="" />
   </component>
-  <component name="DockManager">
-    <window id="1">
-      <content type="file-editors">
-        <state>
-          <leaf>
-            <file leaf-file-name="metreex.html" pinned="false" current-in-tab="true">
-              <entry file="file://$PROJECT_DIR$/metreex.html">
-                <provider selected="true" editor-type-id="text-editor">
-                  <state relative-caret-position="-292">
-                    <caret line="10" column="42" lean-forward="true" selection-start-line="10" selection-start-column="42" selection-end-line="10" selection-end-column="42" />
-                    <folding />
-                  </state>
-                </provider>
-              </entry>
-            </file>
-          </leaf>
-        </state>
-      </content>
-    </window>
-  </component>
   <component name="ExecutionTargetManager" SELECTED_TARGET="default_target" />
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
       <file leaf-file-name="windowController.js" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/windowController.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="523">
-              <caret line="157" column="130" lean-forward="false" selection-start-line="157" selection-start-column="130" selection-end-line="157" selection-end-column="130" />
+            <state relative-caret-position="530">
+              <caret line="1244" column="88" lean-forward="false" selection-start-line="1244" selection-start-column="88" selection-end-line="1244" selection-end-column="88" />
               <folding>
-                <marker date="1489270548994" expanded="true" signature="2008:2012" ph="&lt;" />
-                <marker date="1489270548994" expanded="true" signature="2247:2251" ph="&lt;" />
+                <marker date="1489271013849" expanded="true" signature="2008:2012" ph="&lt;" />
+                <marker date="1489271013849" expanded="true" signature="2247:2251" ph="&lt;" />
               </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="metreex.html" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/metreex.html">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="17">
+              <caret line="10" column="42" lean-forward="true" selection-start-line="10" selection-start-column="42" selection-end-line="10" selection-end-column="42" />
+              <folding />
             </state>
           </provider>
         </entry>
@@ -57,7 +47,7 @@
         <entry file="file://$APPLICATION_CONFIG_DIR$/javascript/extLibs/http_www.visineat.com_js_vn_windows-3.js">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="309">
-              <caret line="2612" column="33" lean-forward="false" selection-start-line="2612" selection-start-column="26" selection-end-line="2612" selection-end-column="33" />
+              <caret line="2690" column="29" lean-forward="false" selection-start-line="2690" selection-start-column="25" selection-end-line="2690" selection-end-column="29" />
               <folding>
                 <marker date="1489267838077" expanded="true" signature="97975:97998" ph="..." />
               </folding>
@@ -88,8 +78,6 @@
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
-      <find>author:</find>
-      <find>scatterplot</find>
       <find>Treebank title</find>
       <find>tooltip</find>
       <find>playgroun</find>
@@ -117,7 +105,9 @@
       <find>then</find>
       <find>opentab</find>
       <find>buildinver</find>
+      <find>processcomman</find>
       <find>println</find>
+      <find>toggles</find>
     </findStrings>
   </component>
   <component name="Git.Settings">
@@ -366,12 +356,12 @@
       <workItem from="1488042600542" duration="848000" />
       <workItem from="1488597625898" duration="5080000" />
       <workItem from="1488661939097" duration="8862000" />
-      <workItem from="1489252832131" duration="11474000" />
+      <workItem from="1489252832131" duration="11938000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="73453000" />
+    <option name="totallyTimeSpent" value="73917000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="-8" y="-8" width="1936" height="1096" extended-state="6" />
@@ -431,8 +421,8 @@
         <state relative-caret-position="0">
           <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
           <folding>
-            <marker date="1489270548994" expanded="true" signature="2008:2012" ph="&lt;" />
-            <marker date="1489270548994" expanded="true" signature="2247:2251" ph="&lt;" />
+            <marker date="1489271013849" expanded="true" signature="2008:2012" ph="&lt;" />
+            <marker date="1489271013849" expanded="true" signature="2247:2251" ph="&lt;" />
           </folding>
         </state>
       </provider>
@@ -443,8 +433,8 @@
         <state relative-caret-position="85">
           <caret line="5" column="8" lean-forward="false" selection-start-line="5" selection-start-column="8" selection-end-line="5" selection-end-column="8" />
           <folding>
-            <marker date="1489270548994" expanded="true" signature="2008:2012" ph="&lt;" />
-            <marker date="1489270548994" expanded="true" signature="2247:2251" ph="&lt;" />
+            <marker date="1489271013849" expanded="true" signature="2008:2012" ph="&lt;" />
+            <marker date="1489271013849" expanded="true" signature="2247:2251" ph="&lt;" />
           </folding>
         </state>
       </provider>
@@ -485,8 +475,8 @@
         <state relative-caret-position="0">
           <caret line="0" column="29" lean-forward="false" selection-start-line="0" selection-start-column="29" selection-end-line="0" selection-end-column="29" />
           <folding>
-            <marker date="1489270548994" expanded="true" signature="2008:2012" ph="&lt;" />
-            <marker date="1489270548994" expanded="true" signature="2247:2251" ph="&lt;" />
+            <marker date="1489271013849" expanded="true" signature="2008:2012" ph="&lt;" />
+            <marker date="1489271013849" expanded="true" signature="2247:2251" ph="&lt;" />
           </folding>
         </state>
       </provider>
@@ -645,24 +635,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/metreex.html">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-292">
-          <caret line="10" column="42" lean-forward="true" selection-start-line="10" selection-start-column="42" selection-end-line="10" selection-end-column="42" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$APPLICATION_CONFIG_DIR$/javascript/extLibs/http_www.visineat.com_js_vn_windows-3.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="309">
-          <caret line="2612" column="33" lean-forward="false" selection-start-line="2612" selection-start-column="26" selection-end-line="2612" selection-end-column="33" />
-          <folding>
-            <marker date="1489267838077" expanded="true" signature="97975:97998" ph="..." />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/metreex.css">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="-3335">
@@ -671,13 +643,31 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/metreex.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="17">
+          <caret line="10" column="42" lean-forward="true" selection-start-line="10" selection-start-column="42" selection-end-line="10" selection-end-column="42" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$APPLICATION_CONFIG_DIR$/javascript/extLibs/http_www.visineat.com_js_vn_windows-3.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="309">
+          <caret line="2690" column="29" lean-forward="false" selection-start-line="2690" selection-start-column="25" selection-end-line="2690" selection-end-column="29" />
+          <folding>
+            <marker date="1489267838077" expanded="true" signature="97975:97998" ph="..." />
+          </folding>
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/windowController.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="523">
-          <caret line="157" column="130" lean-forward="false" selection-start-line="157" selection-start-column="130" selection-end-line="157" selection-end-column="130" />
+        <state relative-caret-position="530">
+          <caret line="1244" column="88" lean-forward="false" selection-start-line="1244" selection-start-column="88" selection-end-line="1244" selection-end-column="88" />
           <folding>
-            <marker date="1489270548994" expanded="true" signature="2008:2012" ph="&lt;" />
-            <marker date="1489270548994" expanded="true" signature="2247:2251" ph="&lt;" />
+            <marker date="1489271013849" expanded="true" signature="2008:2012" ph="&lt;" />
+            <marker date="1489271013849" expanded="true" signature="2247:2251" ph="&lt;" />
           </folding>
         </state>
       </provider>

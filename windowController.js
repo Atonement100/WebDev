@@ -1242,7 +1242,7 @@ function createAuthorPlotPointToggles(target, authors, pointClassName){
         .attr("type", "button")
         .attr("value", function(elem){return "Toggle " + elem + " point visibility"})
         .on("click",function(elem){
-            var selection = d3.selectAll(pointClassName + "." + elem);
+            var selection = d3.selectAll(pointClassName + "." + (elem.replace(/ /g,".")));
 
             if (selection.style("display") == "block")  selection.style("display","none");
             else selection.style("display","block");
