@@ -1235,7 +1235,8 @@ function binProjectionDataByAuthor(data, authors, projectionData){
  * @param {String} pointClassName Class name associated with the elements targeted by the created toggles
  */
 function createAuthorPlotPointToggles(target, authors, pointClassName){
-    d3.select(target).selectAll("input")
+    console.log(authors);
+    d3.select(target).selectAll("#input")
         .data(authors)
         .enter()
         .append("input")
@@ -1244,7 +1245,7 @@ function createAuthorPlotPointToggles(target, authors, pointClassName){
         .on("click",function(elem){
             var selection = d3.selectAll(pointClassName + "." + (elem.replace(/ /g,".")));
 
-            if (selection.style("display") == "block")  selection.style("display","none");
+            if (selection.style("display") != "none")  selection.style("display","none");
             else selection.style("display","block");
         });
 }
