@@ -1,12 +1,12 @@
-var loadedTreebanks = [];
-var selectedTreebanks = [];
-var loadedMetrics = retrieveMetrics();
-var enabledMetrics = [];
-var disabledMetrics = [];
-var USING_SIDEBAR = false;
-var lastMetricResults = [];
-var lastMetricsUsed = [];
-var lastTreebanksUsed = [];
+var loadedTreebanks = [],
+    selectedTreebanks = [],
+    loadedMetrics = retrieveMetrics(),
+    enabledMetrics = [],
+    disabledMetrics = [],
+    USING_SIDEBAR = false,
+    lastMetricResults = [],
+    lastMetricsUsed = [],
+    lastTreebanksUsed = [];
 
 /**
  * Handles the opening of tabs in the page's header. Requires being called from an HTML event such as 'onclick',
@@ -1379,4 +1379,27 @@ function genScatterPlot(){
 function genPCAPlot(){
     applyMetrics();
     buildPCAPlot(assembleMetricData());
+}
+
+function exportDataAsTSV(){
+    applyMetrics();
+    var data = assembleMetricData(),
+        csvData = "data:text/csv;charset=utf-8,";
+
+    csvData += "author\ttitle\tsection\tsentence\tnumSentences";
+    lastMetricsUsed.forEach(function (elem) {
+        csvData += "\t" + elem.name;
+    });
+    csvData += "\n";
+
+    data.forEach(function (elem) {
+        csvData += elem.author + "\t" + elem.title + "\t" + elem.section + "\t" + elem.sentence + "\t" + elem.numSentences;
+        elem.metricValues.forEach(function(metricVal){
+            csvData += "\t" + metricVal;
+        });
+        csvData += "\n";
+    });
+
+    console.log(csvData);
+    window.open(encodeURI(csvData));
 }
