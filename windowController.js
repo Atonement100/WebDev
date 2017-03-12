@@ -878,6 +878,12 @@ function buildBarChart(tableData, metricIndex) {
         .attr("x", 9)
         .style("text-anchor","start");
 
+    parent.append("text")
+        .attr("text-anchor","middle")
+        .attr("transform","translate(" + (width/2) + "," + (height) + ")")
+        .style("font-size","14px")
+        .text(lastMetricsUsed[metricIndex].name);
+
     function selectedMetricChange(){
         var activeIndex = metricSelector.property('selectedIndex');
         buildBarChart(tableData, activeIndex);
@@ -1317,8 +1323,6 @@ function addErrorEllipse(projectionData, parent, xaxis, yaxis, strokeColor){
         projYextent = d3.extent(projectionData, function(elem){return elem[1];});
 
     parent.append("ellipse")
-    //.attr("cx",d3.mean(projectionData, function(elem){return elem[0];}))
-    //.attr("cy",d3.mean(projectionData, function(elem){return elem[1];}))
         .attr("class", "PCA-ellipse")
         .attr("rx",Math.abs(xaxis(projXextent[0] + ellRX) - xaxis(projXextent[0])))
         .attr("ry",Math.abs(yaxis(projYextent[0] + ellRY) - yaxis(projYextent[0])))
