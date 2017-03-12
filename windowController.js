@@ -1036,7 +1036,7 @@ function buildScatterPlot(tableData, yMetricIndex, xMetricIndex) {
 
     parent.append("text")
         .attr("text-anchor","middle")
-        .attr("transform","translate(" + (-margin.left/2) + "," + (height/2) + ")rotate(-90)")
+        .attr("transform","translate(" + (-margin.left*.75) + "," + (height/2) + ")rotate(-90)")
         .attr("class","axisText")
         .text(lastMetricsUsed[yMetricIndex].name);
 

@@ -3,7 +3,6 @@
   <component name="ChangeListManager">
     <list default="true" id="1d8edbe8-fb30-438b-bf61-3fdc6c32c69f" name="Default" comment="">
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/metreex.css" afterPath="$PROJECT_DIR$/metreex.css" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/windowController.js" afterPath="$PROJECT_DIR$/windowController.js" />
     </list>
     <ignored path="$PROJECT_DIR$/.tmp/" />
@@ -25,11 +24,11 @@
       <file leaf-file-name="windowController.js" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/windowController.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="380">
-              <caret line="1032" column="49" lean-forward="false" selection-start-line="1032" selection-start-column="49" selection-end-line="1032" selection-end-column="49" />
+            <state relative-caret-position="700">
+              <caret line="1038" column="58" lean-forward="false" selection-start-line="1038" selection-start-column="58" selection-end-line="1038" selection-end-column="58" />
               <folding>
-                <marker date="1489289945276" expanded="true" signature="2008:2012" ph="&lt;" />
-                <marker date="1489289945276" expanded="true" signature="2247:2251" ph="&lt;" />
+                <marker date="1489341960185" expanded="true" signature="2008:2012" ph="&lt;" />
+                <marker date="1489341960185" expanded="true" signature="2247:2251" ph="&lt;" />
               </folding>
             </state>
           </provider>
@@ -38,7 +37,7 @@
       <file leaf-file-name="metreex.html" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/metreex.html">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="17">
+            <state relative-caret-position="170">
               <caret line="10" column="42" lean-forward="false" selection-start-line="10" selection-start-column="42" selection-end-line="10" selection-end-column="42" />
               <folding />
             </state>
@@ -48,7 +47,7 @@
       <file leaf-file-name="http_www.visineat.com_js_vn_windows-3.js" pinned="false" current-in-tab="false">
         <entry file="file://$APPLICATION_CONFIG_DIR$/javascript/extLibs/http_www.visineat.com_js_vn_windows-3.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="309">
+            <state relative-caret-position="45254">
               <caret line="2690" column="29" lean-forward="false" selection-start-line="2690" selection-start-column="25" selection-end-line="2690" selection-end-column="29" />
               <folding>
                 <marker date="1489267838077" expanded="true" signature="97975:97998" ph="..." />
@@ -60,7 +59,7 @@
       <file leaf-file-name="metreex.css" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/metreex.css">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="374">
+            <state relative-caret-position="3349">
               <caret line="197" column="26" lean-forward="false" selection-start-line="197" selection-start-column="26" selection-end-line="197" selection-end-column="26" />
               <folding />
             </state>
@@ -80,7 +79,6 @@
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
-      <find>tooltip</find>
       <find>playgroun</find>
       <find>loadtreebankcollecti</find>
       <find>46nbm13yn7otz7yd</find>
@@ -110,6 +108,7 @@
       <find>println</find>
       <find>toggles</find>
       <find>toggles(</find>
+      <find>buildscatter</find>
     </findStrings>
   </component>
   <component name="Git.Settings">
@@ -360,12 +359,13 @@
       <workItem from="1488597625898" duration="5080000" />
       <workItem from="1488661939097" duration="8862000" />
       <workItem from="1489252832131" duration="12722000" />
-      <workItem from="1489285085716" duration="3725000" />
+      <workItem from="1489285085716" duration="4372000" />
+      <workItem from="1489341762157" duration="219000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="78426000" />
+    <option name="totallyTimeSpent" value="79292000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="-8" y="-8" width="1936" height="1096" extended-state="6" />
@@ -425,8 +425,8 @@
         <state relative-caret-position="0">
           <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
           <folding>
-            <marker date="1489289945276" expanded="true" signature="2008:2012" ph="&lt;" />
-            <marker date="1489289945276" expanded="true" signature="2247:2251" ph="&lt;" />
+            <marker date="1489341960185" expanded="true" signature="2008:2012" ph="&lt;" />
+            <marker date="1489341960185" expanded="true" signature="2247:2251" ph="&lt;" />
           </folding>
         </state>
       </provider>
@@ -437,8 +437,8 @@
         <state relative-caret-position="85">
           <caret line="5" column="8" lean-forward="false" selection-start-line="5" selection-start-column="8" selection-end-line="5" selection-end-column="8" />
           <folding>
-            <marker date="1489289945276" expanded="true" signature="2008:2012" ph="&lt;" />
-            <marker date="1489289945276" expanded="true" signature="2247:2251" ph="&lt;" />
+            <marker date="1489341960185" expanded="true" signature="2008:2012" ph="&lt;" />
+            <marker date="1489341960185" expanded="true" signature="2247:2251" ph="&lt;" />
           </folding>
         </state>
       </provider>
@@ -478,8 +478,8 @@
         <state relative-caret-position="0">
           <caret line="0" column="29" lean-forward="false" selection-start-line="0" selection-start-column="29" selection-end-line="0" selection-end-column="29" />
           <folding>
-            <marker date="1489289945276" expanded="true" signature="2008:2012" ph="&lt;" />
-            <marker date="1489289945276" expanded="true" signature="2247:2251" ph="&lt;" />
+            <marker date="1489341960185" expanded="true" signature="2008:2012" ph="&lt;" />
+            <marker date="1489341960185" expanded="true" signature="2247:2251" ph="&lt;" />
           </folding>
         </state>
       </provider>
@@ -630,7 +630,7 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/metreex.html">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="17">
+        <state relative-caret-position="170">
           <caret line="10" column="42" lean-forward="false" selection-start-line="10" selection-start-column="42" selection-end-line="10" selection-end-column="42" />
           <folding />
         </state>
@@ -638,7 +638,7 @@
     </entry>
     <entry file="file://$APPLICATION_CONFIG_DIR$/javascript/extLibs/http_www.visineat.com_js_vn_windows-3.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="309">
+        <state relative-caret-position="45254">
           <caret line="2690" column="29" lean-forward="false" selection-start-line="2690" selection-start-column="25" selection-end-line="2690" selection-end-column="29" />
           <folding>
             <marker date="1489267838077" expanded="true" signature="97975:97998" ph="..." />
@@ -648,7 +648,7 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/metreex.css">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="374">
+        <state relative-caret-position="3349">
           <caret line="197" column="26" lean-forward="false" selection-start-line="197" selection-start-column="26" selection-end-line="197" selection-end-column="26" />
           <folding />
         </state>
@@ -656,11 +656,11 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/windowController.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="380">
-          <caret line="1032" column="49" lean-forward="false" selection-start-line="1032" selection-start-column="49" selection-end-line="1032" selection-end-column="49" />
+        <state relative-caret-position="700">
+          <caret line="1038" column="58" lean-forward="false" selection-start-line="1038" selection-start-column="58" selection-end-line="1038" selection-end-column="58" />
           <folding>
-            <marker date="1489289945276" expanded="true" signature="2008:2012" ph="&lt;" />
-            <marker date="1489289945276" expanded="true" signature="2247:2251" ph="&lt;" />
+            <marker date="1489341960185" expanded="true" signature="2008:2012" ph="&lt;" />
+            <marker date="1489341960185" expanded="true" signature="2247:2251" ph="&lt;" />
           </folding>
         </state>
       </provider>
