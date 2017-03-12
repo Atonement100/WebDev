@@ -194,6 +194,10 @@ body{
     text-anchor:end;
 }
 
+.axisText {
+    font: 14px sans-serif;
+}
+
 #barChart .tick.grid line{
     fill: none;
     stroke: lightgrey;

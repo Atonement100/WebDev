@@ -968,7 +968,7 @@ function buildScatterPlot(tableData, yMetricIndex, xMetricIndex) {
         .property("selected", function(elem,index) {return index == xMetricIndex;})
         .html(function(elem) {return elem.name;});
 
-    var margin = {top: 15, right: 15, bottom: 30, left: 30},
+    var margin = {top: 15, right: 15, bottom: 60, left: 60},
         bubbleThickness = 4, //px
         width = 800, height = 800,
 
@@ -1027,6 +1027,18 @@ function buildScatterPlot(tableData, yMetricIndex, xMetricIndex) {
         .on("mouseout", function(){
             tooltip.style("display","none");
         });
+
+    parent.append("text")
+        .attr("text-anchor","middle")
+        .attr("transform","translate(" + (width/2) + "," + (height + margin.bottom/2) + ")")
+        .attr("class","axisText")
+        .text(lastMetricsUsed[xMetricIndex].name);
+
+    parent.append("text")
+        .attr("text-anchor","middle")
+        .attr("transform","translate(" + (-margin.left/2) + "," + (height/2) + ")rotate(-90)")
+        .attr("class","axisText")
+        .text(lastMetricsUsed[yMetricIndex].name);
 
     var authors = Array.from(new Set(tableData.map(function(elem){return elem.author;})));
 
