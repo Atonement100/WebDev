@@ -315,7 +315,6 @@ function loadTreebankFile(id){
     output.println("Attempting to load tree with id " + id);
     var newTree = new TreebankFile();
     newTree.onload = function () {
-        console.log(newTree);
         if (newTree.getNumOfSentences() > 0) {
             addLoadedTree(newTree);
         }
@@ -1253,7 +1252,6 @@ function binProjectionDataByAuthor(data, authors, projectionData){
  * @param {String} pointClassName Class name associated with the elements targeted by the created toggles
  */
 function createAuthorPlotPointToggles(target, authors, pointClassName){
-    console.log(authors);
     d3.select(target).selectAll("#input")
         .data(authors)
         .enter()
@@ -1459,6 +1457,5 @@ function exportDataAsTSV(){
         csvData += "\n";
     });
 
-    console.log(csvData);
     window.open(encodeURI(csvData));
 }

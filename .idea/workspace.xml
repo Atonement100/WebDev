@@ -2,7 +2,6 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="1d8edbe8-fb30-438b-bf61-3fdc6c32c69f" name="Default" comment="">
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/windowController.js" afterPath="$PROJECT_DIR$/windowController.js" />
     </list>
     <ignored path="$PROJECT_DIR$/.tmp/" />
@@ -24,11 +23,11 @@
       <file leaf-file-name="windowController.js" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/windowController.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="700">
-              <caret line="1038" column="58" lean-forward="false" selection-start-line="1038" selection-start-column="58" selection-end-line="1038" selection-end-column="58" />
+            <state relative-caret-position="-23094">
+              <caret line="52" column="15" lean-forward="false" selection-start-line="52" selection-start-column="4" selection-end-line="52" selection-end-column="15" />
               <folding>
-                <marker date="1489341960185" expanded="true" signature="2008:2012" ph="&lt;" />
-                <marker date="1489341960185" expanded="true" signature="2247:2251" ph="&lt;" />
+                <marker date="1489342194447" expanded="true" signature="2008:2012" ph="&lt;" />
+                <marker date="1489342194447" expanded="true" signature="2247:2251" ph="&lt;" />
               </folding>
             </state>
           </provider>
@@ -79,7 +78,6 @@
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
-      <find>playgroun</find>
       <find>loadtreebankcollecti</find>
       <find>46nbm13yn7otz7yd</find>
       <find>prototype.load</find>
@@ -109,6 +107,7 @@
       <find>toggles</find>
       <find>toggles(</find>
       <find>buildscatter</find>
+      <find>console.log</find>
     </findStrings>
   </component>
   <component name="Git.Settings">
@@ -360,12 +359,12 @@
       <workItem from="1488661939097" duration="8862000" />
       <workItem from="1489252832131" duration="12722000" />
       <workItem from="1489285085716" duration="4372000" />
-      <workItem from="1489341762157" duration="219000" />
+      <workItem from="1489341762157" duration="432000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="79292000" />
+    <option name="totallyTimeSpent" value="79505000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="-8" y="-8" width="1936" height="1096" extended-state="6" />
@@ -425,8 +424,8 @@
         <state relative-caret-position="0">
           <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
           <folding>
-            <marker date="1489341960185" expanded="true" signature="2008:2012" ph="&lt;" />
-            <marker date="1489341960185" expanded="true" signature="2247:2251" ph="&lt;" />
+            <marker date="1489342194447" expanded="true" signature="2008:2012" ph="&lt;" />
+            <marker date="1489342194447" expanded="true" signature="2247:2251" ph="&lt;" />
           </folding>
         </state>
       </provider>
@@ -437,8 +436,8 @@
         <state relative-caret-position="85">
           <caret line="5" column="8" lean-forward="false" selection-start-line="5" selection-start-column="8" selection-end-line="5" selection-end-column="8" />
           <folding>
-            <marker date="1489341960185" expanded="true" signature="2008:2012" ph="&lt;" />
-            <marker date="1489341960185" expanded="true" signature="2247:2251" ph="&lt;" />
+            <marker date="1489342194447" expanded="true" signature="2008:2012" ph="&lt;" />
+            <marker date="1489342194447" expanded="true" signature="2247:2251" ph="&lt;" />
           </folding>
         </state>
       </provider>
@@ -478,8 +477,8 @@
         <state relative-caret-position="0">
           <caret line="0" column="29" lean-forward="false" selection-start-line="0" selection-start-column="29" selection-end-line="0" selection-end-column="29" />
           <folding>
-            <marker date="1489341960185" expanded="true" signature="2008:2012" ph="&lt;" />
-            <marker date="1489341960185" expanded="true" signature="2247:2251" ph="&lt;" />
+            <marker date="1489342194447" expanded="true" signature="2008:2012" ph="&lt;" />
+            <marker date="1489342194447" expanded="true" signature="2247:2251" ph="&lt;" />
           </folding>
         </state>
       </provider>
@@ -656,11 +655,11 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/windowController.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="700">
-          <caret line="1038" column="58" lean-forward="false" selection-start-line="1038" selection-start-column="58" selection-end-line="1038" selection-end-column="58" />
+        <state relative-caret-position="-23094">
+          <caret line="52" column="15" lean-forward="false" selection-start-line="52" selection-start-column="4" selection-end-line="52" selection-end-column="15" />
           <folding>
-            <marker date="1489341960185" expanded="true" signature="2008:2012" ph="&lt;" />
-            <marker date="1489341960185" expanded="true" signature="2247:2251" ph="&lt;" />
+            <marker date="1489342194447" expanded="true" signature="2008:2012" ph="&lt;" />
+            <marker date="1489342194447" expanded="true" signature="2247:2251" ph="&lt;" />
           </folding>
         </state>
       </provider>
