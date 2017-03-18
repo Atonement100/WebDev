@@ -1132,13 +1132,20 @@ function buildPCAPlot(data, drawEllipsePerTitle){
                 .style("left", (d3.event.pageX + 10) + "px")
                 .style("top", (d3.event.pageY + 10) + "px")
                 .style("display","inline");
-            d3.selectAll("."+data[index].title.toString().toLowerCase().replace(/ /g,""))
+            var siblings = d3.selectAll("."+data[index].title.toString().toLowerCase().replace(/ /g,""))
                 .style("fill", "#666");
+            siblings.each(function () {
+                this.parentNode.appendChild(this);
+            })
         })
         .on("mouseout", function(elem,index){
             tooltip.style("display","none");
-            d3.selectAll("."+data[index].title.toString().toLowerCase().replace(/ /g,""))
-                .style("fill", coloraxis(data[index].author));
+            var siblings = d3.selectAll("."+data[index].title.toString().toLowerCase().replace(/ /g,""))
+                .style("fill", coloraxis(data[index].author)),
+                firstEllipse = d3.select(".PCA-ellipse").node();
+            siblings.each(function () {
+                this.parentNode.insertBefore(this, firstEllipse);
+            })
         });
 
     var authors = Array.from(new Set(data.map(function(elem){return elem.author;})));
