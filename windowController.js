@@ -1122,7 +1122,7 @@ function buildPCAPlot(data, drawEllipsePerTitle){
     parent.selectAll(".scatterPoint")
         .data(projectionData)
         .enter().append("circle")
-        .attr("class", function(elem, index){return "PCA-point " + data[index].author + " active";})
+        .attr("class", function(elem, index){return "PCA-point " + data[index].title.toString().toLowerCase().replace(/ /g,"") + " " + data[index].author + " active";})
         .attr("r",  bubbleThickness)
         .style("fill", function(elem, index){return coloraxis(data[index].author);})
         .attr("cx", function(elem){return xaxis(elem[0]);})
@@ -1132,9 +1132,13 @@ function buildPCAPlot(data, drawEllipsePerTitle){
                 .style("left", (d3.event.pageX + 10) + "px")
                 .style("top", (d3.event.pageY + 10) + "px")
                 .style("display","inline");
+            d3.selectAll("."+data[index].title.toString().toLowerCase().replace(/ /g,""))
+                .style("fill", "#666");
         })
-        .on("mouseout", function(){
+        .on("mouseout", function(elem,index){
             tooltip.style("display","none");
+            d3.selectAll("."+data[index].title.toString().toLowerCase().replace(/ /g,""))
+                .style("fill", coloraxis(data[index].author));
         });
 
     var authors = Array.from(new Set(data.map(function(elem){return elem.author;})));
