@@ -815,8 +815,11 @@ function buildBarChart(tableData, metricIndex) {
 
     barDiv.append("input")
         .attr("type","checkbox")
-        .html("Sort")
+        .attr("id", "barChartCbox")
         .on("change",toggleSort);
+    barDiv.append("label")
+        .attr("for", "barChartCbox")
+        .html("Sort");
 
     var chart = barDiv.append("svg")
         .attr("width", width + margin.left + margin.right)
@@ -929,7 +932,9 @@ function buildBarChart(tableData, metricIndex) {
 function buildScatterPlot(tableData, yMetricIndex, xMetricIndex) {
     var scatterDiv = d3.select("#scatterPlot"),
         xDiv,
-        yDiv;
+        yDiv,
+        xMetricSelector,
+        yMetricSelector;
 
     scatterDiv.html(" ");
     scatterDiv.append("input")
@@ -940,16 +945,16 @@ function buildScatterPlot(tableData, yMetricIndex, xMetricIndex) {
 
     yDiv = scatterDiv.append("div")
         .text("Y Axis: ")
-            .style("display","inline"),
-        yMetricSelector = yDiv.append("select")
+            .style("display","inline");
+    yMetricSelector = yDiv.append("select")
         .attr("id", "scatterySelect")
         .on("change", selectedMetricChange);
 
     scatterDiv.append("br");
 
     xDiv = scatterDiv.append("div")
-        .text("X Axis: "),
-        xMetricSelector = xDiv.append("select")
+        .text("X Axis: ");
+    xMetricSelector = xDiv.append("select")
         .attr("id", "scatterxSelect")
         .on("change", selectedMetricChange);
 
@@ -1060,6 +1065,8 @@ function buildScatterPlot(tableData, yMetricIndex, xMetricIndex) {
  * @param {Boolean} drawEllipsePerTitle True if an ellipse should be drawn for each individual title, false if ellipses should only be drawn for each author.
  */
 function buildPCAPlot(data, drawEllipsePerTitle){
+    console.log(drawEllipsePerTitle);
+
     if (lastMetricsUsed.length < 2) {
         handleGlobalErrorMessage("At least two metrics need to be enabled for Principal Component Analysis.");
         return;
@@ -1078,6 +1085,17 @@ function buildPCAPlot(data, drawEllipsePerTitle){
         .attr("value", function(){return "Generate New PCA Plot";})
         .on("click",function(){genPCAPlot();});
     pcaPlot.append("br");
+
+    pcaPlot.append("input")
+        .attr("type","checkbox")
+        .attr("id", "pcaPlotCbox")
+        .property("checked", drawEllipsePerTitle)
+        .on("change",rebuildPCAPlot);
+    pcaPlot.append("label")
+        .attr("for", "pcaPlotCbox")
+        .html("Draw Ellipse for each Title");
+    pcaPlot.append("br");
+
 
     var metricValues = data.map(function (elem) { return elem.metricValues; }),
         projectionData = principalComponentAnalysis(metricValues),
@@ -1157,7 +1175,7 @@ function buildPCAPlot(data, drawEllipsePerTitle){
 
         titledata.forEach(function (elem, index) {
             addErrorEllipse(elem, parent, xaxis, yaxis, coloraxis(titlesToAuthors[index].author));
-        })
+        });
     }
     else{ //Draw ellipse for each author
         var authdata = binProjectionDataByAuthor(data, authors, projectionData);
@@ -1169,6 +1187,10 @@ function buildPCAPlot(data, drawEllipsePerTitle){
 
     createAuthorToColorLegend("#PCAPlot", authors, coloraxis);
     createAuthorPlotPointToggles("#PCAPlot", authors, ".PCA-point");
+
+    function rebuildPCAPlot(){
+        buildPCAPlot(data, d3.select("pcaPlotCbox").node().checked);
+    }
 }
 
 /**
