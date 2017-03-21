@@ -132,6 +132,7 @@ body{
 
 #basicTable thead th {  /*Default header for basic table*/
     background-color: #A1C6EA;
+    width: 96px;
     min-width: 96px;
     min-height: 36px;
     border: 1px solid #DAE3E5;
@@ -140,9 +141,9 @@ body{
 #basicTable thead th:nth-child(1) { /*Override first block of the header (top left, which should be static)*/
     background-color: #507DBC;
     position: relative;
-    display: block;
     min-width: 160px;
     min-height: 72px;
+    display: table-cell;
 }
 
 #basicTable tbody {     /*Styling for body block*/
@@ -157,21 +158,23 @@ body{
     background-color: #BBD1EA;
     min-width: 96px;
     border: 1px solid #DAE3E5;
+    text-align: center;
 }
 
 #basicTable tbody tr .rowHeader {  /*Styling for leading data cell*/
     background-color: #A1C6EA;
     position: relative;
-    height:40px;
-    width:120px;
+    height:28px;
+    width:117px;
     min-width:117px;
 }
 
 #basicTable tbody tr .rowSubHeader {  /*Styling for leading data cell*/
     background-color: #A1C6EA;
     position: relative;
-    display: block;
-    height: 40px;
+    text-align: center;
+    display: table-cell;
+    height: 28px;
     width: 40px;
     min-width: 40px;
 }
