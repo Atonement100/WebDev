@@ -557,9 +557,9 @@ function debugMetricResults(){
     return true;
 }
 
-function buildBasicTableInverted(tableData){
+function buildBasicTableInverted(tableData, targetDivId){
     //Clears out existing table if one exists
-    var tableDiv = d3.select("#basicTable");
+    var tableDiv = d3.select(targetDivId);
     tableDiv.html(" ");
     tableDiv.append("input")
         .attr("type","button")
@@ -567,7 +567,7 @@ function buildBasicTableInverted(tableData){
         .on("click",function(){genMetricOnTopTable();});
     tableDiv.append("br");
 
-    var table = d3.select("#basicTable").append("table")
+    var table = d3.select(targetDivId).append("table")
         .attr("id", "basicTableBase"),
         thead = table.append("thead")
         .attr("id", "basicTableThead");
@@ -654,17 +654,17 @@ function buildInvertedTableBody(tableData, tbody){
     });
 }
 
-function buildBasicTable(tableData){
+function buildBasicTable(tableData, targetDivId){
     //Clear out existing table if there is one already
-    var tableDiv = d3.select("#basicTable");
+    var tableDiv = d3.select(targetDivId);
     tableDiv.html(" ");
     tableDiv.append("input")
         .attr("type","button")
         .attr("value", function(){return "Generate New Table";})
-        .on("click",function(){genMetricOnLeftTable();});
+        .on("click",function(){genMetricOnLeftTable(targetDivId);});
     tableDiv.append("br");
 
-    var table = d3.select("#basicTable").append("table")
+    var table = d3.select(targetDivId).append("table")
         .attr("id", "basicTableBase"),
         thead = table.append("thead")
         .attr("id", "basicTableThead");
@@ -775,8 +775,8 @@ function assembleMetricData(){
  * @param tableData Set of data to be processed
  * @param metricIndex Index of the metric to be visualized
  */
-function buildBarChart(tableData, metricIndex) {
-    var barDiv = d3.select("#barChart"),
+function buildBarChart(tableData, metricIndex, targetDivId) {
+    var barDiv = d3.select(targetDivId),
         margin = {top: 15, right: 15, bottom: 30, left: 200},
         barThickness = 16, //px
         width = 1200, height = tableData.length * barThickness + margin.top + margin.bottom;
@@ -785,7 +785,7 @@ function buildBarChart(tableData, metricIndex) {
     barDiv.append("input")
         .attr("type","button")
         .attr("value", function(){return "Generate New Bar Chart";})
-        .on("click",function(){genBarChart();});
+        .on("click",function(){genBarChart(targetDivId);});
     barDiv.append("br");
 
     var xaxis = d3.scaleLinear()
@@ -929,8 +929,8 @@ function buildBarChart(tableData, metricIndex) {
  * @param yMetricIndex Index of the metric for the y axis
  * @param xMetricIndex Index of the metric for the x axis
  */
-function buildScatterPlot(tableData, yMetricIndex, xMetricIndex) {
-    var scatterDiv = d3.select("#scatterPlot"),
+function buildScatterPlot(tableData, yMetricIndex, xMetricIndex, targetDivId) {
+    var scatterDiv = d3.select(targetDivId),
         xDiv,
         yDiv,
         xMetricSelector,
@@ -939,8 +939,8 @@ function buildScatterPlot(tableData, yMetricIndex, xMetricIndex) {
     scatterDiv.html(" ");
     scatterDiv.append("input")
         .attr("type","button")
-        .attr("value", function(elem){return "Generate New Scatterplot"})
-        .on("click",function(elem){genScatterPlot();});
+        .attr("value", function(){return "Generate New Scatterplot"})
+        .on("click",function(){genScatterPlot(targetDivId);});
     scatterDiv.append("br");
 
     yDiv = scatterDiv.append("div")
@@ -1051,11 +1051,11 @@ function buildScatterPlot(tableData, yMetricIndex, xMetricIndex) {
 
     var authors = Array.from(new Set(tableData.map(function(elem){return elem.author;})));
 
-    createAuthorToColorLegend("#scatterPlot", authors, coloraxis);
-    createAuthorPlotPointToggles("#scatterPlot", authors, ".scatterPoint");
+    createAuthorToColorLegend(targetDivId, authors, coloraxis);
+    createAuthorPlotPointToggles(targetDivId, authors, ".scatterPoint");
 
     function selectedMetricChange(){
-        buildScatterPlot(tableData, yMetricSelector.property('selectedIndex'), xMetricSelector.property('selectedIndex'));
+        buildScatterPlot(tableData, yMetricSelector.property('selectedIndex'), xMetricSelector.property('selectedIndex'), targetDivId);
     }
 }
 
@@ -1063,10 +1063,9 @@ function buildScatterPlot(tableData, yMetricIndex, xMetricIndex) {
  * Builds the SVG Principal Component Analysis for all loaded metrics
  * @param data Set of data to be processed
  * @param {Boolean} drawEllipsePerTitle True if an ellipse should be drawn for each individual title, false if ellipses should only be drawn for each author.
+ * @param targetDivId String with the target id for d3 to append this chart to
  */
-function buildPCAPlot(data, drawEllipsePerTitle){
-    console.log(drawEllipsePerTitle);
-
+function buildPCAPlot(data, drawEllipsePerTitle, targetDivId){
     if (lastMetricsUsed.length < 2) {
         handleGlobalErrorMessage("At least two metrics need to be enabled for Principal Component Analysis.");
         return;
@@ -1078,12 +1077,12 @@ function buildPCAPlot(data, drawEllipsePerTitle){
 
     if (drawEllipsePerTitle === undefined) drawEllipsePerTitle = true;
 
-    var pcaPlot = d3.select("#PCAPlot");
+    var pcaPlot = d3.select(targetDivId);
     pcaPlot.html(" ");
     pcaPlot.append("input")
         .attr("type","button")
         .attr("value", function(){return "Generate New PCA Plot";})
-        .on("click",function(){genPCAPlot();});
+        .on("click",function(){genPCAPlot(targetDivId);});
     pcaPlot.append("br");
 
     pcaPlot.append("input")
@@ -1185,11 +1184,11 @@ function buildPCAPlot(data, drawEllipsePerTitle){
         });
     }
 
-    createAuthorToColorLegend("#PCAPlot", authors, coloraxis);
-    createAuthorPlotPointToggles("#PCAPlot", authors, ".PCA-point");
+    createAuthorToColorLegend(targetDivId, authors, coloraxis);
+    createAuthorPlotPointToggles(targetDivId, authors, ".PCA-point");
 
     function rebuildPCAPlot(){
-        buildPCAPlot(data, d3.select("pcaPlotCbox").node().checked);
+        buildPCAPlot(data, d3.select("#pcaPlotCbox").node().checked, targetDivId);
     }
 }
 
@@ -1361,7 +1360,21 @@ function createAuthorToColorLegend(legendTarget, authors, coloraxis){
         .attr("y", function(elem, index){return index * 22 + 5;})
         .attr("width", 15)
         .attr("height", 10)
-        .style("fill", function(elem){return coloraxis(elem);});
+        .style("fill", function(elem){return coloraxis(elem);})
+        .on("mouseover", function (elem) {
+            d3.selectAll("." + elem.toString().replace(/ /g,"."))
+                .style("fill", "#666")
+                .each(function () {
+                    this.parentNode.appendChild(this);
+                })
+        })
+        .on("mouseout", function (elem) {
+            d3.selectAll("." + elem.toString().replace(/ /g,"."))
+                .style("fill", coloraxis(elem))
+                .each(function () {
+                    this.parentNode.insertBefore(this, this.parentNode.firstChild);
+                })
+        });
     legend.selectAll("text")
         .data(authors)
         .enter()
@@ -1497,29 +1510,29 @@ function getCloudAuthorAndTitle(treebank){
     )
 }
 
-function genMetricOnLeftTable(){
+function genMetricOnLeftTable(targetDivId){
     applyMetrics();
-    buildBasicTable(assembleMetricData());
+    buildBasicTable(assembleMetricData(), targetDivId);
 }
 
-function genMetricOnTopTable(){
+function genMetricOnTopTable(targetDivId){
     applyMetrics();
-    buildBasicTableInverted(assembleMetricData());
+    buildBasicTableInverted(assembleMetricData(), targetDivId);
 }
 
-function genBarChart(){
+function genBarChart(targetDivId){
     applyMetrics();
-    buildBarChart(assembleMetricData(), 0);
+    buildBarChart(assembleMetricData(), 0, targetDivId);
 }
 
-function genScatterPlot(){
+function genScatterPlot(targetDivId){
     applyMetrics();
-    buildScatterPlot(assembleMetricData(), 0, 1);
+    buildScatterPlot(assembleMetricData(), 0, 1, targetDivId);
 }
 
-function genPCAPlot(){
+function genPCAPlot(targetDivId){
     applyMetrics();
-    buildPCAPlot(assembleMetricData());
+    buildPCAPlot(assembleMetricData(), false, targetDivId);
 }
 
 function exportDataAsTSV(){
