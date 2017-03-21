@@ -893,7 +893,7 @@ function buildBarChart(tableData, metricIndex, targetDivId) {
 
     function selectedMetricChange(){
         var activeIndex = metricSelector.property('selectedIndex');
-        buildBarChart(tableData, activeIndex);
+        buildBarChart(tableData, activeIndex, targetDivId);
     }
 
     function toggleSort(){
