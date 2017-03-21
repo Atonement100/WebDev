@@ -564,7 +564,7 @@ function buildBasicTableInverted(tableData, targetDivId){
     tableDiv.append("input")
         .attr("type","button")
         .attr("value", function(){return "Generate New Table";})
-        .on("click",function(){genMetricOnTopTable();});
+        .on("click",function(){genMetricOnTopTable(targetDivId);});
     tableDiv.append("br");
 
     var table = d3.select(targetDivId).append("table")
