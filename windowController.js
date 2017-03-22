@@ -152,10 +152,13 @@ function processCommand(command){
             return true;
         case "generate":
             if (args.length > 1) {
-                switch (args[1]) {
+                switch (args[1].toLowerCase()) {
                     case "table":
                         //genMetricOnTopTable();
                         output.println("The table must be generated from the table tab in order for it to be properly rendered.");
+                        if (enabledMetrics.length > 10 && enabledMetrics.length > 10){
+                            output.println("Warning: the table visualization may perform poorly when large numbers of sentences are paired with many metrics. Consider using the 'export' command. (See 'help export')");
+                        }
                         break;
                     case "bar":
                         genBarChart();
@@ -174,8 +177,9 @@ function processCommand(command){
             else{
                 output.println("See 'help generate' for instructions on how to use this command.");
             }
-            break;
+            return true;
         default:
+            output.error("Unknown command: " + args[0]);
             return false;
     }
 }
@@ -977,7 +981,7 @@ function buildScatterPlot(tableData, yMetricIndex, xMetricIndex, targetDivId) {
         .property("selected", function(elem,index) {return index == xMetricIndex;})
         .html(function(elem) {return elem.name;});
 
-    var margin = {top: 15, right: 15, bottom: 60, left: 60},
+    var margin = {top: 15, right: 15, bottom:45, left: 60},
         bubbleThickness = 4, //px
         width = 800, height = 800,
 
@@ -1039,7 +1043,7 @@ function buildScatterPlot(tableData, yMetricIndex, xMetricIndex, targetDivId) {
 
     parent.append("text")
         .attr("text-anchor","middle")
-        .attr("transform","translate(" + (width/2) + "," + (height + margin.bottom/2) + ")")
+        .attr("transform","translate(" + (width/2) + "," + (height + margin.bottom*.75) + ")")
         .attr("class","axisText")
         .text(lastMetricsUsed[xMetricIndex].name);
 
@@ -1510,27 +1514,36 @@ function getCloudAuthorAndTitle(treebank){
     )
 }
 
+/*
+    The next few functions set a default for targetDivId. This is to provide local defaults, so they don't need to be explicitly written in certain areas, namely console handling.
+    If using this code detached from the original website, it would probably be to your benefit to change the default targetDivIds.
+ */
 function genMetricOnLeftTable(targetDivId){
+    if (targetDivId === undefined) targetDivId = "#basicTable";
     applyMetrics();
     buildBasicTable(assembleMetricData(), targetDivId);
 }
 
 function genMetricOnTopTable(targetDivId){
+    if (targetDivId === undefined) targetDivId = "#basicTable";
     applyMetrics();
     buildBasicTableInverted(assembleMetricData(), targetDivId);
 }
 
 function genBarChart(targetDivId){
+    if (targetDivId === undefined) targetDivId = "#barChart";
     applyMetrics();
     buildBarChart(assembleMetricData(), 0, targetDivId);
 }
 
 function genScatterPlot(targetDivId){
+    if (targetDivId === undefined) targetDivId = "#scatterPlot";
     applyMetrics();
     buildScatterPlot(assembleMetricData(), 0, 1, targetDivId);
 }
 
 function genPCAPlot(targetDivId){
+    if (targetDivId === undefined) targetDivId = "#PCAPlot";
     applyMetrics();
     buildPCAPlot(assembleMetricData(), false, targetDivId);
 }
