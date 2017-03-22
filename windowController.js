@@ -1140,12 +1140,13 @@ function buildPCAPlot(data, drawEllipsePerTitle, targetDivId){
         .style("display", "none")
         .style("z-index", 12);
 
-    parent.selectAll(".scatterPoint")
+    parent.selectAll(".PCA-point")
         .data(projectionData)
         .enter().append("circle")
         .attr("class", function(elem, index){return "PCA-point " + data[index].title.toString().toLowerCase().replace(/ /g,"") + " " + data[index].author + " active";})
         .attr("r",  bubbleThickness)
-        .style("fill", function(elem, index){return coloraxis(data[index].author);})
+        .style("stroke", function(elem, index){return coloraxis(data[index].author);})
+        .style("fill", "#FFF")
         .attr("cx", function(elem){return xaxis(elem[0]);})
         .attr("cy", function(elem){return yaxis(elem[1]);})
         .on("mouseover", function(elem,index){
@@ -1154,7 +1155,7 @@ function buildPCAPlot(data, drawEllipsePerTitle, targetDivId){
                 .style("top", (d3.event.pageY + 10) + "px")
                 .style("display","inline");
             var siblings = d3.selectAll("."+data[index].title.toString().toLowerCase().replace(/ /g,""))
-                .style("fill", "#666");
+                .style("stroke", "#666");
             siblings.each(function () {
                 this.parentNode.appendChild(this);
             })
@@ -1162,7 +1163,7 @@ function buildPCAPlot(data, drawEllipsePerTitle, targetDivId){
         .on("mouseout", function(elem,index){
             tooltip.style("display","none");
             var siblings = d3.selectAll("."+data[index].title.toString().toLowerCase().replace(/ /g,""))
-                .style("fill", coloraxis(data[index].author)),
+                .style("stroke", coloraxis(data[index].author)),
                 firstEllipse = d3.select(".PCA-ellipse").node();
             siblings.each(function () {
                 this.parentNode.insertBefore(this, firstEllipse);
@@ -1177,21 +1178,21 @@ function buildPCAPlot(data, drawEllipsePerTitle, targetDivId){
             titledata = binProjectionDataByTitle(data, titles, projectionData);
 
         titledata.forEach(function (elem, index) {
-            addErrorEllipse(elem, parent, xaxis, yaxis, coloraxis(titlesToAuthors[index].author));
+            addErrorEllipse(elem, parent, xaxis, yaxis, coloraxis(titlesToAuthors[index].author), titlesToAuthors[index].title, titlesToAuthors[index].author);
         });
     }
     else{ //Draw ellipse for each author
         var authdata = binProjectionDataByAuthor(data, authors, projectionData);
 
         authdata.forEach(function (elem, index) {
-            addErrorEllipse(elem, parent, xaxis, yaxis, coloraxis(authors[index]));
+            addErrorEllipse(elem, parent, xaxis, yaxis, coloraxis(authors[index]), "", authors[index]);
         });
     }
 
    // createAuthorToColorLegend(targetDivId, authors, coloraxis);
    // createAuthorPlotPointToggles(targetDivId, authors, ".PCA-point");
 
-    createAuthorToColorLegendWithVisibilityToggles(targetDivId, authors, coloraxis, ".PCA-point");
+    createAuthorToColorLegendWithVisibilityToggles(targetDivId, authors, coloraxis, ".PCA-point", ".PCA-ellipse");
 
     function rebuildPCAPlot(){
         buildPCAPlot(data, d3.select("#pcaPlotCbox").node().checked, targetDivId);
@@ -1391,52 +1392,97 @@ function createAuthorToColorLegend(legendTarget, authors, coloraxis){
         .text(function(elem){return elem;});
 }
 
-function createAuthorToColorLegendWithVisibilityToggles(legendTarget, authors, coloraxis, pointClassName){
+function createAuthorToColorLegendWithVisibilityToggles(legendTarget, authors, coloraxis, pointClass, ellipseClass /*Arbitrary number of class names could follow. See appendVisibiltyToggles for fxn that will add toggles as rectangles for arbitrary class names*/){
     var rows = d3.select(legendTarget).append("table")
         .selectAll("tr")
         .data(authors)
         .enter()
         .append("tr");
+
     rows.append("td")
         .append("svg")
         .attr("width", 15)
         .attr("height", 10)
         .append("rect")
-        .attr("width",15)
+        .attr("width", 15)
         .attr("height", 10)
         .style("fill", function(elem){return coloraxis(elem);})
-        .on("mouseover", function (elem) {
-            d3.selectAll("." + elem.toString().replace(/ /g,"."))
-                .style("fill", "#666")
-                .each(function () {
-                    this.parentNode.appendChild(this);
-                })
-        })
-        .on("mouseout", function (elem) {
-            d3.selectAll("." + elem.toString().replace(/ /g,"."))
-                .style("fill", coloraxis(elem))
-                .each(function () {
-                    this.parentNode.insertBefore(this, this.parentNode.firstChild);
-                })
-        })
-        .on("click",function(elem){
-            var selection = d3.selectAll(pointClassName + "." + (elem.replace(/ /g,".")));
+        .on("mouseover", function(elem){visibilityMouseover(elem, pointClass);})
+        .on("mouseout", function(elem){visibilityMouseout(elem, coloraxis, pointClass);})
+        .on("click", function(elem){visibilityClick(elem, coloraxis, pointClass, this);});
 
-            if (selection.style("display") != "none") {
-                selection.style("display", "none");
-                this.style.fill = "#222";
-            }
-            else {
-                selection.style("display","block");
-                this.style.fill = coloraxis(elem);
-            }
+    /*If ellipseClass is undefined, this is a visualization without error ellipses.*/
+    if (ellipseClass === undefined) {
+        rows.append("td")
+            .append("svg")
+            .attr("width", 15)
+            .attr("height", 10)
+            .append("ellipse")
+            .attr("rx", 7.5)
+            .attr("ry", 5)
+            .attr("cx", 7.5)
+            .attr("cy", 5)
+            .style("fill", function (elem) {
+                return coloraxis(elem);
+            })
+            .on("mouseover", function (elem) {
+                visibilityMouseover(elem, ellipseClass);
+            })
+            .on("mouseout", function (elem) {
+                visibilityMouseout(elem, coloraxis, ellipseClass);
+            })
+            .on("click", function (elem) {
+                visibilityClick(elem, coloraxis, ellipseClass, this);
+            });
+    }
 
-
-        });
     rows.append("td")
         .html(function (elem) {
             return elem;
         });
+}
+
+function appendVisibilityToggles(targetSelection, classNameToToggle, coloraxis){
+    targetSelection.append("td")
+        .append("svg")
+        .attr("width", 15)
+        .attr("height", 10)
+        .append("rect")
+        .attr("width", 15)
+        .attr("height", 10)
+        .style("fill", function(elem){return coloraxis(elem);})
+        .on("mouseover", function(elem){visibilityMouseover(elem);})
+        .on("mouseout", function(elem){visibilityMouseout(elem, coloraxis);})
+        .on("click", function(elem){visibilityClick(elem, coloraxis, classNameToToggle, this);});
+}
+
+function visibilityMouseover (elem, classNameToToggle) {
+    d3.selectAll(classNameToToggle + "." + elem.toString().replace(/ /g,"."))
+        .style("stroke", "#666")
+        .each(function () {
+            this.parentNode.appendChild(this);
+        })
+}
+
+function visibilityMouseout (elem, coloraxis, classNameToToggle) {
+    d3.selectAll(classNameToToggle + "." + elem.toString().replace(/ /g,"."))
+        .style("stroke", coloraxis(elem))
+        .each(function () {
+            this.parentNode.insertBefore(this, this.parentNode.firstChild);
+        })
+}
+
+function visibilityClick (elem, coloraxis, classNameToToggle, buttonClicked){
+    var selection = d3.selectAll(classNameToToggle + "." + (elem.replace(/ /g,".")));
+
+    if (selection.style("display") != "none") {
+        selection.style("display", "none");
+        buttonClicked.style.fill = "#222";
+    }
+    else {
+        selection.style("display","block");
+        buttonClicked.style.fill = coloraxis(elem);
+    }
 }
 
 /**
@@ -1446,8 +1492,10 @@ function createAuthorToColorLegendWithVisibilityToggles(legendTarget, authors, c
  * @param {Object} xaxis d3 ScaleLinear element representing the x axis
  * @param {Object} yaxis d3 ScaleLinear element representing the y axis
  * @param strokeColor Color [returned by a d3 scaleOrdinal] to apply to the ellipse's stroke
+ * @param title String containing title of work ellipse represents. Not necessary for ellipses representing all of an author's work (use empty string).
+ * @param author String containing author of work ellipse represents. Necessary even if title is given.
  */
-function addErrorEllipse(projectionData, parent, xaxis, yaxis, strokeColor){
+function addErrorEllipse(projectionData, parent, xaxis, yaxis, strokeColor, title, author){
     var projXdata = [], projYdata = [];
 
     if (projectionData.length == 1){
@@ -1477,7 +1525,7 @@ function addErrorEllipse(projectionData, parent, xaxis, yaxis, strokeColor){
         projYextent = d3.extent(projectionData, function(elem){return elem[1];});
 
     parent.append("ellipse")
-        .attr("class", "PCA-ellipse")
+        .attr("class", "PCA-ellipse " + title + " " + author)
         .attr("rx",Math.abs(xaxis(projXextent[0] + ellRX) - xaxis(projXextent[0])))
         .attr("ry",Math.abs(yaxis(projYextent[0] + ellRY) - yaxis(projYextent[0])))
         .style("stroke",strokeColor)
