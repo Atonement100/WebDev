@@ -1188,8 +1188,10 @@ function buildPCAPlot(data, drawEllipsePerTitle, targetDivId){
         });
     }
 
-    createAuthorToColorLegend(targetDivId, authors, coloraxis);
-    createAuthorPlotPointToggles(targetDivId, authors, ".PCA-point");
+   // createAuthorToColorLegend(targetDivId, authors, coloraxis);
+   // createAuthorPlotPointToggles(targetDivId, authors, ".PCA-point");
+
+    createAuthorToColorLegendWithVisibilityToggles(targetDivId, authors, coloraxis, ".PCA-point");
 
     function rebuildPCAPlot(){
         buildPCAPlot(data, d3.select("#pcaPlotCbox").node().checked, targetDivId);
@@ -1387,6 +1389,54 @@ function createAuthorToColorLegend(legendTarget, authors, coloraxis){
         .attr("y", function(elem, index){return index * 22 + 15;})
         .attr("class", "legend")
         .text(function(elem){return elem;});
+}
+
+function createAuthorToColorLegendWithVisibilityToggles(legendTarget, authors, coloraxis, pointClassName){
+    var rows = d3.select(legendTarget).append("table")
+        .selectAll("tr")
+        .data(authors)
+        .enter()
+        .append("tr");
+    rows.append("td")
+        .append("svg")
+        .attr("width", 15)
+        .attr("height", 10)
+        .append("rect")
+        .attr("width",15)
+        .attr("height", 10)
+        .style("fill", function(elem){return coloraxis(elem);})
+        .on("mouseover", function (elem) {
+            d3.selectAll("." + elem.toString().replace(/ /g,"."))
+                .style("fill", "#666")
+                .each(function () {
+                    this.parentNode.appendChild(this);
+                })
+        })
+        .on("mouseout", function (elem) {
+            d3.selectAll("." + elem.toString().replace(/ /g,"."))
+                .style("fill", coloraxis(elem))
+                .each(function () {
+                    this.parentNode.insertBefore(this, this.parentNode.firstChild);
+                })
+        })
+        .on("click",function(elem){
+            var selection = d3.selectAll(pointClassName + "." + (elem.replace(/ /g,".")));
+
+            if (selection.style("display") != "none") {
+                selection.style("display", "none");
+                this.style.fill = "#222";
+            }
+            else {
+                selection.style("display","block");
+                this.style.fill = coloraxis(elem);
+            }
+
+
+        });
+    rows.append("td")
+        .html(function (elem) {
+            return elem;
+        });
 }
 
 /**
