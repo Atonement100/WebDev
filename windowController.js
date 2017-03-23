@@ -1173,19 +1173,39 @@ function buildPCAPlot(data, drawEllipsePerTitle, targetDivId){
     var authors = Array.from(new Set(data.map(function(elem){return elem.author;})));
 
     if (drawEllipsePerTitle){
-        var titlesToAuthors = Array.from(new Set(data.map(function(elem){return {title:((elem.title).toString().toLowerCase()), author:elem.author};}))),
-            titles = Array.from(new Set(titlesToAuthors.map(function(elem){return elem.title;}))),
+        var titlesToAuthors = Array.from(new Set(data.map(function(elem){return {title: elem.title, author: elem.author, section: elem.section};}))),
+            uniqueTitlesToAuthors = [],
+            index, uniqueIndex, itemToCompare, currUniqueItem, isUnique;
+
+
+        for (index = 0; index < titlesToAuthors.length; index++){
+            itemToCompare = titlesToAuthors[index];
+            isUnique = true;
+            for (uniqueIndex = 0; uniqueIndex < uniqueTitlesToAuthors.length; uniqueIndex++){
+                currUniqueItem = uniqueTitlesToAuthors[uniqueIndex];
+                if (itemToCompare.title === currUniqueItem.title && itemToCompare.author === currUniqueItem.author && itemToCompare.section === currUniqueItem.section){
+                    isUnique = false;
+                    break;
+                }
+            }
+            if (isUnique) uniqueTitlesToAuthors.push(itemToCompare);
+        }
+
+
+        var titles = Array.from(new Set(titlesToAuthors.map(function(elem){return elem.title.toLowerCase();}))),
             titledata = binProjectionDataByTitle(data, titles, projectionData);
 
+        console.log(uniqueTitlesToAuthors);
+
         titledata.forEach(function (elem, index) {
-            addErrorEllipse(elem, parent, xaxis, yaxis, coloraxis(titlesToAuthors[index].author), titlesToAuthors[index].title, titlesToAuthors[index].author);
+            addErrorEllipse(elem, parent, xaxis, yaxis, coloraxis(uniqueTitlesToAuthors[index].author), uniqueTitlesToAuthors[index], tooltip);
         });
     }
     else{ //Draw ellipse for each author
         var authdata = binProjectionDataByAuthor(data, authors, projectionData);
 
         authdata.forEach(function (elem, index) {
-            addErrorEllipse(elem, parent, xaxis, yaxis, coloraxis(authors[index]), "", authors[index]);
+            addErrorEllipse(elem, parent, xaxis, yaxis, coloraxis(authors[index]), {author: authors[index]}, tooltip);
         });
     }
 
@@ -1296,7 +1316,7 @@ function binProjectionDataByAuthor(data, authors, projectionData){
 
     for (var index = 0; index < data.length; index++){
         for (var authIndex = 0; authIndex < authors.length; authIndex++){
-            if (data[index].author == authors[authIndex]) break;
+            if (data[index].author === authors[authIndex]) break;
         }
         authdata[authIndex].push(projectionData[index]);
     }
@@ -1412,7 +1432,7 @@ function createAuthorToColorLegendWithVisibilityToggles(legendTarget, authors, c
         .on("click", function(elem){visibilityClick(elem, coloraxis, pointClass, this);});
 
     /*If ellipseClass is undefined, this is a visualization without error ellipses.*/
-    if (ellipseClass === undefined) {
+    if (ellipseClass !== undefined) {
         rows.append("td")
             .append("svg")
             .attr("width", 15)
@@ -1422,18 +1442,10 @@ function createAuthorToColorLegendWithVisibilityToggles(legendTarget, authors, c
             .attr("ry", 5)
             .attr("cx", 7.5)
             .attr("cy", 5)
-            .style("fill", function (elem) {
-                return coloraxis(elem);
-            })
-            .on("mouseover", function (elem) {
-                visibilityMouseover(elem, ellipseClass);
-            })
-            .on("mouseout", function (elem) {
-                visibilityMouseout(elem, coloraxis, ellipseClass);
-            })
-            .on("click", function (elem) {
-                visibilityClick(elem, coloraxis, ellipseClass, this);
-            });
+            .style("fill", function (elem) { return coloraxis(elem); })
+            .on("mouseover", function (elem) { visibilityMouseover(elem, ellipseClass); })
+            .on("mouseout", function (elem) { visibilityMouseout(elem, coloraxis, ellipseClass); })
+            .on("click", function (elem) { visibilityClick(elem, coloraxis, ellipseClass, this); });
     }
 
     rows.append("td")
@@ -1475,7 +1487,7 @@ function visibilityMouseout (elem, coloraxis, classNameToToggle) {
 function visibilityClick (elem, coloraxis, classNameToToggle, buttonClicked){
     var selection = d3.selectAll(classNameToToggle + "." + (elem.replace(/ /g,".")));
 
-    if (selection.style("display") != "none") {
+    if (selection.style("display") !== "none") {
         selection.style("display", "none");
         buttonClicked.style.fill = "#222";
     }
@@ -1492,13 +1504,16 @@ function visibilityClick (elem, coloraxis, classNameToToggle, buttonClicked){
  * @param {Object} xaxis d3 ScaleLinear element representing the x axis
  * @param {Object} yaxis d3 ScaleLinear element representing the y axis
  * @param strokeColor Color [returned by a d3 scaleOrdinal] to apply to the ellipse's stroke
- * @param title String containing title of work ellipse represents. Not necessary for ellipses representing all of an author's work (use empty string).
- * @param author String containing author of work ellipse represents. Necessary even if title is given.
+ * @param {Object} treebankInfo Must contain the author, and can optionally include the title, and section of the treebank. Title and section are necessary if drawing ellipses for each treebank.
+ * @param tooltip HTML div for the tooltip to be drawn in (Optional)
  */
-function addErrorEllipse(projectionData, parent, xaxis, yaxis, strokeColor, title, author){
+function addErrorEllipse(projectionData, parent, xaxis, yaxis, strokeColor, treebankInfo, tooltip){
+    console.log(treebankInfo);
+    console.log(projectionData);
+
     var projXdata = [], projYdata = [];
 
-    if (projectionData.length == 1){
+    if (projectionData.length === 1){
         projectionData.push(projectionData[0]); //Could return here instead to save on calculations.
     }
 
@@ -1522,15 +1537,32 @@ function addErrorEllipse(projectionData, parent, xaxis, yaxis, strokeColor, titl
     rot = (rot < 0) ? (rot + 2 * math.PI) : rot;
 
     var projXextent = d3.extent(projectionData, function(elem){return elem[0];}),
-        projYextent = d3.extent(projectionData, function(elem){return elem[1];});
+        projYextent = d3.extent(projectionData, function(elem){return elem[1];}),
+        tooltipText = "Author: " + treebankInfo.author;
 
-    parent.append("ellipse")
-        .attr("class", "PCA-ellipse " + title + " " + author)
+    if (treebankInfo.title !== undefined) { tooltipText += "<br>Title: " + treebankInfo.title; }
+    else {treebankInfo.title = "";}
+    if (treebankInfo.section !== undefined) { tooltipText += "<br>Section: " + treebankInfo.section; }
+
+    var newEllipse = parent.append("ellipse")
+        .attr("class", "PCA-ellipse " + treebankInfo.title.toString().toLowerCase() + " " + treebankInfo.author)
         .attr("rx",Math.abs(xaxis(projXextent[0] + ellRX) - xaxis(projXextent[0])))
         .attr("ry",Math.abs(yaxis(projYextent[0] + ellRY) - yaxis(projYextent[0])))
         .style("stroke",strokeColor)
         .attr("transform", "translate(" + xaxis(d3.mean(projectionData, function(elem){return elem[0];})) + "," + yaxis(d3.mean(projectionData, function(elem){return elem[1];})) +
             ") rotate(" + (rot * 180 / math.PI) + ")");
+
+    if (tooltip !== undefined) {
+        newEllipse.on("mouseover", function () {
+            tooltip.html(tooltipText)
+                .style("left", (d3.event.pageX + 10) + "px")
+                .style("top", (d3.event.pageY + 10) + "px")
+                .style("display", "inline");
+        })
+            .on("mouseout", function () {
+                tooltip.style("display", "none");
+            });
+    }
 }
 
 /**
