@@ -1055,8 +1055,12 @@ function buildScatterPlot(tableData, yMetricIndex, xMetricIndex, targetDivId) {
 
     var authors = Array.from(new Set(tableData.map(function(elem){return elem.author;})));
 
+    /*
     createAuthorToColorLegend(targetDivId, authors, coloraxis);
     createAuthorPlotPointToggles(targetDivId, authors, ".scatterPoint");
+    */
+
+    createAuthorToColorLegendWithVisibilityToggles(targetDivId, authors, coloraxis, ".scatterPoint");
 
     function selectedMetricChange(){
         buildScatterPlot(tableData, yMetricSelector.property('selectedIndex'), xMetricSelector.property('selectedIndex'), targetDivId);
