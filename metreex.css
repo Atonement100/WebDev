@@ -229,6 +229,11 @@ body{
     stroke-width: 2px;
 }
 
+.scatterPoint {
+    stroke-width: 2px;
+    fill-opacity: 0;
+}
+
 .PCA-point {
     stroke-width: 2px;
     fill-opacity: 0;

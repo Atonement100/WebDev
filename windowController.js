@@ -1025,7 +1025,7 @@ function buildScatterPlot(tableData, yMetricIndex, xMetricIndex, targetDivId) {
         .enter().append("circle")
         .attr("class", function(elem){return "scatterPoint " + elem.author;})
         .attr("r",  bubbleThickness)
-        .style("fill", function(elem){return coloraxis(elem.author);})
+        .style("stroke", function(elem){return coloraxis(elem.author);})
         .attr("cx", function(elem){return xaxis(elem.metricValues[xMetricIndex]);})
         .attr("cy", function(elem){return yaxis(elem.metricValues[yMetricIndex]);})
         .on("mouseover", function(elem){
@@ -1552,6 +1552,9 @@ function addErrorEllipse(projectionData, parent, xaxis, yaxis, strokeColor, tree
         .style("stroke", strokeColor)
         .attr("transform", "translate(" + xaxis(d3.mean(projectionData, function(elem){return elem[0];})) + "," + yaxis(d3.mean(projectionData, function(elem){return elem[1];})) +
             ") rotate(" + (rot * 180 / math.PI) + ")");
+
+    console.log(treebankInfo.author + " " + treebankInfo.title + " AAAAAAA " );
+    console.log(d3.mean(projectionData, function(elem){return elem[0];}) +  " " + d3.mean(projectionData, function(elem){return elem[1];}));
 
     if (tooltip !== undefined) {
         var selector = ".PCA-point." + treebankInfo.author.toString().replace(/ /g,".");
