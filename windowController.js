@@ -1154,20 +1154,20 @@ function buildPCAPlot(data, drawEllipsePerTitle, targetDivId){
                 .style("left", (d3.event.pageX + 10) + "px")
                 .style("top", (d3.event.pageY + 10) + "px")
                 .style("display","inline");
-            var siblings = d3.selectAll("."+data[index].title.toString().toLowerCase().replace(/ /g,"") + ".sec" + data[index].section.replace(/\./g,"\\."))
-                .style("stroke", "#666");
-            siblings.each(function () {
-                this.parentNode.appendChild(this);
-            })
+            d3.selectAll("."+data[index].title.toString().toLowerCase().replace(/ /g,"") + ".sec" + data[index].section.replace(/\./g,"\\."))
+                .style("stroke", "#666")
+                .each(function () {
+                    this.parentNode.appendChild(this);
+                })
         })
         .on("mouseout", function(elem,index){
             tooltip.style("display","none");
-            var siblings = d3.selectAll("."+data[index].title.toString().toLowerCase().replace(/ /g,"") + ".sec" + data[index].section.replace(/\./g,"\\."))
-                .style("stroke", coloraxis(data[index].author)),
-                firstEllipse = d3.select(".PCA-ellipse").node();
-            siblings.each(function () {
-                this.parentNode.insertBefore(this, firstEllipse);
-            })
+            var firstEllipse = d3.select(".PCA-ellipse").node();
+            d3.selectAll("."+data[index].title.toString().toLowerCase().replace(/ /g,"") + ".sec" + data[index].section.replace(/\./g,"\\."))
+                .style("stroke", coloraxis(data[index].author))
+                .each(function () {
+                    this.parentNode.insertBefore(this, firstEllipse);
+                })
         });
 
     var authors = Array.from(new Set(data.map(function(elem){return elem.author;})));
@@ -1198,16 +1198,13 @@ function buildPCAPlot(data, drawEllipsePerTitle, targetDivId){
             addErrorEllipse(elem, parent, xaxis, yaxis, coloraxis(uniqueTitlesToAuthors[index].author), uniqueTitlesToAuthors[index], tooltip);
         });
     }
-    else{ //Draw ellipse for each author
+    else { //Draw ellipse for each author
         var authdata = binProjectionDataByAuthor(data, authors, projectionData);
 
         authdata.forEach(function (elem, index) {
             addErrorEllipse(elem, parent, xaxis, yaxis, coloraxis(authors[index]), {author: authors[index]}, tooltip);
         });
     }
-
-   // createAuthorToColorLegend(targetDivId, authors, coloraxis);
-   // createAuthorPlotPointToggles(targetDivId, authors, ".PCA-point");
 
     createAuthorToColorLegendWithVisibilityToggles(targetDivId, authors, coloraxis, ".PCA-point", ".PCA-ellipse");
 
@@ -1557,15 +1554,28 @@ function addErrorEllipse(projectionData, parent, xaxis, yaxis, strokeColor, tree
             ") rotate(" + (rot * 180 / math.PI) + ")");
 
     if (tooltip !== undefined) {
+        var selector = ".PCA-point." + treebankInfo.author.toString().replace(/ /g,".");
+        if (treebankInfo.title !== undefined) selector += "." + treebankInfo.title.toString().toLowerCase().replace(/ /g,"");
+
         newEllipse
             .on("mouseover", function () {
-            tooltip.html(tooltipText)
-                .style("left", (d3.event.pageX + 10) + "px")
-                .style("top", (d3.event.pageY + 10) + "px")
-                .style("display", "inline");
+                tooltip.html(tooltipText)
+                    .style("left", (d3.event.pageX + 10) + "px")
+                    .style("top", (d3.event.pageY + 10) + "px")
+                    .style("display", "inline");
+                d3.selectAll(selector)
+                    .style("stroke", "#666")
+                    .each(function () {
+                        this.parentNode.appendChild(this);
+                    });
             })
             .on("mouseout", function () {
                 tooltip.style("display", "none");
+                d3.selectAll(selector)
+                    .style("stroke", strokeColor)
+                    .each(function () {
+                        this.parentNode.insertBefore(this, d3.select(".PCA-ellipse").node());
+                    });
             });
     }
 }
