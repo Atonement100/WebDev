@@ -1102,7 +1102,7 @@ function buildPCAPlot(data, drawEllipsePerTitle, targetDivId){
 
     var metricValues = data.map(function (elem) { return elem.metricValues; }),
         projectionData = principalComponentAnalysis(metricValues),
-        margin = {top: 15, right: 15, bottom: 30, left: 30},
+        margin = {top: 15, right: 15, bottom: 30, left: 40},
         bubbleThickness = 4, //px
         width = 800, height = 800,
 
@@ -1143,7 +1143,7 @@ function buildPCAPlot(data, drawEllipsePerTitle, targetDivId){
     parent.selectAll(".PCA-point")
         .data(projectionData)
         .enter().append("circle")
-        .attr("class", function(elem, index){return "PCA-point " + data[index].title.toString().toLowerCase().replace(/ /g,"") + " " + data[index].author + " active";})
+        .attr("class", function(elem, index){return "PCA-point " + data[index].title.toString().toLowerCase().replace(/ /g,"") + " sec" + data[index].section + " " + data[index].author + " active";})
         .attr("r",  bubbleThickness)
         .style("stroke", function(elem, index){return coloraxis(data[index].author);})
         .style("fill", "#FFF")
@@ -1154,7 +1154,7 @@ function buildPCAPlot(data, drawEllipsePerTitle, targetDivId){
                 .style("left", (d3.event.pageX + 10) + "px")
                 .style("top", (d3.event.pageY + 10) + "px")
                 .style("display","inline");
-            var siblings = d3.selectAll("."+data[index].title.toString().toLowerCase().replace(/ /g,""))
+            var siblings = d3.selectAll("."+data[index].title.toString().toLowerCase().replace(/ /g,"") + ".sec" + data[index].section.replace(/\./g,"\\."))
                 .style("stroke", "#666");
             siblings.each(function () {
                 this.parentNode.appendChild(this);
@@ -1162,7 +1162,7 @@ function buildPCAPlot(data, drawEllipsePerTitle, targetDivId){
         })
         .on("mouseout", function(elem,index){
             tooltip.style("display","none");
-            var siblings = d3.selectAll("."+data[index].title.toString().toLowerCase().replace(/ /g,""))
+            var siblings = d3.selectAll("."+data[index].title.toString().toLowerCase().replace(/ /g,"") + ".sec" + data[index].section.replace(/\./g,"\\."))
                 .style("stroke", coloraxis(data[index].author)),
                 firstEllipse = d3.select(".PCA-ellipse").node();
             siblings.each(function () {
@@ -1173,13 +1173,16 @@ function buildPCAPlot(data, drawEllipsePerTitle, targetDivId){
     var authors = Array.from(new Set(data.map(function(elem){return elem.author;})));
 
     if (drawEllipsePerTitle){
-        var titlesToAuthors = Array.from(new Set(data.map(function(elem){return {title: elem.title, author: elem.author, section: elem.section};}))),
+        var titlesToAuthors = data.map(function(elem){if (elem.numSentences > 1) return {title: elem.title, author: elem.author, section: elem.section, numsent: elem.numSentences};}),
             uniqueTitlesToAuthors = [],
             index, uniqueIndex, itemToCompare, currUniqueItem, isUnique;
 
+        console.log (titlesToAuthors);
 
         for (index = 0; index < titlesToAuthors.length; index++){
             itemToCompare = titlesToAuthors[index];
+            if (itemToCompare === undefined) continue;
+
             isUnique = true;
             for (uniqueIndex = 0; uniqueIndex < uniqueTitlesToAuthors.length; uniqueIndex++){
                 currUniqueItem = uniqueTitlesToAuthors[uniqueIndex];
@@ -1191,11 +1194,13 @@ function buildPCAPlot(data, drawEllipsePerTitle, targetDivId){
             if (isUnique) uniqueTitlesToAuthors.push(itemToCompare);
         }
 
+        var titles = uniqueTitlesToAuthors.map(function(elem){return {title: elem.title.toLowerCase(), section: elem.section};}),
+            titledata = binProjectionDataByTitleAndSection(data, titles, projectionData);
 
-        var titles = Array.from(new Set(titlesToAuthors.map(function(elem){return elem.title.toLowerCase();}))),
-            titledata = binProjectionDataByTitle(data, titles, projectionData);
-
-        console.log(uniqueTitlesToAuthors);
+        uniqueTitlesToAuthors.forEach(function (elem) {
+            console.log(elem.author + " " + elem.title + " " + elem.section);
+        });
+        console.log(titles);
 
         titledata.forEach(function (elem, index) {
             addErrorEllipse(elem, parent, xaxis, yaxis, coloraxis(uniqueTitlesToAuthors[index].author), uniqueTitlesToAuthors[index], tooltip);
@@ -1343,6 +1348,28 @@ function binProjectionDataByTitle(data, titles, projectionData){
             if (titleToCompare === (titles[titleIndex]).toLowerCase()) break;
         }
         titledata[titleIndex].push(projectionData[index]);
+    }
+
+    return titledata;
+}
+
+function binProjectionDataByTitleAndSection(data, titles, projectionData){
+    var titledata = build2DArray(titles.length),
+        index,
+        titleIndex,
+        titleToCompare,
+        found;
+
+    for (index = 0; index < data.length; index++){
+        found = false;
+        titleToCompare = (data[index].title).toString().toLowerCase();
+        for (titleIndex = 0; titleIndex < titles.length; titleIndex++){
+            if (titleToCompare === (titles[titleIndex].title).toLowerCase() && data[index].section === titles[titleIndex].section) {
+                found = true;
+                break;
+            }
+        }
+        if (found) titledata[titleIndex].push(projectionData[index]);
     }
 
     return titledata;
@@ -1508,13 +1535,17 @@ function visibilityClick (elem, coloraxis, classNameToToggle, buttonClicked){
  * @param tooltip HTML div for the tooltip to be drawn in (Optional)
  */
 function addErrorEllipse(projectionData, parent, xaxis, yaxis, strokeColor, treebankInfo, tooltip){
-    console.log(treebankInfo);
-    console.log(projectionData);
+    console.log(treebankInfo.author + " " + treebankInfo.title + " " + treebankInfo.section + " " + treebankInfo.numsent);
 
     var projXdata = [], projYdata = [];
 
     if (projectionData.length === 1){
         projectionData.push(projectionData[0]); //Could return here instead to save on calculations.
+        return;
+    }
+    else if (projectionData.length === 0){
+        console.log(treebankInfo.author + " " + treebankInfo.title + " " + treebankInfo.section + " " + treebankInfo.numsent +  " encountered an error - no projection data");
+        return;
     }
 
     projectionData.forEach(function (elem) {
@@ -1529,8 +1560,10 @@ function addErrorEllipse(projectionData, parent, xaxis, yaxis, strokeColor, tree
         ellipseScale = Math.sqrt(2.705543454096032), //http://onlinelibrary.wiley.com/doi/10.1002/0471998303.app4/pdf 1 degree of freedom, p=0.9
         maxEigen = getIndexOfMax(projectionEigenVal.eigVals),
         minEigen = getIndexOfMin(projectionEigenVal.eigVals),
-        ellRX = projXstdev > projYstdev ? Math.sqrt(projectionEigenVal.eigVals[maxEigen]) * ellipseScale : Math.sqrt(projectionEigenVal.eigVals[minEigen]) * ellipseScale,
-        ellRY = projXstdev < projYstdev ? Math.sqrt(projectionEigenVal.eigVals[maxEigen]) * ellipseScale : Math.sqrt(projectionEigenVal.eigVals[minEigen]) * ellipseScale,
+        maxScale = Math.sqrt(Math.abs(projectionEigenVal.eigVals[maxEigen])) * ellipseScale,
+        minScale = Math.sqrt(Math.abs(projectionEigenVal.eigVals[minEigen])) * ellipseScale,
+        ellRX = projXstdev > projYstdev ? maxScale : minScale,
+        ellRY = projXstdev < projYstdev ? maxScale : minScale,
         dominantEigenVec = projectionEigenVal.eigVecs[maxEigen],
         rot = Math.atan2(dominantEigenVec[1], dominantEigenVec[0]);
 
@@ -1544,25 +1577,35 @@ function addErrorEllipse(projectionData, parent, xaxis, yaxis, strokeColor, tree
     else {treebankInfo.title = "";}
     if (treebankInfo.section !== undefined) { tooltipText += "<br>Section: " + treebankInfo.section; }
 
+    /*
+    console.log(xaxis(projXextent[0] + ellRX) + " " + xaxis(projXextent[0])+ " " + projXextent[0] + " " + ellRX);
+    console.log(yaxis(projYextent[0] + ellRY) + " " + yaxis(projYextent[0])+ " " + projYextent[0]+ " "  + ellRY);
+    console.log(projectionEigenVal.eigVals[maxEigen] );
+    console.log(projectionEigenVal);
+    */
+
     var newEllipse = parent.append("ellipse")
         .attr("class", "PCA-ellipse " + treebankInfo.title.toString().toLowerCase() + " " + treebankInfo.author)
-        .attr("rx",Math.abs(xaxis(projXextent[0] + ellRX) - xaxis(projXextent[0])))
-        .attr("ry",Math.abs(yaxis(projYextent[0] + ellRY) - yaxis(projYextent[0])))
-        .style("stroke",strokeColor)
+        .attr("rx", Math.abs(xaxis(projXextent[0] + ellRX) - xaxis(projXextent[0])))
+        .attr("ry", Math.abs(yaxis(projYextent[0] + ellRY) - yaxis(projYextent[0])))
+        .style("stroke", strokeColor)
         .attr("transform", "translate(" + xaxis(d3.mean(projectionData, function(elem){return elem[0];})) + "," + yaxis(d3.mean(projectionData, function(elem){return elem[1];})) +
             ") rotate(" + (rot * 180 / math.PI) + ")");
 
     if (tooltip !== undefined) {
-        newEllipse.on("mouseover", function () {
+        newEllipse
+            .on("mouseover", function () {
             tooltip.html(tooltipText)
                 .style("left", (d3.event.pageX + 10) + "px")
                 .style("top", (d3.event.pageY + 10) + "px")
                 .style("display", "inline");
-        })
+            })
             .on("mouseout", function () {
                 tooltip.style("display", "none");
             });
     }
+
+    console.log(newEllipse);
 }
 
 /**
