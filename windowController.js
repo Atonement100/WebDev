@@ -1060,7 +1060,7 @@ function buildScatterPlot(tableData, yMetricIndex, xMetricIndex, targetDivId) {
     createAuthorPlotPointToggles(targetDivId, authors, ".scatterPoint");
     */
 
-    createAuthorToColorLegendWithVisibilityToggles(targetDivId, authors, coloraxis, ".scatterPoint");
+    createAuthorToColorLegendWithVisibilityTogglesAndStats(targetDivId, authors, coloraxis, {data: tableData, xIndex: xMetricIndex, yIndex: yMetricIndex}, ".scatterPoint");
 
     function selectedMetricChange(){
         buildScatterPlot(tableData, yMetricSelector.property('selectedIndex'), xMetricSelector.property('selectedIndex'), targetDivId);
@@ -1450,6 +1450,83 @@ function createAuthorToColorLegendWithVisibilityToggles(legendTarget, authors, c
         .html(function (elem) {
             return elem;
         });
+
+    return rows;
+}
+
+
+function createAuthorToColorLegendWithVisibilityTogglesAndStats(legendTarget, authors, coloraxis, metricInfo, pointClass, ellipseClass /*Arbitrary number of class names could follow. See appendVisibiltyToggles for fxn that will add toggles as rectangles for arbitrary class names*/){
+    var table = d3.select(legendTarget).append("table");
+
+
+    var rows = table.selectAll("tr")
+        .data(authors)
+        .enter()
+        .append("tr");
+
+    rows.append("td")
+        .append("svg")
+        .attr("width", 15)
+        .attr("height", 10)
+        .append("rect")
+        .attr("width", 15)
+        .attr("height", 10)
+        .style("fill", function(elem){return coloraxis(elem);})
+        .on("mouseover", function(elem){visibilityMouseover(elem, pointClass);})
+        .on("mouseout", function(elem){visibilityMouseout(elem, coloraxis, pointClass);})
+        .on("click", function(elem){visibilityClick(elem, coloraxis, pointClass, this);});
+
+    /*If ellipseClass is undefined, this is a visualization without error ellipses.*/
+    if (ellipseClass !== undefined) {
+        rows.append("td")
+            .append("svg")
+            .attr("width", 15)
+            .attr("height", 10)
+            .append("ellipse")
+            .attr("rx", 7.5)
+            .attr("ry", 5)
+            .attr("cx", 7.5)
+            .attr("cy", 5)
+            .style("fill", function (elem) { return coloraxis(elem); })
+            .on("mouseover", function (elem) { visibilityMouseover(elem, ellipseClass); })
+            .on("mouseout", function (elem) { visibilityMouseout(elem, coloraxis, ellipseClass); })
+            .on("click", function (elem) { visibilityClick(elem, coloraxis, ellipseClass, this); });
+    }
+
+    rows.append("td")
+        .html(function (elem) {
+            return elem;
+        });
+
+
+    var data = metricInfo.data,
+        xIndex = metricInfo.xIndex,
+        yIndex = metricInfo.yIndex;
+    rows.append("td")
+        .html(function (elem) {
+            return d3.format(".3f")(d3.mean(data.map(function (dataElem) {
+                if (dataElem.author == elem) {return dataElem.metricValues[xIndex];}
+            })));
+        });
+    rows.append("td")
+        .html(function (elem) {
+            return d3.format(".3f")(d3.mean(data.map(function (dataElem) {
+                if (dataElem.author == elem) {return dataElem.metricValues[yIndex];}
+            })));
+        });
+
+
+    var headers = ["", "Author", lastMetricsUsed[xIndex].name + " Mean", lastMetricsUsed[yIndex].name + " Mean", ""];
+    var headerRow = table.insert("tr",":first-child");
+    headerRow.selectAll("td")
+        .data(headers)
+        .enter()
+        .append("td")
+        .html(function (elem) {
+            return elem;
+        });
+
+    return rows;
 }
 
 function appendVisibilityToggles(targetSelection, classNameToToggle, coloraxis){
