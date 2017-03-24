@@ -1182,7 +1182,7 @@ function buildPCAPlot(data, drawEllipsePerTitle, targetDivId){
             isUnique = true;
             for (uniqueIndex = 0; uniqueIndex < uniqueTitlesToAuthors.length; uniqueIndex++){
                 currUniqueItem = uniqueTitlesToAuthors[uniqueIndex];
-                if (itemToCompare.title === currUniqueItem.title && itemToCompare.author === currUniqueItem.author && itemToCompare.section === currUniqueItem.section){
+                if (itemToCompare.title === currUniqueItem.title && itemToCompare.author === currUniqueItem.author){
                     isUnique = false;
                     break;
                 }
@@ -1361,7 +1361,7 @@ function createAuthorPlotPointToggles(target, authors, pointClassName){
         .on("click",function(elem){
             var selection = d3.selectAll(pointClassName + "." + (elem.replace(/ /g,".")));
 
-            if (selection.style("display") != "none")  selection.style("display","none");
+            if (selection.style("display") !== "none")  selection.style("display","none");
             else selection.style("display","block");
         });
 }
@@ -1546,7 +1546,7 @@ function addErrorEllipse(projectionData, parent, xaxis, yaxis, strokeColor, tree
 
     if (treebankInfo.title !== undefined) { tooltipText += "<br>Title: " + treebankInfo.title; }
     else {treebankInfo.title = "";}
-    if (treebankInfo.section !== undefined) { tooltipText += "<br>Section: " + treebankInfo.section; }
+    //if (treebankInfo.section !== undefined) { tooltipText += "<br>Section: " + treebankInfo.section; }
 
     var newEllipse = parent.append("ellipse")
         .attr("class", "PCA-ellipse " + treebankInfo.title.toString().toLowerCase() + " " + treebankInfo.author)
