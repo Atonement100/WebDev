@@ -9,6 +9,10 @@ body {
     min-height:100vh;
 }
 
+button, select, input {
+    font-family: Lato, sans-serif;
+}
+
 ul.headerTabs {
     list-style-type: none;
     display: block;
@@ -171,7 +175,7 @@ ul.visualTabs {
 }
 
 #basicTable tbody td {  /*Styling for data cells*/
-    background-color: #BBD1EA;
+    background-color: #F4F7F7;
     min-width: 96px;
     border: 1px solid #DAE3E5;
     text-align: center;
@@ -214,7 +218,8 @@ ul.visualTabs {
 }
 
 .axisText {
-    font: 14px sans-serif;
+    font-size: 14px;
+    font-famiy: Lato, sans-serif;
 }
 
 #barChart .tick.grid line{
@@ -237,6 +242,22 @@ ul.visualTabs {
     fill: none;
     stroke: #000;
     shape-rendering: crispEdges;
+}
+
+#scatterPlot table .header {
+    text-align:center;
+}
+
+#scatterPlot table .tableData {
+    min-width:70px;
+    width:70px;
+    text-align:center;
+}
+
+#scatterPlot table th {
+    text-decoration:none;
+    font-weight:normal;
+    text-align:left;
 }
 
 .PCA-ellipse {

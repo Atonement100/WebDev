@@ -1118,7 +1118,7 @@ function createAuthorToColorLegendWithVisibilityTogglesAndStats(legendTarget, au
             .on("click", function (elem) { visibilityClick(elem, coloraxis, ellipseClass, this); });
     }
 
-    rows.append("td")
+    rows.append("th")
         .html(function (elem) {
             return elem;
         });
@@ -1138,6 +1138,7 @@ function createAuthorToColorLegendWithVisibilityTogglesAndStats(legendTarget, au
         }
 
         rows.append("td")
+            .attr("class","tableData")
             .html(function (elem) {
                 return d3.format(".3f")(d3.min(data.map(function (dataElem) {
                     if (dataElem.author === elem) {
@@ -1146,6 +1147,7 @@ function createAuthorToColorLegendWithVisibilityTogglesAndStats(legendTarget, au
                 })));
             });
         rows.append("td")
+            .attr("class","tableData")
             .html(function (elem) {
                 return d3.format(".3f")(d3.max(data.map(function (dataElem) {
                     if (dataElem.author === elem) {
@@ -1154,6 +1156,7 @@ function createAuthorToColorLegendWithVisibilityTogglesAndStats(legendTarget, au
                 })));
             });
         rows.append("td")
+            .attr("class","tableData")
             .html(function (elem) {
                 return d3.format(".3f")(d3.mean(data.map(function (dataElem) {
                     if (dataElem.author === elem) {
@@ -1162,6 +1165,7 @@ function createAuthorToColorLegendWithVisibilityTogglesAndStats(legendTarget, au
                 })));
             });
         rows.append("td")
+            .attr("class","tableData")
             .html(function (elem) {
                 var val = d3.variance(data.map(function (dataElem) {
                     if (dataElem.author === elem) {
@@ -1173,6 +1177,7 @@ function createAuthorToColorLegendWithVisibilityTogglesAndStats(legendTarget, au
                 return d3.format(".3f")(val);
             });
         rows.append("td")
+            .attr("class","tableData")
             .html(function (elem) {
                 var val = d3.deviation(data.map(function (dataElem) {
                     if (dataElem.author === elem) {
@@ -1185,9 +1190,9 @@ function createAuthorToColorLegendWithVisibilityTogglesAndStats(legendTarget, au
             });
     }
 
-    var summaryStats = ["Min", "Max", "Mean", "Variance", "Standard Deviation"],
+    var summaryStats = ["Min", "Max", "Mean", "Variance", "Std. Dev."],
         headers = (ellipseClass === undefined)? [""] : ["", ""]; //Two empty strings if ellipses are included in the table, only one if not. If, in the future, more legend pieces are added to the front, this will need to be modified accordingly.
-    headers.push("Authors");
+    headers.push("Author");
     headers = headers.concat(summaryStats, summaryStats); //One copy per metric
 
     var headerRow = table.insert("tr",":first-child");
@@ -1195,6 +1200,7 @@ function createAuthorToColorLegendWithVisibilityTogglesAndStats(legendTarget, au
         .data(headers)
         .enter()
         .append("td")
+        .attr("class","header")
         .html(function (elem) {
             return elem;
         });
@@ -1206,6 +1212,7 @@ function createAuthorToColorLegendWithVisibilityTogglesAndStats(legendTarget, au
         .data(metricNames)
         .enter()
         .append("td")
+        .attr("class","header")
         .html(function (elem) {
             return elem;
         })
