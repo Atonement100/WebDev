@@ -1225,9 +1225,8 @@ function buildPCAPlot(data, drawEllipsePerTitle, targetDivId){
         handleGlobalErrorMessage("At least two metrics need to be enabled for Principal Component Analysis.");
         return;
     }
-    if (data.length < 4){
-        handleGlobalErrorMessage("Not enough data is present for PCA, need at least 3 sentences.");
-        return;
+    if (data.length < 10){
+        handleGlobalErrorMessage("Warning: Dataset size is small, Principal Component Analysis may not complete or be useful.");
     }
 
     if (drawEllipsePerTitle === undefined) drawEllipsePerTitle = true;
@@ -1321,10 +1320,39 @@ function buildPCAPlot(data, drawEllipsePerTitle, targetDivId){
                 })
         });
 
+    console.log(projectionData);
+
     var authors = Array.from(new Set(data.map(function(elem){return elem.author;})));
 
-    if (drawEllipsePerTitle){
-        var titlesToAuthors = data.map(function(elem){return {title: elem.title, author: elem.author, section: elem.section};}),
+    //noinspection ConstantIfStatementJS
+    if (true){
+        var atitlesToAuthors = data.map(function (elem) {
+            return {title: elem.title, author: elem.author, section: elem.section};
+        }),
+            auniqueTitlesToAuthors = [],
+            aindex, auniqueIndex, aitemToCompare, acurrUniqueItem, aisUnique;
+
+        for (aindex = 0; aindex < atitlesToAuthors.length; aindex++){
+            aitemToCompare = atitlesToAuthors[aindex];
+            aisUnique = true;
+
+            for (auniqueIndex = 0; auniqueIndex < auniqueTitlesToAuthors.length; auniqueIndex++){
+                acurrUniqueItem = auniqueTitlesToAuthors[auniqueIndex];
+                if (aitemToCompare.title === acurrUniqueItem.title && aitemToCompare.author === acurrUniqueItem.author && aitemToCompare.section === acurrUniqueItem.section){
+                    aisUnique = false;
+                    break
+                }
+            }
+            if (aisUnique) auniqueTitlesToAuthors.push(aitemToCompare);
+        }
+
+        var bins = binProjectionDataBySection(data, auniqueTitlesToAuthors, projectionData);
+        bins.forEach(function (elem, index) {
+            addErrorEllipse(elem, parent, xaxis, yaxis, coloraxis(auniqueTitlesToAuthors[index].author), auniqueTitlesToAuthors[index], tooltip);
+        })
+    }
+    else if (drawEllipsePerTitle){
+        var titlesToAuthors = data.map(function(elem){return {title: elem.title, author: elem.author};}),
             uniqueTitlesToAuthors = [],
             index, uniqueIndex, itemToCompare, currUniqueItem, isUnique;
 
@@ -1376,9 +1404,6 @@ function buildPCAPlot(data, drawEllipsePerTitle, targetDivId){
  * @param tooltip HTML div for the tooltip to be drawn in (Optional)
  */
 function addErrorEllipse(projectionData, parent, xaxis, yaxis, strokeColor, treebankInfo, tooltip){
-    console.log(treebankInfo);
-    console.log(projectionData);
-
     var projXdata = [], projYdata = [];
 
     if (projectionData.length === 1){
@@ -1417,7 +1442,7 @@ function addErrorEllipse(projectionData, parent, xaxis, yaxis, strokeColor, tree
 
     if (treebankInfo.title !== undefined) { tooltipText += "<br>Title: " + treebankInfo.title; }
     else {treebankInfo.title = "";}
-    //if (treebankInfo.section !== undefined) { tooltipText += "<br>Section: " + treebankInfo.section; }
+    if (treebankInfo.section !== undefined) { tooltipText += "<br>Section: " + treebankInfo.section; }
 
     var newEllipse = parent.append("ellipse")
         .attr("class", "PCA-ellipse " + treebankInfo.title.toString().toLowerCase() + " " + treebankInfo.author)
@@ -1430,6 +1455,7 @@ function addErrorEllipse(projectionData, parent, xaxis, yaxis, strokeColor, tree
     if (tooltip !== undefined) {
         var selector = ".PCA-point." + treebankInfo.author.toString().replace(/ /g,".");
         if (treebankInfo.title !== undefined && treebankInfo.title !== "") selector += "." + treebankInfo.title.toString().toLowerCase().replace(/ /g,"");
+        if (treebankInfo.section !== undefined) selector += ".sec" + treebankInfo.section.toString();
 
         newEllipse
             .on("mouseover", function () {
@@ -1579,6 +1605,27 @@ function binProjectionDataByTitle(data, titles, projectionData){
         }
         titledata[titleIndex].push(projectionData[index]);
     }
+
+    return titledata;
+}
+
+function binProjectionDataBySection(data, titles, projectionData){
+    var titledata = build2DArray(titles.length),
+        index,
+        titleIndex,
+        titleToCompare, sectionToCompare;
+
+    for (index = 0; index < data.length; index++){
+        titleToCompare = (data[index].title).toString().toLowerCase();
+        sectionToCompare = data[index].section.toString();
+        for (titleIndex = 0; titleIndex < titles.length; titleIndex++){
+            if (titleToCompare === (titles[titleIndex].title).toLowerCase() && sectionToCompare === titles[titleIndex].section) break;
+        }
+        titledata[titleIndex].push(projectionData[index]);
+    }
+
+    console.log(projectionData);
+    console.log(titledata);
 
     return titledata;
 }
