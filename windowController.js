@@ -1333,7 +1333,7 @@ function buildPCAPlot(data, drawEllipseForIndex, targetDivId){
                 .style("opacity", "1");
 
             var firstEllipse = d3.select(".PCA-ellipse").node();
-            d3.selectAll("."+data[index].title.toString().toLowerCase().replace(/ /g,"") + ".sec" + data[index].section.replace(/\./g,"\\."))
+            d3.selectAll(".PCA-point."+data[index].title.toString().toLowerCase().replace(/ /g,"") + ".sec" + data[index].section.replace(/\./g,"\\."))
                 .style("stroke", coloraxis(data[index].author))
                 .each(function () {
                     this.parentNode.insertBefore(this, firstEllipse);
