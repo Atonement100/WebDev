@@ -1036,13 +1036,20 @@ function buildScatterPlot(tableData, yMetricIndex, xMetricIndex, targetDivId) {
                 .style("left", (d3.event.pageX + 10) + "px")
                 .style("top", (d3.event.pageY + 10) + "px")
                 .style("display","inline");
+
+            d3.selectAll(".scatterPoint")
+                .style("opacity", ".2");
+
             d3.selectAll("." + tableData[index].title.toString().toLowerCase().replace(/ /g,"") + ".sec" + tableData[index].section.replace(/\./g,"\\."))
-                .style("stroke", "#666")
+                .style("opacity", "1")
                 .each(function () {
                     this.parentNode.appendChild(this);
                 });
         })
         .on("mouseout", function(elem, index){
+            d3.selectAll(".scatterPoint")
+                .style("opacity", "1");
+
             tooltip.style("display","none");
             d3.selectAll("."+   tableData[index].title.toString().toLowerCase().replace(/ /g,"") + ".sec" + tableData[index].section.replace(/\./g,"\\."))
                 .style("stroke", coloraxis(tableData[index].author));
@@ -1309,14 +1316,22 @@ function buildPCAPlot(data, drawEllipseForIndex, targetDivId){
                 .style("left", (d3.event.pageX + 10) + "px")
                 .style("top", (d3.event.pageY + 10) + "px")
                 .style("display","inline");
+
+            d3.selectAll(".PCA-point")
+                .style("opacity",".2");
+
             d3.selectAll("."+data[index].title.toString().toLowerCase().replace(/ /g,"") + ".sec" + data[index].section.replace(/\./g,"\\."))
-                .style("stroke", "#666")
+                .style("opacity","1")
                 .each(function () {
                     this.parentNode.appendChild(this);
                 })
         })
         .on("mouseout", function(elem,index){
             tooltip.style("display","none");
+
+            d3.selectAll(".PCA-point")
+                .style("opacity", "1");
+
             var firstEllipse = d3.select(".PCA-ellipse").node();
             d3.selectAll("."+data[index].title.toString().toLowerCase().replace(/ /g,"") + ".sec" + data[index].section.replace(/\./g,"\\."))
                 .style("stroke", coloraxis(data[index].author))
@@ -1324,8 +1339,6 @@ function buildPCAPlot(data, drawEllipseForIndex, targetDivId){
                     this.parentNode.insertBefore(this, firstEllipse);
                 })
         });
-
-    console.log(projectionData);
 
     var authors = Array.from(new Set(data.map(function(elem){return elem.author;})));
 
@@ -1462,20 +1475,31 @@ function addErrorEllipse(projectionData, parent, xaxis, yaxis, strokeColor, tree
 
         newEllipse
             .on("mouseover", function () {
+                d3.selectAll(".PCA-point")
+                    .style("opacity", ".2");
+                d3.selectAll(".PCA-ellipse")
+                    .style("opacity", ".2");
+                d3.select(selector.replace(/PCA-point/,"PCA-ellipse"))
+                    .style("opacity","1");
+
                 tooltip.html(tooltipText)
                     .style("left", (d3.event.pageX + 10) + "px")
                     .style("top", (d3.event.pageY + 10) + "px")
                     .style("display", "inline");
                 d3.selectAll(selector)
-                    .style("stroke", "#666")
+                    .style("opacity","1")
                     .each(function () {
                         this.parentNode.appendChild(this);
                     });
             })
             .on("mouseout", function () {
+                d3.selectAll(".PCA-point")
+                    .style("opacity", "1");
+                d3.selectAll(".PCA-ellipse")
+                    .style("opacity", "1");
+
                 tooltip.style("display", "none");
                 d3.selectAll(selector)
-                    .style("stroke", strokeColor)
                     .each(function () {
                         this.parentNode.insertBefore(this, d3.select(".PCA-ellipse").node());
                     });
@@ -1727,6 +1751,12 @@ function createAuthorToColorLegendWithVisibilityToggles(legendTarget, authors, c
             .attr("ry", 5)
             .attr("cx", 7.5)
             .attr("cy", 5)
+            .style("display", function (elem) {
+                if (d3.select(ellipseClass + "." + elem.replace(/ /g,".")).empty()){ //This uses the selector from visibilityClick() to identify if any ellipses of this kind exist. If they don't, we don't want to display it.
+                    return "none";
+                }
+                return "block";
+            })
             .style("fill", function (elem) { return coloraxis(elem); })
             .on("mouseover", function (elem) { visibilityMouseover(elem, ellipseClass); })
             .on("mouseout", function (elem) { visibilityMouseout(elem, coloraxis, ellipseClass); })
@@ -1756,16 +1786,23 @@ function appendVisibilityToggles(targetSelection, classNameToToggle, coloraxis){
 }
 
 function visibilityMouseover (elem, classNameToToggle) {
+    d3.selectAll(classNameToToggle)
+        .style("opacity", ".25");
+
     d3.selectAll(classNameToToggle + "." + elem.toString().replace(/ /g,"."))
-        .style("stroke", "#666")
+        .style("opacity", "1.0")
+        .style("stroke-width", "3px")
         .each(function () {
             this.parentNode.appendChild(this);
         })
 }
 
 function visibilityMouseout (elem, coloraxis, classNameToToggle) {
+    d3.selectAll(classNameToToggle)
+        .style("opacity", "1");
+
     d3.selectAll(classNameToToggle + "." + elem.toString().replace(/ /g,"."))
-        .style("stroke", coloraxis(elem))
+        .style("stroke-width", "2px")
         .each(function () {
             this.parentNode.insertBefore(this, this.parentNode.firstChild);
         })
@@ -1776,11 +1813,11 @@ function visibilityClick (elem, coloraxis, classNameToToggle, buttonClicked){
 
     if (selection.style("display") !== "none") {
         selection.style("display", "none");
-        buttonClicked.style.fill = "#222";
+        buttonClicked.style.fillOpacity = .5;
     }
     else {
         selection.style("display","block");
-        buttonClicked.style.fill = coloraxis(elem);
+        buttonClicked.style.fillOpacity = 1.0;
     }
 }
 
