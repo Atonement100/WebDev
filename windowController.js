@@ -969,7 +969,7 @@ function buildScatterPlot(tableData, yMetricIndex, xMetricIndex, targetDivId) {
         .enter()
         .append("option")
         .attr("value",function(elem){return elem.name;})
-        .property("selected", function(elem,index) {return index == yMetricIndex;})
+        .property("selected", function(elem,index) {return index === yMetricIndex;})
         .html(function(elem) {return elem.name;})
         .append("br");
 
@@ -978,7 +978,7 @@ function buildScatterPlot(tableData, yMetricIndex, xMetricIndex, targetDivId) {
         .enter()
         .append("option")
         .attr("value",function(elem){return elem.name;})
-        .property("selected", function(elem,index) {return index == xMetricIndex;})
+        .property("selected", function(elem,index) {return index === xMetricIndex;})
         .html(function(elem) {return elem.name;});
 
     var margin = {top: 15, right: 15, bottom:45, left: 60},
@@ -1220,7 +1220,7 @@ function createAuthorToColorLegendWithVisibilityTogglesAndStats(legendTarget, au
  * @param {Boolean} drawEllipsePerTitle True if an ellipse should be drawn for each individual title, false if ellipses should only be drawn for each author.
  * @param targetDivId String with the target id for d3 to append this chart to
  */
-function buildPCAPlot(data, drawEllipsePerTitle, targetDivId){
+function buildPCAPlot(data, drawEllipseForIndex, targetDivId){
     if (lastMetricsUsed.length < 2) {
         handleGlobalErrorMessage("At least two metrics need to be enabled for Principal Component Analysis.");
         return;
@@ -1229,7 +1229,8 @@ function buildPCAPlot(data, drawEllipsePerTitle, targetDivId){
         handleGlobalErrorMessage("Warning: Dataset size is small, Principal Component Analysis may not complete or be useful.");
     }
 
-    if (drawEllipsePerTitle === undefined) drawEllipsePerTitle = true;
+    var options = ["Author", "Title", "Section"];
+    if (drawEllipseForIndex === undefined) drawEllipseForIndex = 0;
 
     var pcaPlot = d3.select(targetDivId);
     pcaPlot.html(" ");
@@ -1239,16 +1240,20 @@ function buildPCAPlot(data, drawEllipsePerTitle, targetDivId){
         .on("click",function(){genPCAPlot(targetDivId);});
     pcaPlot.append("br");
 
-    pcaPlot.append("input")
-        .attr("type","checkbox")
-        .attr("id", "pcaPlotCbox")
-        .property("checked", drawEllipsePerTitle)
-        .on("change",rebuildPCAPlot);
-    pcaPlot.append("label")
-        .attr("for", "pcaPlotCbox")
-        .html("Draw Ellipse for each Title");
-    pcaPlot.append("br");
+    var ellipseSelectorDiv = pcaPlot.append("div")
+        .text("Draw Ellipse For Each: "),
+        ellipseSelector = ellipseSelectorDiv.append("select")
+            .attr("id", "pcaPlotSelector")
+            .on("change",rebuildPCAPlot);
 
+    ellipseSelector.selectAll("option")
+        .data(options)
+        .enter()
+        .append("option")
+        .attr("value", function(elem){return elem;})
+        .property("selected", function(elem,index){return index === drawEllipseForIndex;})
+        .html(function (elem) { return elem; });
+    ellipseSelectorDiv.append("br");
 
     var metricValues = data.map(function (elem) { return elem.metricValues; }),
         projectionData = principalComponentAnalysis(metricValues),
@@ -1324,11 +1329,42 @@ function buildPCAPlot(data, drawEllipsePerTitle, targetDivId){
 
     var authors = Array.from(new Set(data.map(function(elem){return elem.author;})));
 
-    //noinspection ConstantIfStatementJS
-    if (true){
+    if (options[drawEllipseForIndex] === "Author"){
+        var authdata = binProjectionDataByAuthor(data, authors, projectionData);
+
+        authdata.forEach(function (elem, index) {
+            addErrorEllipse(elem, parent, xaxis, yaxis, coloraxis(authors[index]), {author: authors[index]}, tooltip);
+        });
+    }
+    else if (options[drawEllipseForIndex] === "Title"){
+        var titlesToAuthors = data.map(function(elem){return {title: elem.title, author: elem.author};}),
+            uniqueTitlesToAuthors = [],
+            index, uniqueIndex, itemToCompare, currUniqueItem, isUnique;
+
+        for (index = 0; index < titlesToAuthors.length; index++){
+            itemToCompare = titlesToAuthors[index];
+            isUnique = true;
+            for (uniqueIndex = 0; uniqueIndex < uniqueTitlesToAuthors.length; uniqueIndex++){
+                currUniqueItem = uniqueTitlesToAuthors[uniqueIndex];
+                if (itemToCompare.title === currUniqueItem.title && itemToCompare.author === currUniqueItem.author){
+                    isUnique = false;
+                    break;
+                }
+            }
+            if (isUnique) uniqueTitlesToAuthors.push(itemToCompare);
+        }
+
+        var titles = Array.from(new Set(titlesToAuthors.map(function(elem){return elem.title.toLowerCase();}))),
+            titledata = binProjectionDataByTitle(data, titles, projectionData);
+
+        titledata.forEach(function (elem, index) {
+            addErrorEllipse(elem, parent, xaxis, yaxis, coloraxis(uniqueTitlesToAuthors[index].author), uniqueTitlesToAuthors[index], tooltip);
+        });
+    }
+    else if (options[drawEllipseForIndex] === "Section"){
         var atitlesToAuthors = data.map(function (elem) {
-            return {title: elem.title, author: elem.author, section: elem.section};
-        }),
+                return {title: elem.title, author: elem.author, section: elem.section};
+            }),
             auniqueTitlesToAuthors = [],
             aindex, auniqueIndex, aitemToCompare, acurrUniqueItem, aisUnique;
 
@@ -1349,46 +1385,13 @@ function buildPCAPlot(data, drawEllipsePerTitle, targetDivId){
         var bins = binProjectionDataBySection(data, auniqueTitlesToAuthors, projectionData);
         bins.forEach(function (elem, index) {
             addErrorEllipse(elem, parent, xaxis, yaxis, coloraxis(auniqueTitlesToAuthors[index].author), auniqueTitlesToAuthors[index], tooltip);
-        })
-    }
-    else if (drawEllipsePerTitle){
-        var titlesToAuthors = data.map(function(elem){return {title: elem.title, author: elem.author};}),
-            uniqueTitlesToAuthors = [],
-            index, uniqueIndex, itemToCompare, currUniqueItem, isUnique;
-
-        for (index = 0; index < titlesToAuthors.length; index++){
-            itemToCompare = titlesToAuthors[index];
-            isUnique = true;
-            for (uniqueIndex = 0; uniqueIndex < uniqueTitlesToAuthors.length; uniqueIndex++){
-                currUniqueItem = uniqueTitlesToAuthors[uniqueIndex];
-                if (itemToCompare.title === currUniqueItem.title && itemToCompare.author === currUniqueItem.author){
-                    isUnique = false;
-                    break;
-                }
-            }
-            if (isUnique) uniqueTitlesToAuthors.push(itemToCompare);
-        }
-
-
-        var titles = Array.from(new Set(titlesToAuthors.map(function(elem){return elem.title.toLowerCase();}))),
-            titledata = binProjectionDataByTitle(data, titles, projectionData);
-
-        titledata.forEach(function (elem, index) {
-            addErrorEllipse(elem, parent, xaxis, yaxis, coloraxis(uniqueTitlesToAuthors[index].author), uniqueTitlesToAuthors[index], tooltip);
-        });
-    }
-    else { //Draw ellipse for each author
-        var authdata = binProjectionDataByAuthor(data, authors, projectionData);
-
-        authdata.forEach(function (elem, index) {
-            addErrorEllipse(elem, parent, xaxis, yaxis, coloraxis(authors[index]), {author: authors[index]}, tooltip);
         });
     }
 
     createAuthorToColorLegendWithVisibilityToggles(targetDivId, authors, coloraxis, ".PCA-point", ".PCA-ellipse");
 
     function rebuildPCAPlot(){
-        buildPCAPlot(data, d3.select("#pcaPlotCbox").node().checked, targetDivId);
+        buildPCAPlot(data, ellipseSelector.property('selectedIndex'), targetDivId);
     }
 }
 
@@ -1455,7 +1458,7 @@ function addErrorEllipse(projectionData, parent, xaxis, yaxis, strokeColor, tree
     if (tooltip !== undefined) {
         var selector = ".PCA-point." + treebankInfo.author.toString().replace(/ /g,".");
         if (treebankInfo.title !== undefined && treebankInfo.title !== "") selector += "." + treebankInfo.title.toString().toLowerCase().replace(/ /g,"");
-        if (treebankInfo.section !== undefined) selector += ".sec" + treebankInfo.section.toString();
+        if (treebankInfo.section !== undefined) selector += ".sec" + treebankInfo.section.toString().replace(/\./g,"\\.");
 
         newEllipse
             .on("mouseover", function () {
@@ -1891,7 +1894,7 @@ function genScatterPlot(targetDivId){
 function genPCAPlot(targetDivId){
     if (targetDivId === undefined) targetDivId = "#PCAPlot";
     applyMetrics();
-    buildPCAPlot(assembleMetricData(), false, targetDivId);
+    buildPCAPlot(assembleMetricData(), 0, targetDivId);
 }
 
 function exportDataAsTSV(){
