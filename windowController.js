@@ -1067,6 +1067,146 @@ function buildScatterPlot(tableData, yMetricIndex, xMetricIndex, targetDivId) {
     }
 }
 
+function createAuthorToColorLegendWithVisibilityTogglesAndStats(legendTarget, authors, coloraxis, metricInfo, pointClass, ellipseClass /*Arbitrary number of class names could follow. See appendVisibiltyToggles for fxn that will add toggles as rectangles for arbitrary class names*/){
+    var table = d3.select(legendTarget).append("table");
+
+    var rows = table.selectAll("tr")
+        .data(authors)
+        .enter()
+        .append("tr");
+
+    rows.append("td")
+        .append("svg")
+        .attr("width", 15)
+        .attr("height", 10)
+        .append("rect")
+        .attr("width", 15)
+        .attr("height", 10)
+        .style("fill", function(elem){return coloraxis(elem);})
+        .on("mouseover", function(elem){visibilityMouseover(elem, pointClass);})
+        .on("mouseout", function(elem){visibilityMouseout(elem, coloraxis, pointClass);})
+        .on("click", function(elem){visibilityClick(elem, coloraxis, pointClass, this);});
+
+    /*If ellipseClass is undefined, this is a visualization without error ellipses.*/
+    if (ellipseClass !== undefined) {
+        rows.append("td")
+            .append("svg")
+            .attr("width", 15)
+            .attr("height", 10)
+            .append("ellipse")
+            .attr("rx", 7.5)
+            .attr("ry", 5)
+            .attr("cx", 7.5)
+            .attr("cy", 5)
+            .style("fill", function (elem) { return coloraxis(elem); })
+            .on("mouseover", function (elem) { visibilityMouseover(elem, ellipseClass); })
+            .on("mouseout", function (elem) { visibilityMouseout(elem, coloraxis, ellipseClass); })
+            .on("click", function (elem) { visibilityClick(elem, coloraxis, ellipseClass, this); });
+    }
+
+    rows.append("td")
+        .html(function (elem) {
+            return elem;
+        });
+
+
+    var data = metricInfo.data,
+        xIndex = metricInfo.xIndex,
+        yIndex = metricInfo.yIndex,
+        loopIndex, metricIndex;
+
+    for (loopIndex = 0; loopIndex < 2; loopIndex++) {
+        if (loopIndex === 0){
+            metricIndex = xIndex;
+        }
+        else{
+            metricIndex = yIndex;
+        }
+
+        rows.append("td")
+            .html(function (elem) {
+                return d3.format(".3f")(d3.min(data.map(function (dataElem) {
+                    if (dataElem.author === elem) {
+                        return dataElem.metricValues[metricIndex];
+                    }
+                })));
+            });
+        rows.append("td")
+            .html(function (elem) {
+                return d3.format(".3f")(d3.max(data.map(function (dataElem) {
+                    if (dataElem.author === elem) {
+                        return dataElem.metricValues[metricIndex];
+                    }
+                })));
+            });
+        rows.append("td")
+            .html(function (elem) {
+                return d3.format(".3f")(d3.mean(data.map(function (dataElem) {
+                    if (dataElem.author === elem) {
+                        return dataElem.metricValues[metricIndex];
+                    }
+                })));
+            });
+        rows.append("td")
+            .html(function (elem) {
+                var val = d3.variance(data.map(function (dataElem) {
+                    if (dataElem.author === elem) {
+                        return dataElem.metricValues[metricIndex];
+                    }
+                }));
+
+                if (val === undefined) return "-";
+                return d3.format(".3f")(val);
+            });
+        rows.append("td")
+            .html(function (elem) {
+                var val = d3.deviation(data.map(function (dataElem) {
+                    if (dataElem.author === elem) {
+                        return dataElem.metricValues[metricIndex];
+                    }
+                }));
+
+                if (val === undefined) return "-";
+                return d3.format(".3f")(val);
+            });
+    }
+
+    var summaryStats = ["Min", "Max", "Mean", "Variance", "Standard Deviation"],
+        headers = (ellipseClass === undefined)? [""] : ["", ""]; //Two empty strings if ellipses are included in the table, only one if not. If, in the future, more legend pieces are added to the front, this will need to be modified accordingly.
+    headers.push("Authors");
+    headers = headers.concat(summaryStats, summaryStats); //One copy per metric
+
+    var headerRow = table.insert("tr",":first-child");
+    headerRow.selectAll("td")
+        .data(headers)
+        .enter()
+        .append("td")
+        .html(function (elem) {
+            return elem;
+        });
+
+    var titleRow = table.insert("tr", ":first-child"),
+        metricNames = ["", lastMetricsUsed[xIndex].name, lastMetricsUsed[yIndex].name];
+
+    titleRow.selectAll("td")
+        .data(metricNames)
+        .enter()
+        .append("td")
+        .html(function (elem) {
+            return elem;
+        })
+        .attr("colspan", function (elem) {
+            if (elem === ""){
+                return headers.length - summaryStats.length * 2;
+            }
+            else {
+                return summaryStats.length;
+            }
+        });
+
+    return rows;
+}
+
 /**
  * Builds the SVG Principal Component Analysis for all loaded metrics
  * @param data Set of data to be processed
@@ -1214,6 +1354,96 @@ function buildPCAPlot(data, drawEllipsePerTitle, targetDivId){
 
     function rebuildPCAPlot(){
         buildPCAPlot(data, d3.select("#pcaPlotCbox").node().checked, targetDivId);
+    }
+}
+
+
+/**
+ * Adds a Guassian Error Ellipse representing 90% confidence intervals for both axes of a bivariate scatterplot.
+ * @param {Array} projectionData 2-D array with 2 columns representing the X and Y axes and N rows representing the data along each axis
+ * @param {Object} parent A d3 selection containing only the SVG element which the ellipse should be added to
+ * @param {Object} xaxis d3 ScaleLinear element representing the x axis
+ * @param {Object} yaxis d3 ScaleLinear element representing the y axis
+ * @param strokeColor Color [returned by a d3 scaleOrdinal] to apply to the ellipse's stroke
+ * @param {Object} treebankInfo Must contain the author, and can optionally include the title, and section of the treebank. Title and section are necessary if drawing ellipses for each treebank.
+ * @param tooltip HTML div for the tooltip to be drawn in (Optional)
+ */
+function addErrorEllipse(projectionData, parent, xaxis, yaxis, strokeColor, treebankInfo, tooltip){
+    console.log(treebankInfo);
+    console.log(projectionData);
+
+    var projXdata = [], projYdata = [];
+
+    if (projectionData.length === 1){
+        projectionData.push(projectionData[0]); //Could return here instead to save on calculations.
+        return;
+    }
+    else if (projectionData.length === 0){
+        console.log(treebankInfo.author + " " + treebankInfo.title + " " + treebankInfo.section +  " encountered an error - no projection data");
+        return;
+    }
+
+    projectionData.forEach(function (elem) {
+        projXdata.push(elem[0]);
+        projYdata.push(elem[1]);
+    });
+
+    var projXstdev = d3.deviation(projectionData, function(elem){return elem[0]}),
+        projYstdev = d3.deviation(projectionData, function(elem){return elem[1]}),
+        projectionCovMat = computeCovariance(projectionData),
+        projectionEigenVal = computeEigendecomposition(projectionCovMat),
+        ellipseScale = Math.sqrt(2.705543454096032), //http://onlinelibrary.wiley.com/doi/10.1002/0471998303.app4/pdf 1 degree of freedom, p=0.9
+        maxEigen = getIndexOfMax(projectionEigenVal.eigVals),
+        minEigen = getIndexOfMin(projectionEigenVal.eigVals),
+        maxScale = Math.sqrt(Math.abs(projectionEigenVal.eigVals[maxEigen])) * ellipseScale,
+        minScale = Math.sqrt(Math.abs(projectionEigenVal.eigVals[minEigen])) * ellipseScale,
+        ellRX = projXstdev > projYstdev ? maxScale : minScale,
+        ellRY = projXstdev < projYstdev ? maxScale : minScale,
+        dominantEigenVec = projectionEigenVal.eigVecs[maxEigen],
+        rot = Math.atan2(dominantEigenVec[1], dominantEigenVec[0]);
+
+    rot = (rot < 0) ? (rot + 2 * math.PI) : rot;
+
+    var projXextent = d3.extent(projectionData, function(elem){return elem[0];}),
+        projYextent = d3.extent(projectionData, function(elem){return elem[1];}),
+        tooltipText = "Author: " + treebankInfo.author;
+
+    if (treebankInfo.title !== undefined) { tooltipText += "<br>Title: " + treebankInfo.title; }
+    else {treebankInfo.title = "";}
+    //if (treebankInfo.section !== undefined) { tooltipText += "<br>Section: " + treebankInfo.section; }
+
+    var newEllipse = parent.append("ellipse")
+        .attr("class", "PCA-ellipse " + treebankInfo.title.toString().toLowerCase() + " " + treebankInfo.author)
+        .attr("rx", Math.abs(xaxis(projXextent[0] + ellRX) - xaxis(projXextent[0])))
+        .attr("ry", Math.abs(yaxis(projYextent[0] + ellRY) - yaxis(projYextent[0])))
+        .style("stroke", strokeColor)
+        .attr("transform", "translate(" + xaxis(d3.mean(projectionData, function(elem){return elem[0];})) + "," + yaxis(d3.mean(projectionData, function(elem){return elem[1];})) +
+            ") rotate(" + (rot * 180 / math.PI) + ")");
+
+    if (tooltip !== undefined) {
+        var selector = ".PCA-point." + treebankInfo.author.toString().replace(/ /g,".");
+        if (treebankInfo.title !== undefined && treebankInfo.title !== "") selector += "." + treebankInfo.title.toString().toLowerCase().replace(/ /g,"");
+
+        newEllipse
+            .on("mouseover", function () {
+                tooltip.html(tooltipText)
+                    .style("left", (d3.event.pageX + 10) + "px")
+                    .style("top", (d3.event.pageY + 10) + "px")
+                    .style("display", "inline");
+                d3.selectAll(selector)
+                    .style("stroke", "#666")
+                    .each(function () {
+                        this.parentNode.appendChild(this);
+                    });
+            })
+            .on("mouseout", function () {
+                tooltip.style("display", "none");
+                d3.selectAll(selector)
+                    .style("stroke", strokeColor)
+                    .each(function () {
+                        this.parentNode.insertBefore(this, d3.select(".PCA-ellipse").node());
+                    });
+            });
     }
 }
 
@@ -1454,81 +1684,6 @@ function createAuthorToColorLegendWithVisibilityToggles(legendTarget, authors, c
     return rows;
 }
 
-
-function createAuthorToColorLegendWithVisibilityTogglesAndStats(legendTarget, authors, coloraxis, metricInfo, pointClass, ellipseClass /*Arbitrary number of class names could follow. See appendVisibiltyToggles for fxn that will add toggles as rectangles for arbitrary class names*/){
-    var table = d3.select(legendTarget).append("table");
-
-
-    var rows = table.selectAll("tr")
-        .data(authors)
-        .enter()
-        .append("tr");
-
-    rows.append("td")
-        .append("svg")
-        .attr("width", 15)
-        .attr("height", 10)
-        .append("rect")
-        .attr("width", 15)
-        .attr("height", 10)
-        .style("fill", function(elem){return coloraxis(elem);})
-        .on("mouseover", function(elem){visibilityMouseover(elem, pointClass);})
-        .on("mouseout", function(elem){visibilityMouseout(elem, coloraxis, pointClass);})
-        .on("click", function(elem){visibilityClick(elem, coloraxis, pointClass, this);});
-
-    /*If ellipseClass is undefined, this is a visualization without error ellipses.*/
-    if (ellipseClass !== undefined) {
-        rows.append("td")
-            .append("svg")
-            .attr("width", 15)
-            .attr("height", 10)
-            .append("ellipse")
-            .attr("rx", 7.5)
-            .attr("ry", 5)
-            .attr("cx", 7.5)
-            .attr("cy", 5)
-            .style("fill", function (elem) { return coloraxis(elem); })
-            .on("mouseover", function (elem) { visibilityMouseover(elem, ellipseClass); })
-            .on("mouseout", function (elem) { visibilityMouseout(elem, coloraxis, ellipseClass); })
-            .on("click", function (elem) { visibilityClick(elem, coloraxis, ellipseClass, this); });
-    }
-
-    rows.append("td")
-        .html(function (elem) {
-            return elem;
-        });
-
-
-    var data = metricInfo.data,
-        xIndex = metricInfo.xIndex,
-        yIndex = metricInfo.yIndex;
-    rows.append("td")
-        .html(function (elem) {
-            return d3.format(".3f")(d3.mean(data.map(function (dataElem) {
-                if (dataElem.author == elem) {return dataElem.metricValues[xIndex];}
-            })));
-        });
-    rows.append("td")
-        .html(function (elem) {
-            return d3.format(".3f")(d3.mean(data.map(function (dataElem) {
-                if (dataElem.author == elem) {return dataElem.metricValues[yIndex];}
-            })));
-        });
-
-
-    var headers = ["", "Author", lastMetricsUsed[xIndex].name + " Mean", lastMetricsUsed[yIndex].name + " Mean", ""];
-    var headerRow = table.insert("tr",":first-child");
-    headerRow.selectAll("td")
-        .data(headers)
-        .enter()
-        .append("td")
-        .html(function (elem) {
-            return elem;
-        });
-
-    return rows;
-}
-
 function appendVisibilityToggles(targetSelection, classNameToToggle, coloraxis){
     targetSelection.append("td")
         .append("svg")
@@ -1569,98 +1724,6 @@ function visibilityClick (elem, coloraxis, classNameToToggle, buttonClicked){
     else {
         selection.style("display","block");
         buttonClicked.style.fill = coloraxis(elem);
-    }
-}
-
-/**
- * Adds a Guassian Error Ellipse representing 90% confidence intervals for both axes of a bivariate scatterplot.
- * @param {Array} projectionData 2-D array with 2 columns representing the X and Y axes and N rows representing the data along each axis
- * @param {Object} parent A d3 selection containing only the SVG element which the ellipse should be added to
- * @param {Object} xaxis d3 ScaleLinear element representing the x axis
- * @param {Object} yaxis d3 ScaleLinear element representing the y axis
- * @param strokeColor Color [returned by a d3 scaleOrdinal] to apply to the ellipse's stroke
- * @param {Object} treebankInfo Must contain the author, and can optionally include the title, and section of the treebank. Title and section are necessary if drawing ellipses for each treebank.
- * @param tooltip HTML div for the tooltip to be drawn in (Optional)
- */
-function addErrorEllipse(projectionData, parent, xaxis, yaxis, strokeColor, treebankInfo, tooltip){
-    console.log(treebankInfo);
-    console.log(projectionData);
-
-    var projXdata = [], projYdata = [];
-
-    if (projectionData.length === 1){
-        projectionData.push(projectionData[0]); //Could return here instead to save on calculations.
-        return;
-    }
-    else if (projectionData.length === 0){
-        console.log(treebankInfo.author + " " + treebankInfo.title + " " + treebankInfo.section + " " + treebankInfo.numsent +  " encountered an error - no projection data");
-        return;
-    }
-
-    projectionData.forEach(function (elem) {
-        projXdata.push(elem[0]);
-        projYdata.push(elem[1]);
-    });
-
-    var projXstdev = d3.deviation(projectionData, function(elem){return elem[0]}),
-        projYstdev = d3.deviation(projectionData, function(elem){return elem[1]}),
-        projectionCovMat = computeCovariance(projectionData),
-        projectionEigenVal = computeEigendecomposition(projectionCovMat),
-        ellipseScale = Math.sqrt(2.705543454096032), //http://onlinelibrary.wiley.com/doi/10.1002/0471998303.app4/pdf 1 degree of freedom, p=0.9
-        maxEigen = getIndexOfMax(projectionEigenVal.eigVals),
-        minEigen = getIndexOfMin(projectionEigenVal.eigVals),
-        maxScale = Math.sqrt(Math.abs(projectionEigenVal.eigVals[maxEigen])) * ellipseScale,
-        minScale = Math.sqrt(Math.abs(projectionEigenVal.eigVals[minEigen])) * ellipseScale,
-        ellRX = projXstdev > projYstdev ? maxScale : minScale,
-        ellRY = projXstdev < projYstdev ? maxScale : minScale,
-        dominantEigenVec = projectionEigenVal.eigVecs[maxEigen],
-        rot = Math.atan2(dominantEigenVec[1], dominantEigenVec[0]);
-
-    rot = (rot < 0) ? (rot + 2 * math.PI) : rot;
-
-    var projXextent = d3.extent(projectionData, function(elem){return elem[0];}),
-        projYextent = d3.extent(projectionData, function(elem){return elem[1];}),
-        tooltipText = "Author: " + treebankInfo.author;
-
-    if (treebankInfo.title !== undefined) { tooltipText += "<br>Title: " + treebankInfo.title; }
-    else {treebankInfo.title = "";}
-    //if (treebankInfo.section !== undefined) { tooltipText += "<br>Section: " + treebankInfo.section; }
-
-    var newEllipse = parent.append("ellipse")
-        .attr("class", "PCA-ellipse " + treebankInfo.title.toString().toLowerCase() + " " + treebankInfo.author)
-        .attr("rx", Math.abs(xaxis(projXextent[0] + ellRX) - xaxis(projXextent[0])))
-        .attr("ry", Math.abs(yaxis(projYextent[0] + ellRY) - yaxis(projYextent[0])))
-        .style("stroke", strokeColor)
-        .attr("transform", "translate(" + xaxis(d3.mean(projectionData, function(elem){return elem[0];})) + "," + yaxis(d3.mean(projectionData, function(elem){return elem[1];})) +
-            ") rotate(" + (rot * 180 / math.PI) + ")");
-
-    console.log(treebankInfo.author + " " + treebankInfo.title + " AAAAAAA " );
-    console.log(d3.mean(projectionData, function(elem){return elem[0];}) +  " " + d3.mean(projectionData, function(elem){return elem[1];}));
-
-    if (tooltip !== undefined) {
-        var selector = ".PCA-point." + treebankInfo.author.toString().replace(/ /g,".");
-        if (treebankInfo.title !== undefined) selector += "." + treebankInfo.title.toString().toLowerCase().replace(/ /g,"");
-
-        newEllipse
-            .on("mouseover", function () {
-                tooltip.html(tooltipText)
-                    .style("left", (d3.event.pageX + 10) + "px")
-                    .style("top", (d3.event.pageY + 10) + "px")
-                    .style("display", "inline");
-                d3.selectAll(selector)
-                    .style("stroke", "#666")
-                    .each(function () {
-                        this.parentNode.appendChild(this);
-                    });
-            })
-            .on("mouseout", function () {
-                tooltip.style("display", "none");
-                d3.selectAll(selector)
-                    .style("stroke", strokeColor)
-                    .each(function () {
-                        this.parentNode.insertBefore(this, d3.select(".PCA-ellipse").node());
-                    });
-            });
     }
 }
 
