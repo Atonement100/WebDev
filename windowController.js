@@ -814,7 +814,7 @@ function buildBarChart(tableData, metricIndex, targetDivId) {
         .enter()
         .append("option")
         .attr("value",function(elem){return elem.name;})
-        .property("selected", function(elem,index) {return index == metricIndex;})
+        .property("selected", function(elem,index) {return index === metricIndex;})
         .html(function(elem) {return elem.name;});
 
     barDiv.append("input")
@@ -1023,12 +1023,12 @@ function buildScatterPlot(tableData, yMetricIndex, xMetricIndex, targetDivId) {
     parent.selectAll(".scatterPoint")
         .data(tableData)
         .enter().append("circle")
-        .attr("class", function(elem){return "scatterPoint " + elem.author;})
+        .attr("class", function(elem){return "scatterPoint " + elem.title.toString().toLowerCase().replace(/ /g,"") + " sec" + elem.section + " " + elem.author;})
         .attr("r",  bubbleThickness)
         .style("stroke", function(elem){return coloraxis(elem.author);})
         .attr("cx", function(elem){return xaxis(elem.metricValues[xMetricIndex]);})
         .attr("cy", function(elem){return yaxis(elem.metricValues[yMetricIndex]);})
-        .on("mouseover", function(elem){
+        .on("mouseover", function(elem, index){
             tooltip.html("Author: " + elem.author + "<br>Title: " + elem.title + "<br> Section: " + elem.section +
                         "<br>Sentence no.: " + elem.sentence +
                         "<br>" + lastMetricsUsed[xMetricIndex].name + ": " + d3.format(".4f")(elem.metricValues[xMetricIndex]) +
@@ -1036,9 +1036,16 @@ function buildScatterPlot(tableData, yMetricIndex, xMetricIndex, targetDivId) {
                 .style("left", (d3.event.pageX + 10) + "px")
                 .style("top", (d3.event.pageY + 10) + "px")
                 .style("display","inline");
+            d3.selectAll("." + tableData[index].title.toString().toLowerCase().replace(/ /g,"") + ".sec" + tableData[index].section.replace(/\./g,"\\."))
+                .style("stroke", "#666")
+                .each(function () {
+                    this.parentNode.appendChild(this);
+                });
         })
-        .on("mouseout", function(){
+        .on("mouseout", function(elem, index){
             tooltip.style("display","none");
+            d3.selectAll("."+   tableData[index].title.toString().toLowerCase().replace(/ /g,"") + ".sec" + tableData[index].section.replace(/\./g,"\\."))
+                .style("stroke", coloraxis(tableData[index].author));
         });
 
     parent.append("text")
