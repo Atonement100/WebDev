@@ -1,3 +1,14 @@
+body {
+    color: #1f2122;
+    background-color: #F4F7F7;
+    font-family: Lato,sans-serif;
+    display:flex;
+    margin:0;
+    padding:0;
+    border:0;
+    min-height:100vh;
+}
+
 ul.headerTabs {
     list-style-type: none;
     display: block;
@@ -5,8 +16,8 @@ ul.headerTabs {
     margin: 0;
     padding: 0;
     overflow: hidden;
-    border: 1px solid #fff;
-    background-color: azure;
+    border: 0px solid #fff;
+    background-color: #afc0d7;
 }
 
 ul.headerTabs li{
@@ -15,19 +26,24 @@ ul.headerTabs li{
 
 ul.headerTabs li a {
     display: inline-block;
-    color: black;
+    color: #1f2122;
     text-align: center;
     padding: 14px 16px;
     transition: 0.3s;
     font-size: 17px;
+    text-decoration:none;
 }
 
 ul.headerTabs li a:hover {
     background-color: #ddd;
 }
 
+ul.headerTabs li .active {
+    text-decoration: underline;
+}
+
 ul.headerTabs li a:focus, .active{
-    background-color: oldlace;
+    background-color: #d6dde8;
 }
 
 ul.visualTabs {
@@ -35,23 +51,28 @@ ul.visualTabs {
 }
 
 .metricTabContent{
+    font-family: 'Slabo 27px', serif;
     display: none;
     padding: 6px 6px;
-    border: 1px solid #ccc;
+    border: 1px solid #aaa;
     border-top: none;
+    border-left: none;
     overflow: auto;
 }
 
+.metricTabInnerButtons{
+    text-align: center;
+}
+
 .visualTabContent{
-    position:relative;
+    position: relative;
     display: none;
-    padding: 0;
+    padding: 5px;
     border: none;
     overflow: visible;
     min-height: 100%;
-    height:100%;
+    height: 100%;
 }
-
 
 .visualTabConsole{
     padding:0;
@@ -62,16 +83,19 @@ ul.visualTabs {
 }
 
 #metricTabHeader {
-    /* border: 1px solid #ccc; */
     display: block;
     margin: auto;
     border-right: 1px solid #ccc;
     text-align:center;
 }
 
+#metricTabButtons {
+    padding-top:5px;
+}
+
 .unloadButton{
     background-color: white;
-    color: black;
+    color: #1f2122;
     border: 1px solid gray;
     font-size: 14px;
     padding: 0% 2%;
@@ -93,14 +117,6 @@ ul.visualTabs {
     padding:0;
     margin:0;
     min-height:100%;
- }
-
-body{
-    display:flex;
-    margin:0;
-    padding:0;
-    border:0;
-    min-height:100vh;
 }
 
 #basicTable {
@@ -131,7 +147,7 @@ body{
 }
 
 #basicTable thead th {  /*Default header for basic table*/
-    background-color: #A1C6EA;
+    background-color: #d6dde8;
     width: 96px;
     min-width: 96px;
     min-height: 36px;
@@ -139,7 +155,7 @@ body{
 }
 
 #basicTable thead th:nth-child(1) { /*Override first block of the header (top left, which should be static)*/
-    background-color: #507DBC;
+    background-color: #afc0d7;
     position: relative;
     min-width: 160px;
     min-height: 72px;
@@ -162,7 +178,7 @@ body{
 }
 
 #basicTable tbody tr .rowHeader {  /*Styling for leading data cell*/
-    background-color: #A1C6EA;
+    background-color: #d6dde8;
     position: relative;
     height:28px;
     width:117px;
@@ -170,7 +186,7 @@ body{
 }
 
 #basicTable tbody tr .rowSubHeader {  /*Styling for leading data cell*/
-    background-color: #A1C6EA;
+    background-color: #d6dde8;
     position: relative;
     text-align: center;
     display: table-cell;
@@ -186,13 +202,13 @@ body{
     fill: orange;
 }
 #barChart rect text {
-    fill: black;
+    fill: #1f2122;
     font: 10px sans-serif;
     text-anchor:end;
 }
 
 #barChart text {
-    fill: black;
+    fill: #1f2122;
     font: 10px sans-serif;
     text-anchor:end;
 }
