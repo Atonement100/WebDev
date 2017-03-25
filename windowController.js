@@ -75,7 +75,7 @@ function processCommand(command){
         case "load":
             if (args.length > 1 && args[1]) {
                 if (args[1] === "-c"){
-                    loadTreebankCollection();
+                    loadTreebankCollection(args[2]);
                 }
                 else {
                     loadTreebankFile(args[1]);
@@ -334,7 +334,9 @@ function loadTreebankFile(id){
 /**
  * Loads a treebank collection via the metreex API, then adds each tree to the set of loaded trees
  */
-function loadTreebankCollection(){
+function loadTreebankCollection(id){
+    if (id === undefined) id = "";
+
     output.println("Attempting to load treebank collection");
     var t=new TreebankCollection();
     t.onload=function(){
@@ -342,7 +344,7 @@ function loadTreebankCollection(){
             addLoadedTree(tree);
         });
     };
-    t.load();
+    t.load(id);
 }
 
 /**
