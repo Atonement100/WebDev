@@ -240,10 +240,12 @@ function invertAllCheckboxesInTab(tabName){
  */
 function addLoadedTree(newTree){
     if (newTree.numSentences < 1){
-        handleGlobalErrorMessage("Treebank with no sentences was not loaded. Id: " + newTree.id);
+        handleGlobalErrorMessage("Loaded file contained a treebank with no sentences. Id: " + newTree.id);
+        return false;
     }
-    else if (newTree.getTitle() === undefined){
-        handleGlobalErrorMessage("Treebank with no title was not loaded. Id: " + newTree.id);
+    else if (newTree.xml === null){
+        handleGlobalErrorMessage("Loaded file contained no treebank data. Id: " + newTree.id);
+        return false;
     }
 
     for (var index = 0; index < loadedTreebanks.length; index++){

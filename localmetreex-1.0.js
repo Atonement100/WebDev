@@ -1,6 +1,6 @@
-/* V1.0
+/* V1.1
  * Author(s): Eleni Bozia
- * 
+ *
  * Copyright (c) 2015, Eleni Bozia
  * All rights reserved.
  *
@@ -13,8 +13,8 @@
  *     * Redistributions in binary form must reproduce this
  * copyright notice, this list of conditions and the following disclaimer
  * in the documentation and/or other materials provided with the
- * distribution. 
- * 
+ * distribution.
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
  * "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
  * LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
@@ -27,11 +27,11 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
- 
- //--------------------------------------------------------------------------------------
+
+//--------------------------------------------------------------------------------------
 /**
  * This class creates a node-based metric for syntactically annotated sentences as presented by E. Bozia, "Measuring Tradition, Imitation, and Simplicity:
-The case of Attic Oratory", In <a href="../documents/CRH4_proceedings.pdf">Proceedings of the Workshop on Corpus-Based Research in the Humanities (CRH)</a>, 2015, pp. 23-29.<br><br>
+ The case of Attic Oratory", In <a href="../documents/CRH4_proceedings.pdf">Proceedings of the Workshop on Corpus-Based Research in the Humanities (CRH)</a>, 2015, pp. 23-29.<br><br>
  * <b>Example:</b><br><font style="font-family:Courier">
  * var m=new NodeMetric('Number of nodes');<br>
  * m.weight=function(n)<br>
@@ -46,7 +46,7 @@ The case of Attic Oratory", In <a href="../documents/CRH4_proceedings.pdf">Proce
  */
 function NodeMetric(name)
 {
-	this.name=name;
+    this.name=name;
 }
 
 
@@ -72,51 +72,51 @@ NodeMetric.LEAVES_ONE_OTHERS_ZERO=4;
  */
 NodeMetric.prototype.setDefaultWeights=function(type)
 {
-	if(type==NodeMetric.All_ONE)
-	{
-		this.weight=function(node){return 1;};
-	}
-	else if(type==NodeMetric.ROOT_ONE_OTHERS_ZERO)
-	{
-		this.weight=function(node){
-			if(node.isRoot()) return 1;
-			else return 0;
-		};
-	}
-	else if(type==NodeMetric.UNIFORM_SUM_TO_ONE)
-	{
-		this.weight=function(node){return 1.0/node.getRoot().getNumOfNodes();};
-	}
-	else if(type==NodeMetric.LEAVES_ONE_OTHERS_ZERO)
-	{
-		this.weight=function(node){
-			if(node.isLeaf()) return 1;
-			else return 0;
-		};
-	}
+    if(type==NodeMetric.All_ONE)
+    {
+        this.weight=function(node){return 1;};
+    }
+    else if(type==NodeMetric.ROOT_ONE_OTHERS_ZERO)
+    {
+        this.weight=function(node){
+            if(node.isRoot()) return 1;
+            else return 0;
+        };
+    }
+    else if(type==NodeMetric.UNIFORM_SUM_TO_ONE)
+    {
+        this.weight=function(node){return 1.0/node.getRoot().getNumOfNodes();};
+    }
+    else if(type==NodeMetric.LEAVES_ONE_OTHERS_ZERO)
+    {
+        this.weight=function(node){
+            if(node.isLeaf()) return 1;
+            else return 0;
+        };
+    }
 };
 
 /**
- * This method sets a normalized Haar wavelet weight function to this metric. 
+ * This method sets a normalized Haar wavelet weight function to this metric.
  * @param n The order of the wavelet.
  * @param k The shift of the wavelet. k must be between 0 and 2^n-1.
  */
 NodeMetric.prototype.setWaveletWeights=function(n,k)
 {
-	var p=1;
-	for(var i=0;i<n;i++)p*=2;
-	if(n<0){p=0.5;k=0;}
-	
-	this.weight=function(node)
-	{
-		var num=node.getRoot().getNumOfNodes();
-		//if(node.getId()/num>1)console.log(node.getId()+' '+num+' '+node.getForm());
-		var t=p*node.getId()/num-k;
-		//console.log(t+' '+node.getId());
-		if(t>0 && t<=0.5) return 1/num;
-		else if(t>0.5 && t<=1) return -1/num;
-		else return 0;
-	};
+    var p=1;
+    for(var i=0;i<n;i++)p*=2;
+    if(n<0){p=0.5;k=0;}
+
+    this.weight=function(node)
+    {
+        var num=node.getRoot().getNumOfNodes();
+        //if(node.getId()/num>1)console.log(node.getId()+' '+num+' '+node.getForm());
+        var t=p*node.getId()/num-k;
+        //console.log(t+' '+node.getId());
+        if(t>0 && t<=0.5) return 1/num;
+        else if(t>0.5 && t<=1) return -1/num;
+        else return 0;
+    };
 };
 
 /**
@@ -126,14 +126,14 @@ NodeMetric.prototype.setWaveletWeights=function(n,k)
  */
 NodeMetric.prototype.apply=function(sentence)
 {
-	var value=this.weight(sentence);
-	if(value!=0) value*=this.metric(sentence);
-	var ch=sentence.getChildren();
-	for(var i=0;i<ch.length;i++)
-	{
-		value+=this.apply(ch[i]);
-	}
-	return value;
+    var value=this.weight(sentence);
+    if(value!=0) value*=this.metric(sentence);
+    var ch=sentence.getChildren();
+    for(var i=0;i<ch.length;i++)
+    {
+        value+=this.apply(ch[i]);
+    }
+    return value;
 };
 
 /**
@@ -142,20 +142,20 @@ NodeMetric.prototype.apply=function(sentence)
  */
 function TreebankSentence(parent)
 {
-	this.parent=null;
-	this.sentence_id='';
-	this.file=null;
-	if(typeof parent!=='undefined') this.parent=parent;
-	if(this.parent==null)
-		this.root=this;
-	else this.root=this.parent.getRoot();
-	this.sentence_id=this.root.sentence_id;
-	this.file=this.root.file;
-	
-	this.num='';
-	this.xml=null;
-	
-	this.num_of_nodes=null;
+    this.parent=null;
+    this.sentence_id='';
+    this.file=null;
+    if(typeof parent!=='undefined') this.parent=parent;
+    if(this.parent==null)
+        this.root=this;
+    else this.root=this.parent.getRoot();
+    this.sentence_id=this.root.sentence_id;
+    this.file=this.root.file;
+
+    this.num='';
+    this.xml=null;
+
+    this.num_of_nodes=null;
 }
 
 /**
@@ -164,7 +164,7 @@ function TreebankSentence(parent)
  */
 TreebankSentence.prototype.getRelation=function()
 {
-	return this.xml.getAttribute('relation');
+    return this.xml.getAttribute('relation');
 };
 
 /**
@@ -173,7 +173,7 @@ TreebankSentence.prototype.getRelation=function()
  */
 TreebankSentence.prototype.getLemma=function()
 {
-	return this.xml.getAttribute('lemma');
+    return this.xml.getAttribute('lemma');
 };
 
 /**
@@ -182,7 +182,7 @@ TreebankSentence.prototype.getLemma=function()
  */
 TreebankSentence.prototype.getPosTag=function()
 {
-	return this.xml.getAttribute('postag');
+    return this.xml.getAttribute('postag');
 };
 
 /**
@@ -191,10 +191,10 @@ TreebankSentence.prototype.getPosTag=function()
  */
 TreebankSentence.prototype.getId=function()
 {
-	var id=parseInt(this.xml.getAttribute('id'));
-	if(isNaN(id))return -1;
-	if(typeof this.getRoot()._id_map[id]==='undefined')return -1;
-	return this.getRoot()._id_map[id];
+    var id=parseInt(this.xml.getAttribute('id'));
+    if(isNaN(id))return -1;
+    if(typeof this.getRoot()._id_map[id]==='undefined')return -1;
+    return this.getRoot()._id_map[id];
 };
 
 /**
@@ -203,7 +203,7 @@ TreebankSentence.prototype.getId=function()
  */
 TreebankSentence.prototype.getRoot=function()
 {
-	return this.root;
+    return this.root;
 };
 
 /**
@@ -212,7 +212,7 @@ TreebankSentence.prototype.getRoot=function()
  */
 TreebankSentence.prototype.getFile=function()
 {
-	return this.file;
+    return this.file;
 };
 
 /**
@@ -221,8 +221,8 @@ TreebankSentence.prototype.getFile=function()
  */
 TreebankSentence.prototype.isLeaf=function()
 {
-	if(this.getNumOfChildren()==0) return true;
-	else return false;
+    if(this.getNumOfChildren()==0) return true;
+    else return false;
 }
 
 /**
@@ -231,8 +231,8 @@ TreebankSentence.prototype.isLeaf=function()
  */
 TreebankSentence.prototype.isRoot=function()
 {
-	if(this==this.root) return true; 
-	else return false;
+    if(this==this.root) return true;
+    else return false;
 };
 
 /**
@@ -241,24 +241,24 @@ TreebankSentence.prototype.isRoot=function()
  */
 TreebankSentence.prototype.getNumOfChildren=function(height)
 {
-	var h=0;
-	if(typeof height !=='undefined') h=height;
-	return compute_num_of_children(this.xml,h);
+    var h=0;
+    if(typeof height !=='undefined') h=height;
+    return compute_num_of_children(this.xml,h);
 };
 
 function compute_num_of_children(xml_element, height)
 {
-	if(height==0)
-		return xml_element.childNodes.length;
-	else
-	{
-		var sum=0;
-		for(var i=0;i<xml_element.childNodes.length;i++)
-		{
-			sum+=compute_num_of_children(xml_element.childNodes[i],height-1);
-		}
-		return sum;
-	}
+    if(height==0)
+        return xml_element.childNodes.length;
+    else
+    {
+        var sum=0;
+        for(var i=0;i<xml_element.childNodes.length;i++)
+        {
+            sum+=compute_num_of_children(xml_element.childNodes[i],height-1);
+        }
+        return sum;
+    }
 }
 
 /**
@@ -267,29 +267,29 @@ function compute_num_of_children(xml_element, height)
  */
 TreebankSentence.prototype.getParent=function()
 {
-	if(this.parent==this.root) return null; else return this.parent;
+    if(this.parent==this.root) return null; else return this.parent;
 };
 
 TreebankSentence.prototype.calculateIdMap=function()
 {
-	if(this._id_map)return;
-	this._id_map=[];
-	var w=this.xml.getElementsByTagName('word');
-	var c=0;
-	for(var i=0;i<w.length;i++)
-	{
-		c=parseInt(w[i].getAttribute('id'));
-		if(!isNaN(c))this._id_map[c]=1;
-	}
-	c=0;
-	for(var i=0;i<this._id_map.length;i++)
-	{
-		if(this._id_map[i])
-		{
-			c+=1;
-			this._id_map[i]=c;
-		}
-	}
+    if(this._id_map)return;
+    this._id_map=[];
+    var w=this.xml.getElementsByTagName('word');
+    var c=0;
+    for(var i=0;i<w.length;i++)
+    {
+        c=parseInt(w[i].getAttribute('id'));
+        if(!isNaN(c))this._id_map[c]=1;
+    }
+    c=0;
+    for(var i=0;i<this._id_map.length;i++)
+    {
+        if(this._id_map[i])
+        {
+            c+=1;
+            this._id_map[i]=c;
+        }
+    }
 };
 
 /**
@@ -298,13 +298,13 @@ TreebankSentence.prototype.calculateIdMap=function()
  */
 TreebankSentence.prototype.getChildren=function()
 {
-	var children=new Array(this.xml.childNodes.length);
-	for(var i=0;i<children.length;i++)
-	{
-		children[i]=new TreebankSentence(this);
-		children[i].xml=this.xml.childNodes[i];
-	}
-	return children;
+    var children=new Array(this.xml.childNodes.length);
+    for(var i=0;i<children.length;i++)
+    {
+        children[i]=new TreebankSentence(this);
+        children[i].xml=this.xml.childNodes[i];
+    }
+    return children;
 };
 
 /**
@@ -313,15 +313,15 @@ TreebankSentence.prototype.getChildren=function()
  */
 TreebankSentence.prototype.getWidth=function()
 {
-	var h=this.getHeight();
-	var max_width=0;
-	var current_width=0;
-	for(var i=0;i<h;i++)
-	{
-		current_width=this.getNumOfChildren(i);
-		if(current_width>max_width)max_width=current_width;
-	}
-	return max_width;
+    var h=this.getHeight();
+    var max_width=0;
+    var current_width=0;
+    for(var i=0;i<h;i++)
+    {
+        current_width=this.getNumOfChildren(i);
+        if(current_width>max_width)max_width=current_width;
+    }
+    return max_width;
 };
 
 /**
@@ -330,24 +330,24 @@ TreebankSentence.prototype.getWidth=function()
  */
 TreebankSentence.prototype.getMaxFamilyWidth=function()
 {
-	return compute_max_children(this.xml);
+    return compute_max_children(this.xml);
 };
 
 function compute_max_children(xml_element)
 {
-	if(xml_element.childNodes.length==0)
-		return 0;
-	else
-	{
-		var max_val=xml_element.childNodes.length;
-		var current_val=0;
-		for(var i=0;i<xml_element.childNodes.length;i++)
-		{
-			current_val=compute_max_children(xml_element.childNodes[i]);
-			if(current_val>max_val)max_val=current_val;
-		}
-		return max_val;
-	}
+    if(xml_element.childNodes.length==0)
+        return 0;
+    else
+    {
+        var max_val=xml_element.childNodes.length;
+        var current_val=0;
+        for(var i=0;i<xml_element.childNodes.length;i++)
+        {
+            current_val=compute_max_children(xml_element.childNodes[i]);
+            if(current_val>max_val)max_val=current_val;
+        }
+        return max_val;
+    }
 }
 
 /**
@@ -356,24 +356,24 @@ function compute_max_children(xml_element)
  */
 TreebankSentence.prototype.getHeight=function()
 {
-	return compute_height(this.xml);
+    return compute_height(this.xml);
 };
 
 function compute_height(xml_element)
 {
-	if(xml_element.childNodes.length==0)
-		return 0;
-	else
-	{
-		var max_height=0;
-		var current_height=0;
-		for(var i=0;i<xml_element.childNodes.length;i++)
-		{
-			current_height=compute_height(xml_element.childNodes[i]);
-			if(current_height>max_height)max_height=current_height;
-		}
-		return max_height+1;
-	}
+    if(xml_element.childNodes.length==0)
+        return 0;
+    else
+    {
+        var max_height=0;
+        var current_height=0;
+        for(var i=0;i<xml_element.childNodes.length;i++)
+        {
+            current_height=compute_height(xml_element.childNodes[i]);
+            if(current_height>max_height)max_height=current_height;
+        }
+        return max_height+1;
+    }
 }
 
 /**
@@ -382,14 +382,14 @@ function compute_height(xml_element)
  */
 TreebankSentence.prototype.getNumOfWords=function()
 {
-	var w=this.xml.getElementsByTagName('word');
-	var counter=0;
-		if(this.xml.hasAttribute('insertion_id')){}
-		else counter+=1;//self
-	for(var i=0;i<w.length;i++)
-		if(w[i].hasAttribute('insertion_id')){}
-		else counter+=1;
-	return counter;
+    var w=this.xml.getElementsByTagName('word');
+    var counter=0;
+    if(this.xml.hasAttribute('insertion_id')){}
+    else counter+=1;//self
+    for(var i=0;i<w.length;i++)
+        if(w[i].hasAttribute('insertion_id')){}
+        else counter+=1;
+    return counter;
 };
 
 /**
@@ -398,12 +398,12 @@ TreebankSentence.prototype.getNumOfWords=function()
  */
 TreebankSentence.prototype.getNumOfNodes=function()
 {
-	if(this.num_of_nodes==null)
-	{
-		var w=this.xml.getElementsByTagName('word');
-		this.num_of_nodes=w.length+1;
-	}
-	return this.num_of_nodes;
+    if(this.num_of_nodes==null)
+    {
+        var w=this.xml.getElementsByTagName('word');
+        this.num_of_nodes=w.length+1;
+    }
+    return this.num_of_nodes;
 };
 
 TreebankSentence.NO_PUNCTUATION=2;
@@ -416,7 +416,7 @@ TreebankSentence.GREEK_TO_LATIN=8;
  */
 TreebankSentence.prototype.getForm=function()
 {
-	return this.xml.getAttribute('form');
+    return this.xml.getAttribute('form');
 };
 
 /**
@@ -426,78 +426,78 @@ TreebankSentence.prototype.getForm=function()
  */
 TreebankSentence.prototype.toString=function(input_flags)
 {
-	var flags=0;
-	if(typeof flags!=='undefined') flags=input_flags;
-	
-	var with_artif=((flags & TreebankSentence.WITH_ARTIFICIAL)>0);
-	var no_punct=((flags & TreebankSentence.NO_PUNCTUATION)>0);
-	
-	var w=this.xml.getElementsByTagName('word');
-	var w2=new Array(w.length);
-	for(var i=0;i<w.length;i++)
-		w2[parseInt(w[i].getAttribute('id'))-1]=w[i];
-	
-	var out='';
-	var no_space=false;
-	var no_space_after=false;
-	var form='';
-	for(var i=0;i<w2.length;i++)
-	{
-		form=w2[i].getAttribute('form');
-		if(form.length>0)
-		{
-			if(form.charAt(0)=='-')
-			{
-				form=form.substring(1,form.length);
-				no_space=true;
-			}
-			else if(form.charAt(form.length-1)=='-') 
-			{
-				form=form.substring(0,form.length-1);
-				no_space_after=true;
-			}
-		}
-		if(no_punct && !isPunctuation(form) && isPunctuation(form.charAt(form.length-1)))
-		{
-			form=form.substring(0,form.length-1);
-		}
-		
-		if(with_artif || !isArtificial(w2[i]))
-		{
-			if(isPunctuation(form))
-			{
-				if(!no_punct)
-				{
-					if(form=='(')
-					{
-						out+=' '+form;
-						no_space=true;
-					}
-					else out+=form;
-				}
-			}
-			else
-			{	
-				if(no_space)
-				{
-					out+=form;
-					no_space=false;
-				}
-				else out+=' '+form;
-				
-				if(no_space_after)
-				{
-					no_space_after=false;
-					no_space=true;
-				}
-			}
-		}
-	}
-	out=out+' ';
-	
-	if((flags & TreebankSentence.GREEK_TO_LATIN)>0) out=greekToLatin(out);
-	
-	return out;
+    var flags=0;
+    if(typeof flags!=='undefined') flags=input_flags;
+
+    var with_artif=((flags & TreebankSentence.WITH_ARTIFICIAL)>0);
+    var no_punct=((flags & TreebankSentence.NO_PUNCTUATION)>0);
+
+    var w=this.xml.getElementsByTagName('word');
+    var w2=new Array(w.length);
+    for(var i=0;i<w.length;i++)
+        w2[parseInt(w[i].getAttribute('id'))-1]=w[i];
+
+    var out='';
+    var no_space=false;
+    var no_space_after=false;
+    var form='';
+    for(var i=0;i<w2.length;i++)
+    {
+        form=w2[i].getAttribute('form');
+        if(form.length>0)
+        {
+            if(form.charAt(0)=='-')
+            {
+                form=form.substring(1,form.length);
+                no_space=true;
+            }
+            else if(form.charAt(form.length-1)=='-')
+            {
+                form=form.substring(0,form.length-1);
+                no_space_after=true;
+            }
+        }
+        if(no_punct && !isPunctuation(form) && isPunctuation(form.charAt(form.length-1)))
+        {
+            form=form.substring(0,form.length-1);
+        }
+
+        if(with_artif || !isArtificial(w2[i]))
+        {
+            if(isPunctuation(form))
+            {
+                if(!no_punct)
+                {
+                    if(form=='(')
+                    {
+                        out+=' '+form;
+                        no_space=true;
+                    }
+                    else out+=form;
+                }
+            }
+            else
+            {
+                if(no_space)
+                {
+                    out+=form;
+                    no_space=false;
+                }
+                else out+=' '+form;
+
+                if(no_space_after)
+                {
+                    no_space_after=false;
+                    no_space=true;
+                }
+            }
+        }
+    }
+    out=out+' ';
+
+    if((flags & TreebankSentence.GREEK_TO_LATIN)>0) out=greekToLatin(out);
+
+    return out;
 };
 
 /**
@@ -508,133 +508,133 @@ TreebankSentence.prototype.toString=function(input_flags)
  */
 TreebankSentence.prototype.apply=function(metrics,print)
 {
-	var print_flag=true;
-	if(typeof print!=='undefined') print_flag=print;
-	
-	var m=null;
-	if(metrics instanceof NodeMetric)
-	{
-		m=new Array();
-		m[0]=metrics;
-	}
-	else m=metrics;
-	
-	var result=new Array(m.length);
-	
-	for(var i=0;i<m.length;i++)
-	{
-		result[i]=m[i].apply(this);
-		if(print_flag) output.println(m[i].name+': '+result[i]);
-	}
-	return result;
+    var print_flag=true;
+    if(typeof print!=='undefined') print_flag=print;
+
+    var m=null;
+    if(metrics instanceof NodeMetric)
+    {
+        m=new Array();
+        m[0]=metrics;
+    }
+    else m=metrics;
+
+    var result=new Array(m.length);
+
+    for(var i=0;i<m.length;i++)
+    {
+        result[i]=m[i].apply(this);
+        if(print_flag) output.println(m[i].name+': '+result[i]);
+    }
+    return result;
 }
 
 function isArtificial(word_element)
 {
-	return word_element.hasAttribute('insertion_id');
+    return word_element.hasAttribute('insertion_id');
 }
 
 function isPunctuation(word)
 {
-	if(word.length==1)
-	{
-		var ch=word.charAt(0);
-		var code=word.charCodeAt(0);
-		//console.log(ch+' '+code);
-		if(ch=='.' || ch==',' || ch=="'" || ch=='"' || ch==';' || ch=='-' || ch=='(' || ch==')' || code==183 || code==8211 || code==8220 || code==8221 || code==8217 || code==8125)
-			return true;
-	}
-	else if(word=='...') return true;
-	else return false;
+    if(word.length==1)
+    {
+        var ch=word.charAt(0);
+        var code=word.charCodeAt(0);
+        //console.log(ch+' '+code);
+        if(ch=='.' || ch==',' || ch=="'" || ch=='"' || ch==';' || ch=='-' || ch=='(' || ch==')' || code==183 || code==8211 || code==8220 || code==8221 || code==8217 || code==8125)
+            return true;
+    }
+    else if(word=='...') return true;
+    else return false;
 }
 
 function greekToLatin(word)
 {
-  
-  var lat="";
-  for(var i=0;i<word.length;i++)
-  {
-    var ch=word.charCodeAt(i);
-    if(ch==902|| ch==913 || ch==940 || ch==945 || (ch>=7936 && ch<=7951)||ch==8048 || ch==8049 || (ch>=8064 && ch<=8079) || (ch>=8112 && ch<=8124) ) //alphas
+
+    var lat="";
+    for(var i=0;i<word.length;i++)
     {
-      lat+='A';
-    } else if(ch==904||ch==917||ch==941||ch==949||(ch>=7952 && ch<=7967)||ch==8050 || ch==8051||ch==8136 || ch==8137) //epsilons
-    {
-      lat+='E';
-    } else if(ch==905||ch==919||ch==942||ch==951||(ch>=7968 && ch<=7983)||ch==8052 || ch==8053|| (ch>=8080 && ch<=8095)|| (ch>=8130 && ch<=8135) || (ch>=8138 && ch<=8140)) //etas
-    {
-      lat+='H';
-    } else if(ch==906||ch==912||ch==921||ch==938||ch==943||ch==953||ch==970||(ch>=7984 && ch<=7999)||ch==8054 || ch==8055 || (ch>=8144 && ch<=8155))//iotas
-    {
-      lat+='I';
-    } else if(ch==908||ch==927||ch==959||ch==972||(ch>=8000 && ch<=8015)||ch==8056 || ch==8057||ch==8084 || ch==8085)//omicrons
-    {
-      lat+='O';
-    } else if(ch==910||ch==933||ch==939||ch==965||ch==971||ch==973||(ch>=8016 && ch<=8031)||ch==8058 || ch==8059 || (ch>=8160 && ch<=8163)|| (ch>=8166 && ch<=8171)) //upsilons
-    {
-      lat+='Y';
-    } else if(ch==911||ch==937||ch==969||ch==974||(ch>=8032 && ch<=8047)||ch==8060 || ch==8061|| (ch>=8096 && ch<=8111)|| (ch>=8178 && ch<=8183)|| (ch>=8186 && ch<=8188)) //omegas
-    {
-      lat+='W';
-    } else if(ch==929||ch==961||ch==8164 || ch==8165 || ch==8172) //rhos
-    {
-      lat+='R';
-    } else if(ch==914||ch==946) //betas
-    {
-      lat+='B';
-    } else if(ch==915||ch==947) //gammas
-    {
-      lat+='G';
-    }else if(ch==916||ch==948) //deltas
-    {
-      lat+='D';
-    }else if(ch==918||ch==950) //zetas
-    {
-      lat+='Z';
-    }else if(ch==920||ch==952) //thetas
-    {
-      lat+='U';
-    }else if(ch==922||ch==954) //kappas
-    {
-      lat+='K';
-    }else if(ch==923||ch==955) //lambdas
-    {
-      lat+='L';
-    }else if(ch==924||ch==956) //mis
-    {
-      lat+='M';
-    }else if(ch==925||ch==957) //nis
-    {
-      lat+='N';
-    }else if(ch==926||ch==958) //ksis
-    {
-      lat+='J';
-    }else if(ch==928||ch==960) //pis
-    {
-      lat+='P';
-    }else if(ch==931||ch==962||ch==963) //sigmas
-    {
-      lat+='S';
-    }else if(ch==932||ch==964) //taus
-    {
-      lat+='T';
-    }else if(ch==934||ch==966) //phis
-    {
-      lat+='F';
-    }else if(ch==935||ch==967) //chis
-    {
-      lat+='X';
-    }else if(ch==936||ch==968) //psis
-    {
-      lat+='C';
-    }else 
-    {
-       lat+=word.charAt(i);
-	  //if(word.charCodeAt(i)!=32) console.log(word.charAt(i)+' '+word.charCodeAt(i)+' '+word);
+        var ch=word.charCodeAt(i);
+        if(ch==902|| ch==913 || ch==940 || ch==945 || (ch>=7936 && ch<=7951)||ch==8048 || ch==8049 || (ch>=8064 && ch<=8079) || (ch>=8112 && ch<=8124) ) //alphas
+        {
+            lat+='A';
+        } else if(ch==904||ch==917||ch==941||ch==949||(ch>=7952 && ch<=7967)||ch==8050 || ch==8051||ch==8136 || ch==8137) //epsilons
+        {
+            lat+='E';
+        } else if(ch==905||ch==919||ch==942||ch==951||(ch>=7968 && ch<=7983)||ch==8052 || ch==8053|| (ch>=8080 && ch<=8095)|| (ch>=8130 && ch<=8135) || (ch>=8138 && ch<=8140)) //etas
+        {
+            lat+='H';
+        } else if(ch==906||ch==912||ch==921||ch==938||ch==943||ch==953||ch==970||(ch>=7984 && ch<=7999)||ch==8054 || ch==8055 || (ch>=8144 && ch<=8155))//iotas
+        {
+            lat+='I';
+        } else if(ch==908||ch==927||ch==959||ch==972||(ch>=8000 && ch<=8015)||ch==8056 || ch==8057||ch==8084 || ch==8085)//omicrons
+        {
+            lat+='O';
+        } else if(ch==910||ch==933||ch==939||ch==965||ch==971||ch==973||(ch>=8016 && ch<=8031)||ch==8058 || ch==8059 || (ch>=8160 && ch<=8163)|| (ch>=8166 && ch<=8171)) //upsilons
+        {
+            lat+='Y';
+        } else if(ch==911||ch==937||ch==969||ch==974||(ch>=8032 && ch<=8047)||ch==8060 || ch==8061|| (ch>=8096 && ch<=8111)|| (ch>=8178 && ch<=8183)|| (ch>=8186 && ch<=8188)) //omegas
+        {
+            lat+='W';
+        } else if(ch==929||ch==961||ch==8164 || ch==8165 || ch==8172) //rhos
+        {
+            lat+='R';
+        } else if(ch==914||ch==946) //betas
+        {
+            lat+='B';
+        } else if(ch==915||ch==947) //gammas
+        {
+            lat+='G';
+        }else if(ch==916||ch==948) //deltas
+        {
+            lat+='D';
+        }else if(ch==918||ch==950) //zetas
+        {
+            lat+='Z';
+        }else if(ch==920||ch==952) //thetas
+        {
+            lat+='U';
+        }else if(ch==922||ch==954) //kappas
+        {
+            lat+='K';
+        }else if(ch==923||ch==955) //lambdas
+        {
+            lat+='L';
+        }else if(ch==924||ch==956) //mis
+        {
+            lat+='M';
+        }else if(ch==925||ch==957) //nis
+        {
+            lat+='N';
+        }else if(ch==926||ch==958) //ksis
+        {
+            lat+='J';
+        }else if(ch==928||ch==960) //pis
+        {
+            lat+='P';
+        }else if(ch==931||ch==962||ch==963) //sigmas
+        {
+            lat+='S';
+        }else if(ch==932||ch==964) //taus
+        {
+            lat+='T';
+        }else if(ch==934||ch==966) //phis
+        {
+            lat+='F';
+        }else if(ch==935||ch==967) //chis
+        {
+            lat+='X';
+        }else if(ch==936||ch==968) //psis
+        {
+            lat+='C';
+        }else
+        {
+            lat+=word.charAt(i);
+            //if(word.charCodeAt(i)!=32) console.log(word.charAt(i)+' '+word.charCodeAt(i)+' '+word);
+        }
     }
-  }
-  
-  return lat;
+
+    return lat;
 }
 
 /**
@@ -649,9 +649,9 @@ function greekToLatin(word)
  */
 function TreebankFile()
 {
-	this.id='';
-	this.xml=null;
-} 
+    this.id='';
+    this.xml=null;
+}
 
 /**
  * This method returns the title property of this file.
@@ -659,13 +659,13 @@ function TreebankFile()
  */
 TreebankFile.prototype.getTitle=function()
 {
-	var e=this.xml.getElementsByTagName('field');
-	for(var i=0;i<e.length;i++)
-	{
-		if(e[i].getAttribute('name')=='title')
-			return e[i].getAttribute('value');
-	}
-	return '';
+    var e=this.xml.getElementsByTagName('field');
+    for(var i=0;i<e.length;i++)
+    {
+        if(e[i].getAttribute('name')=='title')
+            return e[i].getAttribute('value');
+    }
+    return '';
 };
 
 /**
@@ -674,42 +674,42 @@ TreebankFile.prototype.getTitle=function()
  */
 TreebankFile.prototype.getNumOfSentences=function()
 {
-	var e=this.xml.getElementsByTagName('sentence');
-	return e.length;
+    var e=this.xml.getElementsByTagName('sentence');
+    return e.length;
 };
 
 /**
  * This method returns a particular sentence from this file.
  * @param i The sequential number of the sentence in need, starting from 0.
- * @return TreebankSentence The sentence returned as a TreebankSentence object. 
+ * @return TreebankSentence The sentence returned as a TreebankSentence object.
  */
 TreebankFile.prototype.getSentence=function(i)
 {
-	var e=this.xml.getElementsByTagName('sentence');
-	if(i>=e.length) return null;
-	
-	var s=new TreebankSentence();
-	s.sentence_id=e[i].getAttribute('id');
-	s.file=this;
-	s.num=i;
-	var el=e[i];
-	if(el.childNodes.length==1)	s.xml=e[i].childNodes[0];
-	else if(el.childNodes.length>1)
-	{
-		var max_n=el.childNodes[0].childNodes.length;
-		var max_e=el.childNodes[0];
-		for(var j=1;j<el.childNodes.length;j++)
-		{
-			if(el.childNodes[j].childNodes.length>max_n)
-			{
-				max_n=el.childNodes[j].childNodes.length;
-				max_e=el.childNodes[j];
-			}
-		}
-		s.xml=max_e;
-	}
-	s.calculateIdMap();
-	return s;
+    var e=this.xml.getElementsByTagName('sentence');
+    if(i>=e.length) return null;
+
+    var s=new TreebankSentence();
+    s.sentence_id=e[i].getAttribute('id');
+    s.file=this;
+    s.num=i;
+    var el=e[i];
+    if(el.childNodes.length==1)	s.xml=e[i].childNodes[0];
+    else if(el.childNodes.length>1)
+    {
+        var max_n=el.childNodes[0].childNodes.length;
+        var max_e=el.childNodes[0];
+        for(var j=1;j<el.childNodes.length;j++)
+        {
+            if(el.childNodes[j].childNodes.length>max_n)
+            {
+                max_n=el.childNodes[j].childNodes.length;
+                max_e=el.childNodes[j];
+            }
+        }
+        s.xml=max_e;
+    }
+    s.calculateIdMap();
+    return s;
 }
 
 /**
@@ -718,12 +718,12 @@ TreebankFile.prototype.getSentence=function(i)
  */
 TreebankFile.prototype.getNumOfNodes=function()
 {
-	var n=this.getNumOfSentences();
-	var sum=0;
-	for(var i=0;i<n;i++)
-		sum+=this.getSentence(i).getNumOfNodes();
-		
-	return sum;
+    var n=this.getNumOfSentences();
+    var sum=0;
+    for(var i=0;i<n;i++)
+        sum+=this.getSentence(i).getNumOfNodes();
+
+    return sum;
 };
 
 /**
@@ -734,24 +734,24 @@ TreebankFile.prototype.getNumOfNodes=function()
  */
 TreebankFile.prototype.apply=function(metrics,print)
 {
-	var print_flag=true;
-	if(typeof print!=='undefined') print_flag=print;
-	
-	var n=this.getNumOfSentences();
-	var results=new Array(n);
-	for(var i=0;i<n;i++)
-	{
-		var s=this.getSentence(i);
-		results[i]=s.apply(metrics,false);
-		if(print_flag)
-		{
-			var txt=''+s.sentence_id;
-			for(var j=0;j<results[i].length;j++)
-				txt+=' '+results[i][j].toFixed(2);
-			output.println(txt);
-		}
-	}	
-	return results;
+    var print_flag=true;
+    if(typeof print!=='undefined') print_flag=print;
+
+    var n=this.getNumOfSentences();
+    var results=new Array(n);
+    for(var i=0;i<n;i++)
+    {
+        var s=this.getSentence(i);
+        results[i]=s.apply(metrics,false);
+        if(print_flag)
+        {
+            var txt=''+s.sentence_id;
+            for(var j=0;j<results[i].length;j++)
+                txt+=' '+results[i][j].toFixed(2);
+            output.println(txt);
+        }
+    }
+    return results;
 }
 
 /**
@@ -767,28 +767,13 @@ TreebankFile.prototype._onload=function(){if(typeof output !=='undefined') outpu
  */
 TreebankFile.prototype.load=function(id)
 {
-	this.id=id;
-	
-	var xmlhttp;
-	if (window.XMLHttpRequest)
-	{// code for IE7+, Firefox, Chrome, Opera, Safari
-		xmlhttp=new XMLHttpRequest();
-	}
-	else
-	{// code for IE6, IE5
-  		xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
-	}
-	var self=this;
-	xmlhttp.onreadystatechange=function()
-  	{
-		if (xmlhttp.readyState==4 && xmlhttp.status==200)
-		{
-			self.xml=xmlhttp.responseXML;
-			self._onload();
-		}
-	}
-	xmlhttp.open("GET","http://www.metreex.org/db/"+id+"/meta/",true);
-	xmlhttp.send();
+    this.id=id;
+    var self=this;
+    vn.http(vn.hosturl+'file/'+id+"/data",{mime:"text/xml"}).then(function(request){
+        self.xml=request.responseXML;
+        //console.log(self.id+' '+self.getTitle());
+        self._onload();
+    });
 };
 
 /**
@@ -803,9 +788,9 @@ TreebankFile.prototype.load=function(id)
  */
 function TreebankCollection()
 {
-	this.collection='';
-	this.treebank=new Array();
-	this.loading_counter=0;
+    this.collection='';
+    this.treebank=new Array();
+    this.loading_counter=0;
 }
 
 /**
@@ -821,30 +806,28 @@ TreebankCollection.prototype._onload=function(){if(typeof output !=='undefined')
  */
 TreebankCollection.prototype.load=function(collection)
 {
-	if(typeof collection !=='undefined')
-		this.collection=collection;
-	else this.collection='';
-	
-	this.loading_counter=0;
-	
-	var self=this;
-	if(this.collection=='')
-		vn.http("http://www.metreex.org/task/compileindex.php",{mime:"text/xml"}).then(function(request){
-			var data=request.responseXML;
-			var objs=data.getElementsByTagName("object");
-			for(var i=0;i<objs.length;i++)
-			{
-				var t=new TreebankFile();
-				t._onload=function()
-				{
-					self.loading_counter+=1;
-					if(self.loading_counter==self.treebank.length)
-						self._onload();
-				};
-				self.treebank.push(t);
-				t.load(objs[i].getAttribute('id'));
-			}
-		});
+    if(typeof collection !== 'undefined')
+        this.collection=collection;
+    else this.collection='46nbm13yn7otz7yd'; //Load a default collection; could error instead of loading a default.
+
+    this.loading_counter=0;
+
+    var self=this;
+    var list=vn.cloud.getObject(collection);
+    list.whenReady().then(function(){
+        for(var id in list.info.VN_LIST)
+        {
+            var t=new TreebankFile();
+            t._onload=function()
+            {
+                self.loading_counter+=1;
+                if(self.loading_counter==self.treebank.length)
+                    self._onload();
+            };
+            self.treebank.push(t);
+            t.load(id);
+        }
+    });
 };
 
 /**
@@ -855,49 +838,49 @@ TreebankCollection.prototype.load=function(collection)
  */
 TreebankCollection.prototype.apply=function(metrics,options)
 {
-	var opt=options||{};
-	var print_flag=true;
-	if(typeof opt.print!=='undefined') print_flag=opt.print;
-	
-	for(var i=0;i<this.treebank.length;i++)
-	{
-		output.println(" {'"+this.treebank[i].getTitle()+"'}");
-	}
-	
-	var results=new Array(this.treebank.length);
-	
-	if(opt.progress)opt.progress.oneMoreToDo(this.treebank.length);
-	
-	var i=0;
-	var self=this;
-	function one_step()
-	{
-		if(i>=self.treebank.length)return;
-		output.println('% '+self.treebank[i].getTitle()+' ('+self.treebank[i].id+')\n');
-		//results[i]=this.treebank[i].apply(metrics,print_flag);
-		
-		var n=self.treebank[i].getNumOfSentences();
-		var results2=new Array(n);
-		for(var j=0;j<n;j++)
-		{
-			var s=self.treebank[i].getSentence(j);
-			results2[j]=s.apply(metrics,false);
-			if(print_flag)
-			{
-				var txt=''+(i+1)+' '+s.sentence_id;
-				for(var k=0;k<results2[j].length;k++)
-					txt+=' '+results2[j][k].toFixed(2);
-				output.println(txt);
-			}
-		}	
-		results[i]=results2;
-		
-		i++;
-		if(opt.progress)opt.progress.oneMoreDone();
-		vn.wait().then(one_step);
-	}	
-	one_step();
-	
-	
-	return results;
+    var opt=options||{};
+    var print_flag=true;
+    if(typeof opt.print!=='undefined') print_flag=opt.print;
+
+    for(var i=0;i<this.treebank.length;i++)
+    {
+        output.println(" {'"+this.treebank[i].getTitle()+"'}");
+    }
+
+    var results=new Array(this.treebank.length);
+
+    if(opt.progress)opt.progress.oneMoreToDo(this.treebank.length);
+
+    var i=0;
+    var self=this;
+    function one_step()
+    {
+        if(i>=self.treebank.length)return;
+        output.println('% '+self.treebank[i].getTitle()+' ('+self.treebank[i].id+')\n');
+        //results[i]=this.treebank[i].apply(metrics,print_flag);
+
+        var n=self.treebank[i].getNumOfSentences();
+        var results2=new Array(n);
+        for(var j=0;j<n;j++)
+        {
+            var s=self.treebank[i].getSentence(j);
+            results2[j]=s.apply(metrics,false);
+            if(print_flag)
+            {
+                var txt=''+(i+1)+' '+s.sentence_id;
+                for(var k=0;k<results2[j].length;k++)
+                    txt+=' '+results2[j][k].toFixed(2);
+                output.println(txt);
+            }
+        }
+        results[i]=results2;
+
+        i++;
+        if(opt.progress)opt.progress.oneMoreDone();
+        vn.wait().then(one_step);
+    }
+    one_step();
+
+
+    return results;
 }
