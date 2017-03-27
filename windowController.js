@@ -1471,8 +1471,11 @@ function addErrorEllipse(projectionData, parent, xaxis, yaxis, strokeColor, tree
     else {treebankInfo.title = "";}
     if (treebankInfo.section !== undefined) { tooltipText += "<br>Section: " + treebankInfo.section; }
 
+    var ellipseClass = "PCA-ellipse " + treebankInfo.title.toString().toLowerCase().replace(/ /g,"") + " " + treebankInfo.author;
+    if (treebankInfo.section !== undefined) { ellipseClass += " sec" + treebankInfo.section.toString().replace(/\./g,"\\."); }
+
     var newEllipse = parent.append("ellipse")
-        .attr("class", "PCA-ellipse " + treebankInfo.title.toString().toLowerCase() + " " + treebankInfo.author)
+        .attr("class", ellipseClass)
         .attr("rx", Math.abs(xaxis(projXextent[0] + ellRX) - xaxis(projXextent[0])))
         .attr("ry", Math.abs(yaxis(projYextent[0] + ellRY) - yaxis(projYextent[0])))
         .style("stroke", strokeColor)
