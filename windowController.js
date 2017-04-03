@@ -113,7 +113,7 @@ function processCommand(command){
                         }
                         break;
                     case "metrics":
-                        if (disabledMetrics.length + loadedMetrics.length == 0) {
+                        if (disabledMetrics.length + loadedMetrics.length === 0) {
                             output.println("No metrics have been loaded. Check for the metric source file.");
                             break;
                         }
@@ -643,11 +643,11 @@ function buildInvertedTableBody(tableData, tbody){
             .html(elem.sentence)
             .attr("class","rowSubHeader");
 
-        if (elem.sentence % 10 == 1) {
+        if (elem.sentence % 10 === 1) {
             var rowhead = trow.insert("td",":first-child")
                 .attr("rowspan", Math.min(elem.numSentences - elem.sentence + 1, 10))
                 .attr("class", "rowHeader")
-                .html(elem.title.replace(/_/g, " "));
+                .html(elem.title.replace(/_/g, " ") + " " + elem.section);
 
             if (elem.numSentences > 10){
                 if (elem.numSentences - elem.sentence > 10) {
