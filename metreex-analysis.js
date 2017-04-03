@@ -126,7 +126,7 @@ function processCommand(command){
                         }
 
                         if (disabledMetrics.length > 0){
-                            output.println("The following " + loadedMetrics.length + " metric(s) are disabled:");
+                              output.println("The following " + loadedMetrics.length + " metric(s) are disabled:");
                             disabledMetrics.forEach(function (metric) {
                                 output.println(metric.name);
                             })
@@ -353,7 +353,7 @@ function loadTreebankCollection(id){
  * Takes all selected treebanks and applies all of the selected metrics to them, recording the used metrics, treebanks, and results.
  */
 function applyMetrics(){
-    if (loadedTreebanks.length == 0){
+    if (loadedTreebanks.length === 0){
         output.println("No treebanks have been loaded, please load treebank(s) before applying metrics.");
         return;
     }
@@ -362,7 +362,7 @@ function applyMetrics(){
         selectedTreebanks = getCheckedTreebanks();
     }
 
-    if (selectedTreebanks.length == 0){
+    if (selectedTreebanks.length === 0){
         output.println("No treebanks were selected, please select at least one treebank");
         return;
     }
@@ -371,7 +371,7 @@ function applyMetrics(){
     enabledMetrics = metricPartitions.checkedList;
     disabledMetrics = metricPartitions.uncheckedList;
 
-    if (enabledMetrics.length == 0){
+    if (enabledMetrics.length === 0){
         output.println("No metrics were selected, please select at least one metric");
         return;
     }
@@ -401,11 +401,11 @@ function applyMetrics(){
 function checkArrayEquals(one, two){
     //Should catch most quick error cases
     if (!one || !two) return false;
-    if (one.length != two.length) return false;
+    if (one.length !== two.length) return false;
     if (!one instanceof Array || !two instanceof Array) return false;
 
     return (!one.some(function (elem, index) {  //Some checks if elements pass text given by the function
-        return elem != two[index];              //Which simply checks if the elem is equal to the element in the corresponding array
+        return elem !== two[index];              //Which simply checks if the elem is equal to the element in the corresponding array
     }));
 }
 
@@ -548,23 +548,6 @@ function getActiveMetricTab() {
     return elems[0]? elems[0].name : ""; //Should always be exactly one "active" metric tab.
 }
 
-function debugMetricResults(){
-    var index,
-        sentenceIndex,
-        metrIndex;
-
-    for (index = 0; index < selectedTreebanks.length; index++){
-        console.log("treebank: " + selectedTreebanks[index].getTitle());
-        for (sentenceIndex = 0; sentenceIndex < lastMetricResults[index].length; sentenceIndex++){
-            console.log("sentence: " + sentenceIndex);
-            for (metrIndex = 0; metrIndex < lastMetricResults[index][sentenceIndex].length; metrIndex++){
-                console.log("metric no. " + metrIndex + ": " + enabledMetrics[metrIndex] + " : " + lastMetricResults[index][sentenceIndex][metrIndex]);
-            }
-        }
-    }
-    return true;
-}
-
 function buildBasicTableInverted(tableData, targetDivId){
     //Clears out existing table if one exists
     var tableDiv = d3.select(targetDivId);
@@ -593,7 +576,7 @@ function buildBasicTableInverted(tableData, targetDivId){
 
     buildInvertedTableBody(tableData, tbody);
 
-    tbodyDOM.onscroll = function(e) {
+    tbodyDOM.onscroll = function() {
         theadDOM.style.left = "-" + tbodyDOM.scrollLeft + "px";
         Array.prototype.slice.call(theadDOM.getElementsByTagName("tr"))
             .forEach(function(elem){
@@ -700,7 +683,7 @@ function buildBasicTable(tableData, targetDivId){
         buildTableDataRow(tableData,rowId, metricIndex);
     }
 
-    tbodyDOM.onscroll = function(e) {
+    tbodyDOM.onscroll = function() {
         theadDOM.style.left = "-" + tbodyDOM.scrollLeft + "px";
         Array.prototype.slice.call(theadDOM.getElementsByTagName("tr"))
             .forEach(function(elem){
@@ -782,6 +765,7 @@ function assembleMetricData(){
  * Builds the SVG bar chart visualization for a given metric
  * @param tableData Set of data to be processed
  * @param metricIndex Index of the metric to be visualized
+ * @param targetDivId Name of HTML div in which to emplace the bar chart
  */
 function buildBarChart(tableData, metricIndex, targetDivId) {
     var barDiv = d3.select(targetDivId),
@@ -855,7 +839,7 @@ function buildBarChart(tableData, metricIndex, targetDivId) {
         .attr("y", yaxis.bandwidth() / 2)
         .attr("dy", ".35em")
         .text(function(elem){
-            if (d3.format(".2f")(elem.metricValues[metricIndex]) == "0.00"){
+            if (d3.format(".2f")(elem.metricValues[metricIndex]) === "0.00"){
                 return ""
             }
             else {
@@ -936,6 +920,7 @@ function buildBarChart(tableData, metricIndex, targetDivId) {
  * @param tableData Set of data to be processed
  * @param yMetricIndex Index of the metric for the y axis
  * @param xMetricIndex Index of the metric for the x axis
+ * @param targetDivId Name of HTML div in which to emplace the visualization
  */
 function buildScatterPlot(tableData, yMetricIndex, xMetricIndex, targetDivId) {
     var scatterDiv = d3.select(targetDivId),
@@ -1102,8 +1087,8 @@ function createAuthorToColorLegendWithVisibilityTogglesAndStats(legendTarget, au
         .attr("height", 10)
         .style("fill", function(elem){return coloraxis(elem);})
         .on("mouseover", function(elem){visibilityMouseover(elem, pointClass);})
-        .on("mouseout", function(elem){visibilityMouseout(elem, coloraxis, pointClass);})
-        .on("click", function(elem){visibilityClick(elem, coloraxis, pointClass, this);});
+        .on("mouseout", function(elem){visibilityMouseout(elem, pointClass);})
+        .on("click", function(elem){visibilityClick(elem, pointClass, this);});
 
     /*If ellipseClass is undefined, this is a visualization without error ellipses.*/
     if (ellipseClass !== undefined) {
@@ -1118,8 +1103,8 @@ function createAuthorToColorLegendWithVisibilityTogglesAndStats(legendTarget, au
             .attr("cy", 5)
             .style("fill", function (elem) { return coloraxis(elem); })
             .on("mouseover", function (elem) { visibilityMouseover(elem, ellipseClass); })
-            .on("mouseout", function (elem) { visibilityMouseout(elem, coloraxis, ellipseClass); })
-            .on("click", function (elem) { visibilityClick(elem, coloraxis, ellipseClass, this); });
+            .on("mouseout", function (elem) { visibilityMouseout(elem, ellipseClass); })
+            .on("click", function (elem) { visibilityClick(elem, ellipseClass, this); });
     }
 
     rows.append("th")
@@ -1235,7 +1220,7 @@ function createAuthorToColorLegendWithVisibilityTogglesAndStats(legendTarget, au
 /**
  * Builds the SVG Principal Component Analysis for all loaded metrics
  * @param data Set of data to be processed
- * @param {Boolean} drawEllipsePerTitle True if an ellipse should be drawn for each individual title, false if ellipses should only be drawn for each author.
+ * @param drawEllipseForIndex Index of option for which to draw ellipses for. 0..2 <=> ["Author", "Title", "Section"]
  * @param targetDivId String with the target id for d3 to append this chart to
  */
 function buildPCAPlot(data, drawEllipseForIndex, targetDivId){
@@ -1751,8 +1736,8 @@ function createAuthorToColorLegendWithVisibilityToggles(legendTarget, authors, c
         .attr("height", 10)
         .style("fill", function(elem){return coloraxis(elem);})
         .on("mouseover", function(elem){visibilityMouseover(elem, pointClass);})
-        .on("mouseout", function(elem){visibilityMouseout(elem, coloraxis, pointClass);})
-        .on("click", function(elem){visibilityClick(elem, coloraxis, pointClass, this);});
+        .on("mouseout", function(elem){visibilityMouseout(elem, pointClass);})
+        .on("click", function(elem){visibilityClick(elem, pointClass, this);});
 
     /*If ellipseClass is undefined, this is a visualization without error ellipses.*/
     if (ellipseClass !== undefined) {
@@ -1773,8 +1758,8 @@ function createAuthorToColorLegendWithVisibilityToggles(legendTarget, authors, c
             })
             .style("fill", function (elem) { return coloraxis(elem); })
             .on("mouseover", function (elem) { visibilityMouseover(elem, ellipseClass); })
-            .on("mouseout", function (elem) { visibilityMouseout(elem, coloraxis, ellipseClass); })
-            .on("click", function (elem) { visibilityClick(elem, coloraxis, ellipseClass, this); });
+            .on("mouseout", function (elem) { visibilityMouseout(elem, ellipseClass); })
+            .on("click", function (elem) { visibilityClick(elem, ellipseClass, this); });
     }
 
     rows.append("td")
@@ -1795,8 +1780,8 @@ function appendVisibilityToggles(targetSelection, classNameToToggle, coloraxis){
         .attr("height", 10)
         .style("fill", function(elem){return coloraxis(elem);})
         .on("mouseover", function(elem){visibilityMouseover(elem);})
-        .on("mouseout", function(elem){visibilityMouseout(elem, coloraxis);})
-        .on("click", function(elem){visibilityClick(elem, coloraxis, classNameToToggle, this);});
+        .on("mouseout", function(elem){visibilityMouseout(elem, classNameToToggle);})
+        .on("click", function(elem){visibilityClick(elem, classNameToToggle, this);});
 }
 
 function visibilityMouseover (elem, classNameToToggle) {
@@ -1811,7 +1796,7 @@ function visibilityMouseover (elem, classNameToToggle) {
         })
 }
 
-function visibilityMouseout (elem, coloraxis, classNameToToggle) {
+function visibilityMouseout(elem, classNameToToggle) {
     d3.selectAll(classNameToToggle)
         .style("opacity", "1");
 
@@ -1822,7 +1807,7 @@ function visibilityMouseout (elem, coloraxis, classNameToToggle) {
         })
 }
 
-function visibilityClick (elem, coloraxis, classNameToToggle, buttonClicked){
+function visibilityClick(elem, classNameToToggle, buttonClicked){
     var selection = d3.selectAll(classNameToToggle + "." + (elem.replace(/ /g,".")));
 
     if (selection.style("display") !== "none") {
