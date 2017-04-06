@@ -1954,3 +1954,21 @@ function exportDataAsTSV(){
 
     window.open(encodeURI(csvData));
 }
+
+function convertXML(fileInputId) {
+    if (fileInputId === undefined) fileInputId = "#XMLConvertInput";
+    var inputXML = d3.select(fileInputId).node().files[0],
+        outputXML = "",
+        reader = new FileReader();
+
+    reader.onload = function (e) {
+        console.log(reader.result);
+
+        var parser = new DOMParser(),
+            xml = parser.parseFromString(reader.result, 'text/xml');
+
+        console.log(xml);
+    };
+
+    reader.readAsText(inputXML, XMLDocument);
+}
