@@ -5,6 +5,7 @@
     <title>Metreex Analysis Tool</title>
     <link rel="stylesheet" href="metreex.css">
     <link href="https://fonts.googleapis.com/css?family=Lato|Slabo+27px" rel="stylesheet">
+    <script type="text/javascript" src="FileSaver.js"></script>
     <script type="text/javascript" src="http://www.visineat.com/js/vn-1.8.js"></script>
     <script type="text/javascript" src="http://www.visineat.com/js/vn/documentation-2.js"></script>
     <script type="text/javascript" src="http://www.visineat.com/js/vn/windows-3.js"></script>
@@ -26,8 +27,9 @@
 <div id="metricDiv">
     <div id="metricTabHeader">
         <ul class="headerTabs metricTabs">
-            <li><a href="javascript:void(0)" class="metricTab" name="treebank" onclick="openTab(event, 'Treebanks')" id="startingMetricTab">Treebanks</a></li>
-            <li><a href="javascript:void(0)" class="metricTab" name="metric" onclick="openTab(event, 'Metrics')">Metrics</a></li>
+            <li><a href="javascript:void(0)" class="metricTab" name="treebank" onclick="openTabAndToggleDiv(event, 'Treebanks', '#metricTabButtons', true)" id="startingMetricTab">Treebanks</a></li>
+            <li><a href="javascript:void(0)" class="metricTab" name="metric" onclick="openTabAndToggleDiv(event, 'Metrics', '#metricTabButtons', true)">Metrics</a></li>
+            <li><a href="javascript:void(0)" class="metricTab" name="upload" onclick="openTabAndToggleDiv(event, 'Upload', '#metricTabButtons', false)">Upload</a></li>
         </ul>
         <div id="metricTabButtons">
             <button type="button" onclick="setAllCheckboxesInTab(getActiveMetricTab(), true)">Select All</button>
@@ -38,7 +40,6 @@
 
     <div id="Treebanks" class="metricTabContent">
         <div class="metricTabInnerButtons">
-            <input type="file" id="XMLConvertInput"><button type="button" onclick="convertXML()">Convert XML</button><br>
             <input type="text" id="treebankIdInput" placeholder="Treebank Id"><button type="button" onclick="loadTreebankFromSidebar()">Load</button><br>
         </div>
     </div>
@@ -46,6 +47,14 @@
         <div class="metricTabInnerButtons">
             <button type="button" onclick="applyMetrics()">Apply</button>
             <button type="button" onclick="exportDataAsTSV()">Export Data As TSV</button>
+        </div>
+    </div>
+    <div id="Upload" class="metricTabContent">
+        <div class="metricTabInnerButtons">
+            Convert XML files from the linear Arethusa style to the tree style used by the Metreex API here.
+            <hr>
+            <input type="file" id="XMLConvertInput"><br><br>
+            <button type="button" onclick="convertXML()">Convert XML</button><br>
         </div>
     </div>
 </div>

@@ -207,6 +207,13 @@ function openTab(event, tabName){
     event.currentTarget.className += " active";
 }
 
+function openTabAndToggleDiv(event, tabName, divIdToToggle, shouldShowDiv){
+    openTab(event, tabName);
+    if (shouldShowDiv) d3.select(divIdToToggle).style("display","block");
+    else d3.select(divIdToToggle).style("display","none");
+}
+
+
 /**
  * Sets all checkboxes within a tab to a value specified by newSetting.
  * Assumes checkboxes are given an HTML attribute 'name' built as "tabName + 'Checkbox'"
@@ -1936,7 +1943,7 @@ function genPCAPlot(targetDivId){
 function exportDataAsTSV(){
     applyMetrics();
     var data = assembleMetricData(),
-        csvData = "data:text/csv;charset=utf-8,";
+        csvData = "";
 
     csvData += "author\ttitle\tsection\tsentence\tnumSentences";
     lastMetricsUsed.forEach(function (elem) {
@@ -1952,7 +1959,10 @@ function exportDataAsTSV(){
         csvData += "\n";
     });
 
-    window.open(encodeURI(csvData));
+   // window.open(encodeURI(csvData));
+
+    var csvOut = new Blob([csvData],{type:"text/csv"});
+    saveAs(csvOut, "metreex-export-" + Date.now() + ".tsv");
 }
 
 function convertXML(fileInputId) {
@@ -1962,12 +1972,43 @@ function convertXML(fileInputId) {
         reader = new FileReader();
 
     reader.onload = function (e) {
-        console.log(reader.result);
-
         var parser = new DOMParser(),
-            xml = parser.parseFromString(reader.result, 'text/xml');
+            xml = parser.parseFromString(reader.result, 'text/xml'),
+            d3xml = d3.select(xml),
+            treebankField = d3xml.select("treebank").node();
 
-        console.log(xml);
+        treebankField.getAttributeNode("format").nodeValue = "mtrx";
+        treebankField.getAttributeNode("version").nodeValue = "1.1";
+
+        var sentences = d3.select(xml).selectAll("sentence").nodes();
+
+        sentences.forEach(function (elem) {
+            var wordNodes = d3.select(elem).selectAll("word").nodes(),
+                nodesToEval = wordNodes.filter(function(elem) {
+                    return elem.getAttributeNode("head").nodeValue === "0";
+                });
+
+            for (var index = 0; index < nodesToEval.length; index++){
+                nodesToEval[index].parentNode.insertBefore(nodesToEval[index], wordNodes[0]);
+            }
+
+            while(nodesToEval.length !== 0){
+                var currNode = nodesToEval.shift(1),
+                    children = wordNodes.filter(function (elem) {
+                        return (elem.getAttributeNode("head").nodeValue === currNode.getAttributeNode("id").nodeValue);
+                    });
+
+                children.forEach(function(elem){
+                    currNode.appendChild(elem);
+                    nodesToEval.push(elem);
+                });
+            }
+        });
+
+
+        outputXML = new Blob([new XMLSerializer().serializeToString(xml.documentElement)],{type:"text/xml"});
+        saveAs(outputXML, "converted-" + inputXML.name);
+
     };
 
     reader.readAsText(inputXML, XMLDocument);

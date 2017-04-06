@@ -68,6 +68,11 @@ ul.visualTabs {
     text-align: center;
 }
 
+#Upload {
+    min-width:317px;
+    width:317px;
+}
+
 .visualTabContent{
     position: relative;
     display: none;
