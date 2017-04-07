@@ -300,7 +300,7 @@ ul.visualTabs {
     height: auto;
     padding: 2px;
     font: 12px sans-serif;
-    background: powderblue;
+    background: #afc0d7;
     border: none;
     border-radius: 5px; /*rounds edges*/
     pointer-events: none;
