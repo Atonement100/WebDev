@@ -48,8 +48,34 @@
         <div class="metricTabInnerButtons">
             Convert XML files from the linear Arethusa style to the tree style used by the Metreex API here.
             <hr>
-            <input type="file" id="XMLConvertInput"><br><br>
+            <p>
+                <input type="file" id="XMLConvertInput">
+            </p>
             <button type="button" onclick="convertXML()">Convert XML</button><br>
+            <hr>
+            Upload new treebank files, after they have been converted to the Metreex tree style, here.
+            <hr>
+            <p>
+                <select title="vnUploadOption" onchange="changeVNUploadDisplay(event)">
+                    <option>New Treebank</option>
+                    <option>New Folder</option>
+                </select>
+            </p>
+            <div id="vnUploadTreebank" class="vnUpload active">
+                <input type="text" id="vnUploadTreebankDestination" placeholder="Destination Folder Id (Optional)"><br>
+                <input type="text" id="vnUploadTreebankName" placeholder="Treebank Name"><br>
+                <input type="text" id="vnUploadTreebankWorkTitle" placeholder="Title of Work"><br>
+                <input type="text" id="vnUploadTreebankSection" placeholder="Section"><br>
+                <input type="text" id="vnUploadTreebankAuthor" placeholder="Author"><br>
+                <input type="file" id="vnUploadTreebankXML">
+                <button type="button" onclick="uploadTreebankToVN()">Upload Treebank</button>
+            </div>
+            <div id="vnUploadFolder" class="vnUpload">
+                <input type="text" id="vnUploadFolderName" placeholder="Folder Name">
+                <button type="button" onclick="uploadFolderToVN()">Create Folder</button>
+            </div>
+            <br>
+            <button type="button" onclick="loginToVN()">Login to VN Cloud</button>
         </div>
     </div>
 </div>

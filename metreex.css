@@ -46,7 +46,7 @@ ul.headerTabs li .active {
     text-decoration: underline;
 }
 
-ul.headerTabs li a:focus, .active{
+ul.headerTabs li a:focus, ul.headerTabs .active{
     background-color: #d6dde8;
 }
 
@@ -304,4 +304,20 @@ ul.visualTabs {
     border: none;
     border-radius: 5px; /*rounds edges*/
     pointer-events: none;
+}
+
+.vnUpload.active {
+    display:block;
+}
+.vnUpload {
+    display:none;
+}
+.vnUpload input{
+    margin:1px;
+    width:70%;
+}
+
+.metricTabInnerButtons p{
+    -webkit-margin-after: .5em;
+    -webkit-margin-before: .5em;
 }

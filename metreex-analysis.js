@@ -1959,8 +1959,6 @@ function exportDataAsTSV(){
         csvData += "\n";
     });
 
-   // window.open(encodeURI(csvData));
-
     var csvOut = new Blob([csvData],{type:"text/csv"});
     saveAs(csvOut, "metreex-export-" + Date.now() + ".tsv");
 }
@@ -2012,4 +2010,114 @@ function convertXML(fileInputId) {
     };
 
     reader.readAsText(inputXML, XMLDocument);
+}
+
+function loginToVN(){
+    vn.cloud.me = vn.cloud.getMe();
+    vn.cloud.me.login(vn.getWindowManager());
+}
+
+function changeVNUploadDisplay(event){
+    var allUploadElems = document.getElementsByClassName("vnUpload");
+
+    for (var index = 0; index < allUploadElems.length; index++){
+        allUploadElems[index].className = "vnUpload";
+    }
+
+    switch(event.target.value){
+        case "New Folder":
+            document.getElementById("vnUploadFolder").className += " active";
+            break;
+        case "New Treebank":
+            document.getElementById("vnUploadTreebank").className += " active";
+            break;
+        default:
+            console.log("yikes undefined behavior");
+            break;
+    }
+}
+
+function uploadTreebankToVN() {
+    if (!vn.cloud.me){
+        alert("Please login to VisiNeat before uploading a treebank.");
+        handleGlobalErrorMessage("Please login to VisiNeat before uploading a treebank.");
+    }
+
+    var treebankXML = d3.select("#vnUploadTreebankXML").node().files[0],
+        reader = new FileReader();
+
+    reader.onload = function () {
+        var folderId = document.getElementById("vnUploadTreebankDestination").value,
+            treebankName = document.getElementById("vnUploadTreebankName").value,
+            treebankFields = {
+                Title : document.getElementById("vnUploadTreebankWorkTitle").value,
+                Section : document.getElementById("vnUploadTreebankSection").value,
+                Author : document.getElementById("vnUploadTreebankAuthor").value
+            },
+            uploadInfo = {
+            file: reader.result,
+            mime: "text/xml; charset=utf-8"
+            },
+
+            newTreebank = vn.cloud.me.newObject("MetreexTreebank"),
+
+            parser = new DOMParser(),
+            xml = parser.parseFromString(reader.result, 'text/xml'),
+            d3xml = d3.select(xml),
+            treebankField = d3xml.select("treebank").node(),
+            idField = xml.createElement("field"),
+            treebankNameField = xml.createElement("field");
+
+        console.log(treebankField);
+        treebankField.insertBefore(idField, treebankField.firstChild);
+        treebankField.insertBefore(treebankNameField, treebankField.firstChild);
+
+        newTreebank.whenReady().then(function(){
+            output.println("Uploading treebank...");
+
+            idField.setAttribute("name", "id");
+            idField.setAttribute("value", newTreebank.getId());
+            treebankNameField.setAttribute("name", "title");
+            treebankNameField.setAttribute("value", treebankName);
+            uploadInfo.file = new XMLSerializer().serializeToString(xml.documentElement);
+            console.log(uploadInfo.file);
+            newTreebank.upload(uploadInfo);
+            newTreebank.rename(treebankName);
+            newTreebank.setFields(treebankFields);
+
+            if(folderId !== "" && folderId !== undefined){
+                var folder = vn.cloud.getObject(folderId);
+                folder.whenReady().then(function () {
+                    folder.add(newTreebank);
+                    output.println("A new treebank has been created with the reference object id: ' " + newTreebank.getId() + " '. " +
+                        "It has been uploaded to the folder '" + folder.info.VN_NAME + "' which has the id " + folderId + ".");
+                });
+            }
+            else {
+                output.println("A new treebank has been created with the reference object id: ' " + newTreebank.getId() + " '. Save this for future reference.");
+            }
+        });
+    };
+
+    reader.readAsText(treebankXML, XMLDocument);
+
+}
+
+function uploadFolderToVN() {
+    if (!vn.cloud.me){
+        alert("Please login to VisiNeat before creating a folder.");
+        handleGlobalErrorMessage("Please login to VisiNeat before creating a folder.");
+    }
+
+    var folderName = document.getElementById("vnUploadFolderName").value,
+        newFolder = vn.cloud.me.newObject("List");
+
+    newFolder.whenReady().then(function () {
+        output.println("A new folder has been created with the reference object id: ' " + newFolder.getId() + " '. Save this for future reference.");
+    }).otherwise(function () {
+        output.println("There was an error creating the new folder");
+    });
+
+    newFolder.rename(folderName);
+
 }
