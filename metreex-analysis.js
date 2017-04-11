@@ -8,12 +8,15 @@ var loadedTreebanks = [],
     lastMetricsUsed = [],
     lastTreebanksUsed = [];
 
-
 window.onload = function () {
     d3.select("#visualDiv")
         .style("width", screen.width - document.getElementById("metricDiv").getBoundingClientRect().width + "px");
 
     vn = new VisiNeatAPI();
+    vn.run(main);
+};
+
+function main(){
     vn.setScreen("ConsoleTarget");
     vn.cloud = new VNCloud();
 
@@ -27,18 +30,12 @@ window.onload = function () {
 
     // Console creation
     var windowManager = vn.getWindowManager();
-    output = windowManager.createConsole({left:10,top:10,width:1000,height:800,title:"metreex analysis"});
+    output = windowManager.createConsole({left:10,top:10,width:1000,height:800,title:"Metreex Analysis Console"});
     output.whenCommandEntered().then(function (command) {
         processCommand(command);
     });
-
-    loadTreebankFile("m3pmakk93y1nkhxl");
-    loadTreebankFile("9g50guweglwy5kqb");
-    loadTreebankFile("5krwvewpr25f6jf4");
-    loadTreebankFile("ct1ggzdspofmmdch");
-    loadTreebankFile("muq9q52l8gm30von");
-
-};
+    output.println("Type 'help' for a list of commands.");
+}
 
 VNConsoleWindow.prototype.init=function()
 {
