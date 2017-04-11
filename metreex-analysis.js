@@ -37,15 +37,6 @@ function main(){
     output.println("Type 'help' for a list of commands.");
 }
 
-VNConsoleWindow.prototype.init=function()
-{
-    var d=""+new Date(),
-        i=d.indexOf("GMT");
-    if(i>-1) d=d.substring(0,i-1);
-    this.println(d);
-    this.println("---- Console started. Type 'help' for a list of commands. ----");
-};
-
 function processCommand(command){
     console.log("Command received in window controller: " + command);
 
