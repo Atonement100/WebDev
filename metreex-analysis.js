@@ -317,9 +317,22 @@ function unloadAllTreebanks(){
     }
 }
 function loadTreebankFromSidebar(){
-    var input = document.getElementById("treebankIdInput");
-    loadTreebankFile(input.value);
-    input.value = "";
+    var input = document.getElementById("treebankIdInput"),
+        file = vn.cloud.getObject(input.value.trim());
+
+    file.whenReady().then(function () {
+        console.log(input.value);
+        console.log(file);
+
+        if (file.info.VN_CLASS === "List"){
+            loadTreebankCollection(input.value);
+        }
+        else{
+            loadTreebankFile(input.value);
+        }
+
+        input.value = "";
+    });
 }
 
 function unloadTreebankFromSidebar(id){
